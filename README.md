@@ -14,5 +14,5 @@
 ### **Migration commands**:
 ```bash
 dotnet ef migrations add exam
-dotnet ef database update
+dotnet ef database update 
 ```

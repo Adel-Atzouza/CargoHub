@@ -1,6 +1,9 @@
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
+
+namespace CargoHub.Models{
+
 public class Location{
     public Guid Id {get; set;}
     [JsonIgnore]
@@ -10,4 +13,5 @@ public class Location{
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
 
+}
 }

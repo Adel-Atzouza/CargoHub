@@ -1,11 +1,11 @@
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
-
+namespace CargoHub.Models{
 
 public class Order{
 
-    public Guid Id {get; set;}
+    public int Id {get; set;}
     public int sourceId {get; set;}
     public DateTime Orderdate {get; set;}
     public DateTime Requestdate {get; set;}
@@ -31,7 +31,7 @@ public class Order{
     public DateTime UpdatedAt {get; set;}
     public List<Items>? Itemlist{get; set;}
 }
-
+}
 
 
 

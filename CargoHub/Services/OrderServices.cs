@@ -38,24 +38,39 @@ namespace CargoHub.Services{
         {
             return await _context.Orders.FirstOrDefaultAsync(order => order.Id == id);
         }
+
+        public async Task<List<Order>> GetOrdersinShipment(int id)
+        {
+            return await _context.Orders
+            .Where(order => order.ShipmentId == id)
+            .ToListAsync();
+        }
+
+        public async Task<List<Order>> GetItemsinOrder(int id)
+        {
+            return await _context.Orders
+            .Where(order => order.Id == id)
+            .SelectMany(order => order.Itemlist)
+            .ToListAsync();
+        }
+        public async Task<List<Order>> GetGetordersForCLient(Guid id)
+        {
+            return await _context.Orders
+            .Where(order => order.ShipTo == id || order.BillTo == id)
+            .ToListAsync();
+        }
+
+        public async Task<string> AddOrder(Order order)
+        {
+            if(order.Id != 0 || order.CreatedAt != default || order.UpdatedAt != default)
+            {
+                return "the id, created at and updated at should not be provided";
+            }
+
+        }
     }
 }
-
-    // def get_items_in_order(self, order_id):
-    //     for x in self.data:
-    //         if x["id"] == order_id:
-    //             return x["items"]
-    //     return None
-
-    // def get_orders_in_shipment(self, shipment_id):
-    //     result = []
-    //     for x in self.data:
-    //         if x["shipment_id"] == shipment_id:
-    //             result.append(x["id"])
-    //     return result
-        // def get_orders_for_client(self, client_id):
-        // result = []
-        // for x in self.data:
-        //     if x["ship_to"] == client_id or x["bill_to"] == client_id:
-        //         result.append(x)
-
+    // def add_order(self, order):
+    //     order["created_at"] = self.get_timestamp()
+    //     order["updated_at"] = self.get_timestamp()
+    //     self.data.append(order)

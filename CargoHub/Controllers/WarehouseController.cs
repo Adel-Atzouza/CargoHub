@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CargoHub.Controllers
 {
-    [Route("api/warehouse")]
+    [Route("api/v1/warehouse")]
     public class WarehouseController(AppDbContext appDbContext, StorageService storage) : Controller
     {
         AppDbContext appDbContext = appDbContext;

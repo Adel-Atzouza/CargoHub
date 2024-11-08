@@ -5,9 +5,9 @@ using System.Text.Json.Serialization;
 namespace CargoHub.Models{
 
 public class Location{
-    public Guid Id {get; set;}
+    public int Id {get; set;}
     [JsonIgnore]
-    public Guid WarehouseId { get; set; }
+    public int WarehouseId { get; set; }
     public string Code { get; set; }
     public string Name { get; set; }
     public DateTime CreatedAt { get; set; }

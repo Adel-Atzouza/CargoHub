@@ -1,7 +1,6 @@
 using CargoHub.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using CargoHub.Models;
 using System.Threading.Tasks;
 using System;
 using System.Collections.Generic;
@@ -23,9 +22,10 @@ namespace CargoHub.Services{
             return await _context.Orders
             .Where(order => order.Id >= Id)
             .OrderBy(order => order.Id)
+            .Take(100)
             .ToListAsync();
         }
-        
+
         public async Task<List<Order>> GetOrdersDateTime(DateTime Starttime, DateTime EndTime)//gives a start time and a endTime and gives the orders in that range. 
         {
             return await _context.Orders
@@ -139,6 +139,9 @@ namespace CargoHub.Services{
 
             return "Order added successfully.";
         }
+
+        public async Task<>
+
 
 
     }

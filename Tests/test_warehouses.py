@@ -3,6 +3,7 @@ import test_helper
 
 url = "http://localhost:3000/api/v1/warehouses/"
 headers = {'API_KEY': "a1b2c3d4e5"}
+current_id = 0
 
 
 def test_get_random_warehouses():
@@ -28,10 +29,12 @@ def test_post_warehouses():
     response = requests.post(url, headers=headers, json=test_helper.warehouse_1)
     
     assert response.status_code == 201
+    global current_id
+    current_id = int(response.text)
     
 
 def test_get_after_post_warehouses():
-    response = requests.get(url + str(test_helper.warehouse_1['id']), headers=headers)
+    response = requests.get(url + str(current_id), headers=headers)
 
     assert response.status_code == 200
 
@@ -39,37 +42,40 @@ def test_get_after_post_warehouses():
     del warehouse_json['created_at']
     del warehouse_json['updated_at']
 
+    test_helper.warehouse_1['id'] = current_id
     assert test_helper.warehouse_1 == warehouse_json
 
 
 def test_put():
-    response = requests.put(url + str(test_helper.warehouse_1['id']), headers=headers, json=test_helper.warehouse_1_updated)
+    response = requests.put(url + str(current_id), headers=headers, json=test_helper.warehouse_1_updated)
 
     assert response.status_code == 200
 
 
 def test_get_after_put():
-    response = requests.get(url + str(test_helper.warehouse_1_updated['id']), headers=headers)
+    response = requests.get(url + str(current_id), headers=headers)
 
     assert response.status_code == 200
 
     warehouse_json = response.json()
     del warehouse_json['updated_at']
+    del warehouse_json['created_at']
 
+    test_helper.warehouse_1_updated['id'] = current_id
     assert test_helper.warehouse_1_updated == warehouse_json
 
 
 def test_delete():
-    response = requests.delete(url + str(test_helper.warehouse_1_updated['id']), headers=headers)
+    response = requests.delete(url + str(current_id), headers=headers)
 
     assert response.status_code == 200
 
 
 def test_get_after_delete():
-    response = requests.get(url + str(test_helper.warehouse_1_updated['id']), headers=headers)
+    response = requests.get(url + str(current_id), headers=headers)
 
-    assert response.status_code == 200
-    assert response.content == b'null'
+    assert response.status_code == 404
+    assert response.text == "Warehouse doesn't exist with id: " + str(current_id)
 
 
 # NOTES: 

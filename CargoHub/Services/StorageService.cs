@@ -38,6 +38,7 @@ namespace CargoHub
             var war = await appDbContext.Warehouses.FindAsync(id);
             if (war == null) return null;
             war.Name = warehouse.Name;
+            war.Code = warehouse.Code;
             war.Address = warehouse.Address;
             war.Contact = warehouse.Contact;
             war.UpdatedAt = DateTime.Now;

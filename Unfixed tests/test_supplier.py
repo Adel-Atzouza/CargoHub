@@ -1,7 +1,7 @@
 import requests
 import test_helper
 
-url = "http://localhost:3000/api/v1/suppliers/"
+url = "http://localhost:3000/api/v1/suppliers"
 headers = {'API_KEY': "a1b2c3d4e5"}
 
 

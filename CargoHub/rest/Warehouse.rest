@@ -1,7 +1,7 @@
-@baseUrl = http://localhost:3000/api/warehouse
+@baseUrl = http://localhost:3000/api/v1/warehouses
 
 ###
-GET {{baseUrl}}/1
+GET {{baseUrl}}/10
 
 ###
 GET {{baseUrl}}

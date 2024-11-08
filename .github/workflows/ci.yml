@@ -8,18 +8,11 @@ jobs:
 
     services:
       api:
-        image: mcr.microsoft.com/dotnet/aspnet:8.0 # Updated to .NET 8.0
+        image: mcr.microsoft.com/dotnet/aspnet:8.0
         ports:
           - 3000:3000
         env:
           ASPNETCORE_ENVIRONMENT: Development
-        options: > 
-          --name test-api-container
-          --detach
-        volumes:
-          - ./:/app
-        command: >
-          sh -c "dotnet run --project CargoHub"
 
     steps:
     - name: Checkout code
@@ -28,13 +21,13 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: '8.0' # Updated to .NET 8.0
+        dotnet-version: '8.0'
 
     - name: Install dependencies
-      run: dotnet restore
+      run: dotnet restore CargoHub
 
     - name: Build API
-      run: dotnet build --no-restore
+      run: dotnet build CargoHub --no-restore
 
     - name: Start API
       run: |

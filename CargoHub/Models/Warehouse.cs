@@ -6,7 +6,7 @@ namespace CargoHub.Models
     public record Warehouse
     {
         // Properties
-        public Guid Id {get; set;}
+        public int Id {get; set;}
         public string? Code {get; set;}
         public string? Name {get; set;}
         public string? Address {get; set;}
@@ -17,7 +17,7 @@ namespace CargoHub.Models
         
         // Contact relation
         [JsonIgnore]
-        public Guid ContactId { get; set; }
+        public int ContactId { get; set; }
         public Contact? Contact {get; set;}
         
         // Metadata

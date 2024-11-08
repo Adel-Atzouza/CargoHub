@@ -12,7 +12,7 @@ namespace CargoHub
         {
             // Configure one-to-one relationship
             modelBuilder.Entity<Warehouse>()
-                .HasOne(r => r.Contact)
+                .HasOne(w => w.Contact)
                 .WithOne()
                 .HasForeignKey<Warehouse>(c => c.ContactId);
         }

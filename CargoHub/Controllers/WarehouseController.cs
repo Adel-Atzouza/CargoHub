@@ -9,7 +9,7 @@ namespace CargoHub.Controllers
     {
         AppDbContext appDbContext = appDbContext;
         [HttpGet()]
-        public async Task<IActionResult> GetWarehouse([FromQuery] Guid id)
+        public async Task<IActionResult> GetWarehouse([FromQuery] int id)
         {
             // return Ok(id);
             return Ok(await appDbContext.Warehouses
@@ -20,7 +20,7 @@ namespace CargoHub.Controllers
         [HttpPost()]
         public async Task<IActionResult> PostWarehouse([FromBody] Warehouse warehouse)
         {
-            var war = warehouse with {Id=Guid.NewGuid(), CreatedAt=DateTime.Now};
+            var war = warehouse with {Id=appDbContext.Warehouses.Count() != 0 ? appDbContext.Warehouses.Max(w => w.Id) + 1 : 1, CreatedAt=DateTime.Now};
             await appDbContext.Warehouses.AddAsync(war);
             int n = await appDbContext.SaveChangesAsync();
             return Ok(n > 0 ? war.Id : false);

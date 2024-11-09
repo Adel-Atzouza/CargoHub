@@ -25,11 +25,52 @@ namespace CargoHub.Services
             .ToListAsync();
         }
 
+        public async Task<Location> GetLocation(int id)
+        {
+            return await _context.Location.FirstOrDefaultAsync(order => order.Id == id);
+        }
+
         public async Task<List<Location>> GetLocationWareHouse(int id)
         {
             return await _context.Location
             .Where(loc => loc.WarehouseId == id)
             .ToListAsync();
+        }
+
+        public async Task<string> AddLocation(Location location)
+        {
+            location.CreatedAt = DateTime.UtcNow;
+            location.UpdatedAt = DateTime.UtcNow;
+            _context.Location.Add(location);
+            await _context.SaveChangesAsync();
+            return "Location added successfully.";
+        }
+
+        public async Task<string> UpdateLocation(int locationId, Location updatedLocation)
+        {
+            var existingLocation = await _context.Location.FindAsync(locationId);
+            if (existingLocation == null)
+            {
+                return "Error: Location not found.";
+            }
+
+            updatedLocation.UpdatedAt = DateTime.UtcNow;
+            _context.Entry(existingLocation).CurrentValues.SetValues(updatedLocation);
+            await _context.SaveChangesAsync();
+            return "Location updated successfully.";
+        }
+
+        public async Task<string> RemoveLocation(int locationId)
+        {
+            var location = await _context.Location.FindAsync(locationId);
+            if (location == null)
+            {
+                return "Error: Location not found.";
+            }
+
+            _context.Location.Remove(location);
+            await _context.SaveChangesAsync();
+            return "Location removed successfully.";
         }
     }
 }

@@ -62,96 +62,53 @@ namespace CargoHub.Services{
 
         public async Task<string> AddOrder(Order order)
         {
-            // Set CreatedAt and UpdatedAt automatically
             order.CreatedAt = DateTime.UtcNow;
             order.UpdatedAt = DateTime.UtcNow;
-
-            // Use reflection to validate each field in the Order object
-            foreach (var property in order.GetType().GetProperties())
-            {
-                // Skip validation for Id, CreatedAt, and UpdatedAt
-                if (property.Name == nameof(order.CreatedAt) || property.Name == nameof(order.UpdatedAt))
-                    continue;
-
-                var value = property.GetValue(order);
-
-                // Type-checking: ensure the value can be converted to the property's type
-                try
-                {
-                    if (value != null)
-                    {
-                        Convert.ChangeType(value, property.PropertyType);
-                    }
-                }
-                catch (InvalidCastException)
-                {
-                    return $"Invalid type for {property.Name}. Expected {property.PropertyType.Name}.";
-                }
-
-                // Check for null or empty strings
-                if (property.PropertyType == typeof(string) && string.IsNullOrWhiteSpace(value as string))
-                {
-                    return $"{property.Name} is required.";
-                }
-
-                // Check for integers that must be positive
-                if (property.PropertyType == typeof(int) && (int)value < 0)
-                {
-                    return $"{property.Name} must be a positive value.";
-                }
-
-                // Check for decimals that must be positive
-                if (property.PropertyType == typeof(decimal) && (decimal)value < 0)
-                {
-                    return $"{property.Name} must be a positive value.";
-                }
-
-                // Check for lists and validate each item in the list if present
-                if (property.PropertyType.IsGenericType && property.PropertyType.GetGenericTypeDefinition() == typeof(List<>))
-                {
-                    var itemList = (IEnumerable<object>)value;
-
-                    foreach (var item in itemList)
-                    {
-                        if (item == null)
-                        {
-                            return $"The list '{property.Name}' contains a null item, which is not allowed.";
-                        }
-
-                        // Additional validation for item properties if the list is of a specific type (e.g., Item class)
-                        if (item is Item orderItem)
-                        {
-                            if (string.IsNullOrWhiteSpace(orderItem.ItemId))
-                            {
-                                return $"ItemId in '{property.Name}' is required for each item.";
-                            }
-                            if (orderItem.Amount <= 0)
-                            {
-                                return $"Amount in '{property.Name}' must be a positive value for each item.";
-                            }
-                        }
-                    }
-                }
-            }
-            // Add the order to the database and save changes
             _context.Orders.Add(order);
             await _context.SaveChangesAsync();
-
-            return "Order added successfully.";
+            return "Location added successfully.";
         }
 
-        public async Task<>
+        public async Task<string> UpdateOrder(int orderId, Order updatedOrder)
+        {
+            if (updatedOrder.Id != orderId)
+            {
+                return "Error: Modifying the order ID is not allowed.";
+            }
+
+            updatedOrder.UpdatedAt = DateTime.UtcNow;
+            var existingOrder = await _context.Orders.FindAsync(orderId);
+            
+            if (existingOrder != null)
+            {
+                _context.Entry(existingOrder).CurrentValues.SetValues(updatedOrder);
+                await _context.SaveChangesAsync();
+                return "Order updated successfully.";
+            }
+            else
+            {
+                return "Error: Order not found.";
+            }
+        }
 
 
-
+        public async Task<string> DeleteOrder(int orderId)
+        {
+            var order = await _context.Orders.FindAsync(orderId);
+            if (order == null)
+            {
+                return "Error: Order not found.";
+            }
+            _context.Orders.Remove(order);
+            await _context.SaveChangesAsync();
+            return "Order deleted successfully.";
+        }
     }
 }
     // def add_order(self, order):
     //     order["created_at"] = self.get_timestamp()
     //     order["updated_at"] = self.get_timestamp()
     //     self.data.append(order)
-
-
 
 
     

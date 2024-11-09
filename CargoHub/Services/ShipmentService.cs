@@ -28,13 +28,15 @@ namespace CargoHub.Services
                 .FirstOrDefaultAsync(s => s.Id == shipmentId);
         }
 
-        public async Task<List<Shipment>> GetShipmentDateTime(DateTime Starttime, DateTime EndTime)//gives a start time and a endTime and gives the Shipment in that range. 
+        public async Task<List<Shipment>> GetShipmentsByShipmentDateRange(DateTime startDate, DateTime endDate)
         {
-            return await _context.
-            .Where(order => order.Requestdate >= Starttime && order.Requestdate <= EndTime)
-            .OrderBy(order => order.Requestdate)
-            .ToListAsync();
+            return await _context.Shipments
+                .Where(shipment => shipment.ShipmentDate >= startDate && shipment.ShipmentDate <= endDate)
+                .OrderBy(shipment => shipment.ShipmentDate)
+                .ToListAsync();
         }
+
+
 
         public async Task<List<Item>?> GetItemsInShipment(int shipmentId)
         {

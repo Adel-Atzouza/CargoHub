@@ -1,6 +1,7 @@
 using CargoHub.Models;
 using CargoHub.Services;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -31,14 +32,6 @@ namespace CargoHub.Controllers
             return await _shipmentService.GetShipments();
         }
 
-        [HttpGet("date-range")]
-        public async Task<ActionResult<List<Shipment>>> GetShipmentsByShipmentDateRange([FromQuery] DateTime startDate, [FromQuery] DateTime endDate)
-        {
-            var shipments = await _shipmentService.GetShipmentsByShipmentDateRange(startDate, endDate);
-            return Ok(shipments);
-        }
-    }
-
         [HttpGet("{shipmentId}/items")]
         public async Task<ActionResult<List<Item>>> GetItemsInShipment(int shipmentId)
         {
@@ -66,6 +59,12 @@ namespace CargoHub.Controllers
         {
             var result = await _shipmentService.RemoveShipment(id);
             return Ok(result);
+        }
+        [HttpGet("date-range")]
+        public async Task<ActionResult<List<Shipment>>> GetShipmentsByShipmentDateRange([FromQuery] DateTime startDate, [FromQuery] DateTime endDate)
+        {
+            var shipments = await _shipmentService.GetShipmentsByShipmentDateRange(startDate, endDate);
+            return Ok(shipments);
         }
     }
 }

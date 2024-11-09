@@ -5,7 +5,7 @@ namespace CargoHub.Models
     public record Supplier
     {
         // Properties
-        public Guid Id {get; set;}
+        public int Id {get; set;}
         public string? Code {get; set;}
         public string? Name {get; set;}
         public string? Address {get; set;}
@@ -30,10 +30,3 @@ namespace CargoHub.Models
         public DateTime UpdatedAt {get; set;}
     }
 }
-
-// Suppliers.json:
-//  - for what is reference
-//  - contact_name & phonenumber
-//  - zip_code -> zip
-//  - contact_name -> contact {name}
-//  - phonenumber 

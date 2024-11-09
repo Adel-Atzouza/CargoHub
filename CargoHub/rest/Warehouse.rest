@@ -1,14 +1,17 @@
-@baseUrl = http://localhost:3000/api/warehouse
+@baseUrl = http://localhost:3000/api/v1/warehouses
 
 ###
-GET {{baseUrl}}?id=d3b831cf-2d2a-4846-9d38-5bc87a2caa86
+GET {{baseUrl}}/10
 
 ###
+GET {{baseUrl}}
 
+###
 POST {{baseUrl}}
 Content-Type: application/json
 
 {
+    "id": 0,
     "code": "GIOMNL90",
     "name": "Petten longterm hub",
     "address": "Owenweg 731",
@@ -24,3 +27,30 @@ Content-Type: application/json
     "created_at": "2008-02-22T19:55:39",
     "updated_at": "2009-08-28T23:15:50"
 }
+
+###
+
+PUT {{baseUrl}}/1
+Content-Type: application/json
+
+{
+    "id": 1,
+    "code": "GIOMNL90",
+    "name": "Petten longterm hub",
+    "address": "Owenweg 731",
+    "zip": "4615 RB",
+    "city": "Petten",
+    "province": "Noord-Holland",
+    "country": "NL",
+    "contact": {
+        "name": "Maud Adryaens",
+        "phone": "+31836 752702",
+        "email": "a@a.com"
+    },
+    "created_at": "2008-02-22T19:55:39",
+    "updated_at": "2009-08-28T23:15:50"
+}
+
+###
+
+DELETE {{baseUrl}}/1

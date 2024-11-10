@@ -21,7 +21,7 @@ namespace CargoHub.Services
         {
             return await _context.Shipments.ToListAsync();
         }
-        public async Task<Shipment?> GetShipment(int shipmentId)
+        public async Task<Shipment?> GetShipmentID(int shipmentId)
         {
             return await _context.Shipments
                 .Include(s => s.Items) // Include related items in the shipment
@@ -40,7 +40,7 @@ namespace CargoHub.Services
 
         public async Task<List<Item>?> GetItemsInShipment(int shipmentId)
         {
-            var shipment = await GetShipment(shipmentId);
+            var shipment = await GetShipmentID(shipmentId);
             return shipment?.Items;
         }
         public async Task<string> AddShipment(Shipment shipment)

@@ -21,7 +21,7 @@ namespace CargoHub.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Shipment>> GetShipmentById(int id)
         {
-            var shipment = await _shipmentService.GetShipment(id);
+            var shipment = await _shipmentService.GetShipmentID(id);
             if (shipment == null) return NotFound("Shipment not found.");
             return Ok(shipment);
         }

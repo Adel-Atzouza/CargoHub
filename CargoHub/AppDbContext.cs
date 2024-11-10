@@ -7,9 +7,6 @@ namespace CargoHub
     {
         public DbSet<Warehouse> Warehouses {get; set;}
         public DbSet<Contact> Contacts {get; set;}
-        public DbSet<Order> Orders {get;set;}
-        public DbSet<Shipment> Shipments {get; set;}
-        public DbSet<Location> Location {get; set;}
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

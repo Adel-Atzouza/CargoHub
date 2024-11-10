@@ -24,3 +24,24 @@ Content-Type: application/json
     "created_at": "2008-02-22T19:55:39",
     "updated_at": "2009-08-28T23:15:50"
 }
+
+{
+  "uid": "P000004",
+  "code": "ABC123",
+  "description": "Sample item",
+  "short_description": "Sample short description",
+  "upc_code": "123456789",
+  "model_number": "XYZ123",
+  "commodity_code": "A123",
+  "item_line": 10,  
+  "item_group": 1,  
+  "item_type": 2, 
+  "unit_purchase_quantity": 10,
+  "unit_order_quantity": 5,
+  "pack_order_quantity": 5,
+  "supplier_id": 1,
+  "supplier_code": "SUP123",
+  "supplier_part_number": "PART123",
+  "created_at": "2024-01-01T00:00:00",
+  "updated_at": "2024-01-01T00:00:00"
+}

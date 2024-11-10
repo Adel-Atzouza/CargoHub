@@ -1,0 +1,27 @@
+GET http://localhost:3000/api/v1/ItemGroups?Id=4
+####
+GET http://localhost:3000/api/v1/ItemGroups/GetMultiple?Ids=1&Ids=2&Ids=3&Ids=4
+####
+POST http://localhost:3000/api/v1/ItemGroups
+Content-Type: application/json
+
+
+{
+    "Id" : 4,
+    "Name" : "Groceries",
+    "Description" : "No Description"
+}
+###
+PUT http://localhost:3000/api/v1/ItemGroups?Id=4
+Content-Type: application/json
+
+{
+    "Id" : 4,
+    "Name" : "Groceries",
+    "Description" : "Everyday food and household supplies."
+}
+
+####
+DELETE http://localhost:3000/api/v1/ItemGroups/Delete?Id=4
+
+

@@ -1,14 +1,14 @@
-using CargoHub.Models;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System.Threading.Tasks;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using CargoHub.Models;
 
-namespace CargoHub.Services{
-
-    public class OrderService{
+namespace CargoHub.Services
+{
+    public class OrderService
+    {
         private readonly AppDbContext _context;
 
         public OrderService(AppDbContext context)
@@ -16,148 +16,163 @@ namespace CargoHub.Services{
             _context = context;
         }
 
+        // Method to get a specific order with items by order ID
+        public async Task<OrderWithItemsDTO> GetOrderWithItems(int id)
+        {
+            var order = await _context.Orders
+                .Where(o => o.Id == id)
+                .Select(o => new OrderWithItemsDTO
+                {
+                    Id = o.Id,
+                    SourceId = o.SourceId,
+                    OrderDate = o.OrderDate,
+                    RequestDate = o.RequestDate,
+                    Reference = o.Reference,
+                    ReferenceExtra = o.ExtraReference,
+                    OrderStatus = o.OrderStatus,
+                    Notes = o.Notes,
+                    ShippingNotes = o.ShippingNotes,
+                    PickingNotes = o.PickingNotes,
+                    WarehouseId = o.WarehouseId,
+                    ShipTo = o.ShipTo,
+                    BillTo = o.BillTo,
+                    ShipmentId = o.ShipmentId,
+                    TotalAmount = o.TotalAmount,
+                    TotalDiscount = o.TotalDiscount,
+                    TotalTax = o.TotalTax,
+                    TotalSurcharge = o.TotalSurcharge,
+                    CreatedAt = o.CreatedAt,
+                    UpdatedAt = o.UpdatedAt,
+                    Items = o.OrderItems.Select(oi => new ItemDTO
+                    {
+                        ItemId = oi.Item.Uid,
+                        Amount = oi.Amount
+                    }).ToList()
+                })
+                .FirstOrDefaultAsync();
 
-        public async Task<List<Order>> GetOrders(int Id) //gives id and the it gives back the orders form that point and 100 further
+            return order;
+        }
+
+        // Method to get all orders with items
+        public async Task<List<OrderWithItemsDTO>> GetAllOrdersWithItems()
         {
             return await _context.Orders
-            .Where(order => order.Id >= Id)
-            .OrderBy(order => order.Id)
-            .Take(100)
-            .ToListAsync();
+                .Select(o => new OrderWithItemsDTO
+                {
+                    Id = o.Id,
+                    SourceId = o.SourceId,
+                    OrderDate = o.OrderDate,
+                    RequestDate = o.RequestDate,
+                    Reference = o.Reference,
+                    ReferenceExtra = o.ExtraReference,
+                    OrderStatus = o.OrderStatus,
+                    Notes = o.Notes,
+                    ShippingNotes = o.ShippingNotes,
+                    PickingNotes = o.PickingNotes,
+                    WarehouseId = o.WarehouseId,
+                    ShipTo = o.ShipTo,
+                    BillTo = o.BillTo,
+                    ShipmentId = o.ShipmentId,
+                    TotalAmount = o.TotalAmount,
+                    TotalDiscount = o.TotalDiscount,
+                    TotalTax = o.TotalTax,
+                    TotalSurcharge = o.TotalSurcharge,
+                    CreatedAt = o.CreatedAt,
+                    UpdatedAt = o.UpdatedAt,
+                    Items = o.OrderItems.Select(oi => new ItemDTO
+                    {
+                        ItemId = oi.Item.Uid,
+                        Amount = oi.Amount
+                    }).ToList()
+                })
+                .ToListAsync();
         }
 
-        public async Task<List<Order>> GetOrdersDateTime(DateTime Starttime, DateTime EndTime)//gives a start time and a endTime and gives the orders in that range. 
+        // Method to create a new order with items
+        public async Task<Order> CreateOrder(Order order, List<ItemDTO> itemDTOs)
         {
-            return await _context.Orders
-            .Where(order => order.Requestdate >= Starttime && order.Requestdate <= EndTime)
-            .OrderBy(order => order.Requestdate)
-            .ToListAsync();
-        }
-
-        public async Task<Order>? GetOrderByID(int id) // get a specific order
-        {
-            return await _context.Orders.FirstOrDefaultAsync(order => order.Id == id);
-        }
-
-        public async Task<List<Order>> GetOrdersinShipment(int id)
-        {
-            return await _context.Orders
-            .Where(order => order.ShipmentId == id)
-            .ToListAsync();
-        }
-
-        public async Task<List<Order>> GetItemsinOrder(int id)
-        {
-            return await _context.Orders
-            .Where(order => order.Id == id)
-            .SelectMany(order => order.Itemlist)
-            .ToListAsync();
-        }
-        public async Task<List<Order>> GetGetordersForCLient(Guid id)
-        {
-            return await _context.Orders
-            .Where(order => order.ShipTo == id || order.BillTo == id)
-            .ToListAsync();
-        }
-
-        public async Task<string> AddOrder(Order order)
-        {
-            order.CreatedAt = DateTime.UtcNow;
-            order.UpdatedAt = DateTime.UtcNow;
             _context.Orders.Add(order);
+
+            // Attach items to the order
+            foreach (var itemDto in itemDTOs)
+            {
+                var item = await _context.Items.FirstOrDefaultAsync(i => i.Uid == itemDto.ItemId);
+                if (item != null)
+                {
+                    var orderItem = new OrderItem
+                    {
+                        OrderId = order.Id,
+                        ItemId = item.Id,
+                        Amount = itemDto.Amount
+                    };
+                    _context.OrderItems.Add(orderItem);
+                }
+            }
+
             await _context.SaveChangesAsync();
-            return "Location added successfully.";
+            return order;
         }
 
-        public async Task<string> UpdateOrder(int orderId, Order updatedOrder)
+        // Method to update an existing order
+        public async Task<Order> UpdateOrder(int id, Order updatedOrder, List<ItemDTO> updatedItemDTOs)
         {
-            if (updatedOrder.Id != orderId)
+            var order = await _context.Orders
+                .Include(o => o.OrderItems)
+                .FirstOrDefaultAsync(o => o.Id == id);
+
+            if (order == null) return null;
+
+            // Update the order properties
+            order.SourceId = updatedOrder.SourceId;
+            order.OrderDate = updatedOrder.OrderDate;
+            order.RequestDate = updatedOrder.RequestDate;
+            order.Reference = updatedOrder.Reference;
+            order.ExtraReference = updatedOrder.ExtraReference;
+            order.OrderStatus = updatedOrder.OrderStatus;
+            order.Notes = updatedOrder.Notes;
+            order.ShippingNotes = updatedOrder.ShippingNotes;
+            order.PickingNotes = updatedOrder.PickingNotes;
+            order.WarehouseId = updatedOrder.WarehouseId;
+            order.ShipTo = updatedOrder.ShipTo;
+            order.BillTo = updatedOrder.BillTo;
+            order.ShipmentId = updatedOrder.ShipmentId;
+            order.TotalAmount = updatedOrder.TotalAmount;
+            order.TotalDiscount = updatedOrder.TotalDiscount;
+            order.TotalTax = updatedOrder.TotalTax;
+            order.TotalSurcharge = updatedOrder.TotalSurcharge;
+            order.UpdatedAt = DateTime.UtcNow;
+
+            // Update order items
+            _context.OrderItems.RemoveRange(order.OrderItems); // Remove old items
+            foreach (var itemDto in updatedItemDTOs)
             {
-                return "Error: Modifying the order ID is not allowed.";
+                var item = await _context.Items.FirstOrDefaultAsync(i => i.Uid == itemDto.ItemId);
+                if (item != null)
+                {
+                    var orderItem = new OrderItem
+                    {
+                        OrderId = id,
+                        ItemId = item.Id,
+                        Amount = itemDto.Amount
+                    };
+                    _context.OrderItems.Add(orderItem); // Add new items
+                }
             }
 
-            updatedOrder.UpdatedAt = DateTime.UtcNow;
-            var existingOrder = await _context.Orders.FindAsync(orderId);
-            
-            if (existingOrder != null)
-            {
-                _context.Entry(existingOrder).CurrentValues.SetValues(updatedOrder);
-                await _context.SaveChangesAsync();
-                return "Order updated successfully.";
-            }
-            else
-            {
-                return "Error: Order not found.";
-            }
+            await _context.SaveChangesAsync();
+            return order;
         }
 
-
-        public async Task<string> DeleteOrder(int orderId)
+        // Method to delete an order by ID
+        public async Task<bool> DeleteOrder(int id)
         {
-            var order = await _context.Orders.FindAsync(orderId);
-            if (order == null)
-            {
-                return "Error: Order not found.";
-            }
+            var order = await _context.Orders.FindAsync(id);
+            if (order == null) return false;
+
             _context.Orders.Remove(order);
             await _context.SaveChangesAsync();
-            return "Order deleted successfully.";
+            return true;
         }
     }
 }
-    // def add_order(self, order):
-    //     order["created_at"] = self.get_timestamp()
-    //     order["updated_at"] = self.get_timestamp()
-    //     self.data.append(order)
-
-
-    
-    //     def update_items_in_order(self, order_id, items):
-    //     order = self.get_order(order_id)
-    //     current = order["items"]
-    //     for x in current:
-    //         found = False
-    //         for y in items:
-    //             if x["item_id"] == y["item_id"]:
-    //                 found = True
-    //                 break
-    //         if not found:
-    //             inventories = data_provider.fetch_inventory_pool().get_inventories_for_item(x["item_id"])
-    //             min_ordered = 1_000_000_000_000_000_000
-    //             min_inventory
-    //             for z in inventories:
-    //                 if z["total_allocated"] > min_ordered:
-    //                     min_ordered = z["total_allocated"]
-    //                     min_inventory = z
-    //             min_inventory["total_allocated"] -= x["amount"]
-    //             min_inventory["total_expected"] = y["total_on_hand"] + y["total_ordered"]
-    //             data_provider.fetch_inventory_pool().update_inventory(min_inventory["id"], min_inventory)
-    //     for x in current:
-    //         for y in items:
-    //             if x["item_id"] == y["item_id"]:
-    //                 inventories = data_provider.fetch_inventory_pool().get_inventories_for_item(x["item_id"])
-    //                 min_ordered = 1_000_000_000_000_000_000
-    //                 min_inventory
-    //                 for z in inventories:
-    //                     if z["total_allocated"] < min_ordered:
-    //                         min_ordered = z["total_allocated"]
-    //                         min_inventory = z
-    //             min_inventory["total_allocated"] += y["amount"] - x["amount"]
-    //             min_inventory["total_expected"] = y["total_on_hand"] + y["total_ordered"]
-    //             data_provider.fetch_inventory_pool().update_inventory(min_inventory["id"], min_inventory)
-    //     order["items"] = items
-    //     self.update_order(order_id, order)
-
-    // def update_orders_in_shipment(self, shipment_id, orders):
-    //     packed_orders = self.get_orders_in_shipment(shipment_id)
-    //     for x in packed_orders:
-    //         if x not in orders:
-    //             order = self.get_order(x)
-    //             order["shipment_id"] = -1
-    //             order["order_status"] = "Scheduled"
-    //             self.update_order(x, order)
-    //     for x in orders:
-    //         order = self.get_order(x)
-    //         order["shipment_id"] = shipment_id
-    //         order["order_status"] = "Packed"
-    //         self.update_order(x, order)

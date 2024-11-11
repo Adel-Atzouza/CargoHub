@@ -3,34 +3,84 @@ using System.Text.Json.Serialization;
 
 namespace CargoHub.Models{
 
-public class Order{
+public class Order
+{
+    public int Id { get; set; }
+    public int SourceId { get; set; }
+    public DateTime OrderDate { get; set; }
+    public DateTime RequestDate { get; set; }
+    public string? Reference { get; set; }
+    public string? ExtraReference { get; set; }
+    public string? OrderStatus { get; set; }
+    public string? Notes { get; set; }
+    public string? ShippingNotes { get; set; }
+    public string? PickingNotes { get; set; }
 
-    public int Id {get; set;}
-    public int sourceId {get; set;}
-    public DateTime Orderdate {get; set;}
-    public DateTime Requestdate {get; set;}
-    public string? Reference {get; set;}
-    public string? ExtraReference {get;set;} 
-    public string? OrderStatus {get; set;}
-    public string? Notes {get; set;}
-    public string? Shippingnotes {get; set;}
-    public string? PickingNotes {get; set;}
     [JsonIgnore]
-    public Guid WarehouseId {get; set;}
+    public int WarehouseId { get; set; }
     [JsonIgnore]
-    public Guid ShipTo {get; set;}
+    public int ShipTo { get; set; }
     [JsonIgnore]
-    public Guid BillTo {get; set;}
+    public int BillTo { get; set; }
     [JsonIgnore]
-    public int ShipmentId {get; set;}
-    public decimal TotalAmount {get;set;}
-    public decimal TotalDiscount {get; set;}
-    public decimal TotalTax {get; set;}
-    public decimal TotalSurcharge {get; set;}
-    public DateTime CreatedAt {get; set;}
-    public DateTime UpdatedAt {get; set;}
-    public List<Items>? Itemlist{get; set;}
+    public int ShipmentId { get; set; }
+
+    public decimal TotalAmount { get; set; }
+    public decimal TotalDiscount { get; set; }
+    public decimal TotalTax { get; set; }
+    public decimal TotalSurcharge { get; set; }
+    public DateTime CreatedAt { get; set; }
+    public DateTime UpdatedAt { get; set; }
+
+    // Navigation property for many-to-many relationship with Item
+    public List<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
 }
+public class OrderWithItemsDTO
+{
+    public int Id { get; set; }
+    public int SourceId { get; set; }
+    public DateTime OrderDate { get; set; }
+    public DateTime RequestDate { get; set; }
+    public string Reference { get; set; }
+    public string ReferenceExtra { get; set; }
+    public string OrderStatus { get; set; }
+    public string Notes { get; set; }
+    public string ShippingNotes { get; set; }
+    public string PickingNotes { get; set; }
+    public int WarehouseId { get; set; }
+    public object ShipTo { get; set; }
+    public object BillTo { get; set; }
+    public int? ShipmentId { get; set; }
+    public decimal TotalAmount { get; set; }
+    public decimal TotalDiscount { get; set; }
+    public decimal TotalTax { get; set; }
+    public decimal TotalSurcharge { get; set; }
+    public DateTime CreatedAt { get; set; }
+    public DateTime UpdatedAt { get; set; }
+    public List<ItemDTO> Items { get; set; }
+}
+
+    public class OrderItem
+    {
+        public int OrderId { get; set; }
+        public Order Order { get; set; }
+
+        public int ItemId { get; set; }
+        public Item Item { get; set; }
+
+        public int Amount { get; set; } // Quantity of the item in the order
+    }
+
+public class ItemDTO
+{
+    public string ItemId { get; set; }
+    public int Amount { get; set; }
+}
+
+
+
+
+
 }
 
 

@@ -1,0 +1,91 @@
+### Get All Orders
+GET http://localhost:3000/api/v1/orders
+Accept: application/json
+
+###
+
+### Get Order by ID
+GET http://localhost:3000/api/v1/orders/1
+Accept: application/json
+
+###
+
+### Create a New Order
+POST http://localhost:3000/api/v1/orders
+Content-Type: application/json
+
+{
+    "sourceId": 33,
+    "orderDate": "2019-04-03T11:33:15Z",
+    "requestDate": "2019-04-07T11:33:15Z",
+    "reference": "ORD00001",
+    "extraReference": "Bedreven arm straffen bureau.",
+    "orderStatus": "Delivered",
+    "notes": "Voedsel vijf vork heel.",
+    "shippingNotes": "Buurman betalen plaats bewolkt.",
+    "pickingNotes": "Ademen fijn volgorde scherp aardappel op leren.",
+    "warehouseId": "00000000-0000-0000-0000-000000000018",
+    "shipTo": null,
+    "billTo": null,
+    "shipmentId": 1,
+    "totalAmount": 9905.13,
+    "totalDiscount": 150.77,
+    "totalTax": 372.72,
+    "totalSurcharge": 77.6,
+    "createdAt": "2019-04-03T11:33:15Z",
+    "updatedAt": "2019-04-05T07:33:15Z",
+    "itemlist": [
+        {
+            "uid": "P007435",
+            "unitOrderQuantity": 23
+        },
+        {
+            "uid": "P009557",
+            "unitOrderQuantity": 1
+        }
+    ]
+}
+
+###
+
+### Update an Existing Order
+PUT http://localhost:3000/api/v1/orders/1
+Content-Type: application/json
+
+{
+    "id": 1,
+    "sourceId": 33,
+    "orderDate": "2019-04-03T11:33:15Z",
+    "requestDate": "2019-04-07T11:33:15Z",
+    "reference": "ORD00001",
+    "extraReference": "Updated Extra Reference",
+    "orderStatus": "Shipped",
+    "notes": "Updated notes.",
+    "shippingNotes": "Updated shipping notes.",
+    "pickingNotes": "Updated picking notes.",
+    "warehouseId": "00000000-0000-0000-0000-000000000018",
+    "shipTo": null,
+    "billTo": null,
+    "shipmentId": 1,
+    "totalAmount": 9999.99,
+    "totalDiscount": 120.50,
+    "totalTax": 300.00,
+    "totalSurcharge": 55.5,
+    "createdAt": "2019-04-03T11:33:15Z",
+    "updatedAt": "2019-04-05T07:33:15Z",
+    "itemlist": [
+        {
+            "uid": "P007435",
+            "unitOrderQuantity": 25
+        },
+        {
+            "uid": "P009557",
+            "unitOrderQuantity": 2
+        }
+    ]
+}
+
+###
+
+### Delete an Order
+DELETE http://localhost:3000/api/v1/orders/1

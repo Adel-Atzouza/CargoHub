@@ -8,6 +8,11 @@ public class ItemGroupsService
     {
         _context = context;
     }
+    // public IEnumerable<ItemGroup> GetAllItemGroups(int page)
+    // {
+    //     var ItemGroups = _context.ItemGroups.OrderBy(g => g.Id);
+    //     return ItemGroups;
+    // }
     public async Task<List<object>> GetMultipleItemGroups(int[] GroupsIds)
     {
         List<object> FoundItemGroups = new();

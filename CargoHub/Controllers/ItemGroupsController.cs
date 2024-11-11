@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace CargoHub
 {
     [Route("api/v1/[Controller]")]
+    [AuthorizationFilter]
     public class ItemGroupsController : ControllerBase
     {
         ItemGroupsService Service;
@@ -9,6 +10,11 @@ namespace CargoHub
         {
             Service = service;
         }
+        // [HttpGet("GetAll")]
+        // public IActionResult GetAll([FromQuery] int part)
+        // {
+        //     return Ok(Service.GetAllItemGroups(part));
+        // }
         [HttpGet("GetMultiple")]
         public async Task<IActionResult> GetMultipleItemGroups([FromQuery] int[] Ids)
         {
@@ -31,7 +37,7 @@ namespace CargoHub
         public async Task<IActionResult> PutItemGroup([FromQuery] int id, [FromBody] ItemGroup Group)
         {
             bool response = await Service.UpdateItemGroup(id, Group);
-            return response ? Ok("ItemGroup Updated") : BadRequest();
+            return response ? Ok("Item Group Updated") : BadRequest();
         }
         [HttpDelete("Delete")]
         public async Task<IActionResult> DeleteItemGroup([FromQuery] int id)

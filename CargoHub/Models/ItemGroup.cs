@@ -6,6 +6,6 @@ namespace CargoHub
         public string? Name {get;set;}
         public string? Description {get;set;}
         
-        public ICollection<ItemLine> ItemLines { get; set; } = new List<ItemLine>();
+        // public ICollection<ItemLine> ItemLines { get; set; } = new List<ItemLine>();
     }
 }

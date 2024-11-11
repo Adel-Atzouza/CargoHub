@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CargoHub.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20241110152754_BaseModel")]
-    partial class BaseModel
+    [Migration("20241111111234_Item_groups")]
+    partial class Item_groups
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -66,26 +66,26 @@ namespace CargoHub.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedAt = new DateTime(2024, 11, 10, 15, 27, 54, 612, DateTimeKind.Utc).AddTicks(7233),
+                            CreatedAt = new DateTime(2024, 11, 11, 11, 12, 34, 507, DateTimeKind.Utc).AddTicks(6197),
                             Description = "Items related to electronic devices and accessories.",
                             Name = "Electronics",
-                            UpdatedAt = new DateTime(2024, 11, 10, 15, 27, 54, 612, DateTimeKind.Utc).AddTicks(7235)
+                            UpdatedAt = new DateTime(2024, 11, 11, 11, 12, 34, 507, DateTimeKind.Utc).AddTicks(6200)
                         },
                         new
                         {
                             Id = 2,
-                            CreatedAt = new DateTime(2024, 11, 10, 15, 27, 54, 612, DateTimeKind.Utc).AddTicks(7237),
+                            CreatedAt = new DateTime(2024, 11, 11, 11, 12, 34, 507, DateTimeKind.Utc).AddTicks(6203),
                             Description = "Items for home and office furniture.",
                             Name = "Furniture",
-                            UpdatedAt = new DateTime(2024, 11, 10, 15, 27, 54, 612, DateTimeKind.Utc).AddTicks(7237)
+                            UpdatedAt = new DateTime(2024, 11, 11, 11, 12, 34, 507, DateTimeKind.Utc).AddTicks(6203)
                         },
                         new
                         {
                             Id = 3,
-                            CreatedAt = new DateTime(2024, 11, 10, 15, 27, 54, 612, DateTimeKind.Utc).AddTicks(7239),
+                            CreatedAt = new DateTime(2024, 11, 11, 11, 12, 34, 507, DateTimeKind.Utc).AddTicks(6206),
                             Description = "Items for writing, drawing, and office use.",
                             Name = "Stationery",
-                            UpdatedAt = new DateTime(2024, 11, 10, 15, 27, 54, 612, DateTimeKind.Utc).AddTicks(7240)
+                            UpdatedAt = new DateTime(2024, 11, 11, 11, 12, 34, 507, DateTimeKind.Utc).AddTicks(6206)
                         });
                 });
 
@@ -120,29 +120,29 @@ namespace CargoHub.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedAt = new DateTime(2024, 11, 10, 15, 27, 54, 612, DateTimeKind.Utc).AddTicks(7349),
+                            CreatedAt = new DateTime(2024, 11, 11, 11, 12, 34, 507, DateTimeKind.Utc).AddTicks(6319),
                             Description = "High-performance laptop for work and gaming.",
                             ItemGroupId = 3,
                             Name = "Laptop",
-                            UpdatedAt = new DateTime(2024, 11, 10, 15, 27, 54, 612, DateTimeKind.Utc).AddTicks(7350)
+                            UpdatedAt = new DateTime(2024, 11, 11, 11, 12, 34, 507, DateTimeKind.Utc).AddTicks(6320)
                         },
                         new
                         {
                             Id = 2,
-                            CreatedAt = new DateTime(2024, 11, 10, 15, 27, 54, 612, DateTimeKind.Utc).AddTicks(7352),
+                            CreatedAt = new DateTime(2024, 11, 11, 11, 12, 34, 507, DateTimeKind.Utc).AddTicks(6323),
                             Description = "Ergonomic chair for comfortable seating during long hours.",
                             ItemGroupId = 3,
                             Name = "Office Chair",
-                            UpdatedAt = new DateTime(2024, 11, 10, 15, 27, 54, 612, DateTimeKind.Utc).AddTicks(7352)
+                            UpdatedAt = new DateTime(2024, 11, 11, 11, 12, 34, 507, DateTimeKind.Utc).AddTicks(6324)
                         },
                         new
                         {
                             Id = 3,
-                            CreatedAt = new DateTime(2024, 11, 10, 15, 27, 54, 612, DateTimeKind.Utc).AddTicks(7354),
+                            CreatedAt = new DateTime(2024, 11, 11, 11, 12, 34, 507, DateTimeKind.Utc).AddTicks(6326),
                             Description = "Lined notebook for taking notes and organizing tasks.",
                             ItemGroupId = 3,
                             Name = "Notebook",
-                            UpdatedAt = new DateTime(2024, 11, 10, 15, 27, 54, 612, DateTimeKind.Utc).AddTicks(7355)
+                            UpdatedAt = new DateTime(2024, 11, 11, 11, 12, 34, 507, DateTimeKind.Utc).AddTicks(6327)
                         });
                 });
 
@@ -225,7 +225,7 @@ namespace CargoHub.Migrations
             modelBuilder.Entity("CargoHub.ItemLine", b =>
                 {
                     b.HasOne("CargoHub.ItemGroup", "ItemGroup")
-                        .WithMany("ItemLines")
+                        .WithMany()
                         .HasForeignKey("ItemGroupId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -253,11 +253,6 @@ namespace CargoHub.Migrations
                         .IsRequired();
 
                     b.Navigation("Contact");
-                });
-
-            modelBuilder.Entity("CargoHub.ItemGroup", b =>
-                {
-                    b.Navigation("ItemLines");
                 });
 
             modelBuilder.Entity("CargoHub.ItemLine", b =>

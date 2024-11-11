@@ -21,7 +21,7 @@ namespace CargoHub
                 }
                 else if (entry.State == EntityState.Modified)
                 {
-                    entry.Entity.UpdatedAt = DateTime.Now;
+                    entry.Entity.UpdatedAt = DateTime.UtcNow;
                 }
             }
             return base.SaveChangesAsync(cancellationToken);
@@ -36,6 +36,10 @@ namespace CargoHub
                 .HasOne(r => r.Contact)
                 .WithOne()
                 .HasForeignKey<Warehouse>(c => c.ContactId);
+            // modelBuilder.Entity<ItemGroup>()
+            //     .HasOne(Igr => Igr.ItemLines)
+            //     .WithMany();
+
             modelBuilder.Entity<ItemGroup>()
     .HasData(
         new ItemGroup
@@ -63,35 +67,35 @@ namespace CargoHub
             UpdatedAt = DateTime.UtcNow
         });
 
-modelBuilder.Entity<ItemLine>()
-    .HasData(
-        new ItemLine
-        {
-            Id = 1,
-            Name = "Laptop",
-            Description = "High-performance laptop for work and gaming.",
-            ItemGroupId = 3,
-            CreatedAt = DateTime.UtcNow,
-            UpdatedAt = DateTime.UtcNow
-        },
-        new ItemLine
-        {
-            Id = 2,
-            Name = "Office Chair",
-            Description = "Ergonomic chair for comfortable seating during long hours.",
-            ItemGroupId = 3,
-            CreatedAt = DateTime.UtcNow,
-            UpdatedAt = DateTime.UtcNow
-        },
-        new ItemLine
-        {
-            Id = 3,
-            Name = "Notebook",
-            Description = "Lined notebook for taking notes and organizing tasks.",
-            ItemGroupId = 3,
-            CreatedAt = DateTime.UtcNow,
-            UpdatedAt = DateTime.UtcNow
-        });
+            modelBuilder.Entity<ItemLine>()
+                .HasData(
+                    new ItemLine
+                    {
+                        Id = 1,
+                        Name = "Laptop",
+                        Description = "High-performance laptop for work and gaming.",
+                        ItemGroupId = 3,
+                        CreatedAt = DateTime.UtcNow,
+                        UpdatedAt = DateTime.UtcNow
+                    },
+                    new ItemLine
+                    {
+                        Id = 2,
+                        Name = "Office Chair",
+                        Description = "Ergonomic chair for comfortable seating during long hours.",
+                        ItemGroupId = 3,
+                        CreatedAt = DateTime.UtcNow,
+                        UpdatedAt = DateTime.UtcNow
+                    },
+                    new ItemLine
+                    {
+                        Id = 3,
+                        Name = "Notebook",
+                        Description = "Lined notebook for taking notes and organizing tasks.",
+                        ItemGroupId = 3,
+                        CreatedAt = DateTime.UtcNow,
+                        UpdatedAt = DateTime.UtcNow
+                    });
+        }
     }
-}
 }

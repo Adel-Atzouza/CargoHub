@@ -17,13 +17,13 @@ public class Order
     public string? PickingNotes { get; set; }
 
     [JsonIgnore]
-    public int WarehouseId { get; set; }
+    public int? WarehouseId { get; set; }
     [JsonIgnore]
-    public int ShipTo { get; set; }
+    public int? ShipTo { get; set; }
     [JsonIgnore]
-    public int BillTo { get; set; }
+    public int? BillTo { get; set; }
     [JsonIgnore]
-    public int ShipmentId { get; set; }
+    public int? ShipmentId { get; set; }
 
     public decimal TotalAmount { get; set; }
     public decimal TotalDiscount { get; set; }
@@ -32,9 +32,12 @@ public class Order
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
 
-    // Navigation property for many-to-many relationship with Item
+    // Avoid serializing the OrderItems navigation property
+    [JsonIgnore]
     public List<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
 }
+
+
 public class OrderWithItemsDTO
 {
     public int Id { get; set; }
@@ -42,15 +45,15 @@ public class OrderWithItemsDTO
     public DateTime OrderDate { get; set; }
     public DateTime RequestDate { get; set; }
     public string Reference { get; set; }
-    public string ReferenceExtra { get; set; }
+    public string? ReferenceExtra { get; set; }
     public string OrderStatus { get; set; }
     public string Notes { get; set; }
     public string ShippingNotes { get; set; }
     public string PickingNotes { get; set; }
-    public int WarehouseId { get; set; }
-    public object ShipTo { get; set; }
-    public object BillTo { get; set; }
-    public int? ShipmentId { get; set; }
+    public int? WarehouseId { get; set; } // Nullable
+    public int? ShipTo { get; set; } // Nullable
+    public int? BillTo { get; set; } // Nullable
+    public int? ShipmentId { get; set; } // Nullable
     public decimal TotalAmount { get; set; }
     public decimal TotalDiscount { get; set; }
     public decimal TotalTax { get; set; }
@@ -59,6 +62,7 @@ public class OrderWithItemsDTO
     public DateTime UpdatedAt { get; set; }
     public List<ItemDTO> Items { get; set; }
 }
+
 
     public class OrderItem
     {

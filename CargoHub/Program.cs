@@ -10,6 +10,7 @@ builder.Services.AddTransient<StorageService>();
 builder.Services.AddTransient<OrderService>();
 builder.Services.AddTransient<LocationService>();
 
+
 var app = builder.Build();
 app.MapControllers();
 

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CargoHub.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/v1/[controller]")]
     [ApiController]
     public class LocationController : ControllerBase
     {
@@ -34,7 +34,7 @@ namespace CargoHub.Controllers
         [HttpGet("warehouse/{warehouseId}")]
         public async Task<ActionResult<List<Location>>> GetLocationsInWarehouse(int warehouseId)
         {
-            return await _locationService.GetLocationWareHouse(warehouseId);
+            return await _locationService.GetLocationWarehouse(warehouseId);
         }
 
         [HttpPost]

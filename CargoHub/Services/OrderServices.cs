@@ -92,7 +92,9 @@ namespace CargoHub.Services
         // Method to create a new order with items
         public async Task<Order> CreateOrder(Order order, List<ItemDTO> itemDTOs)
         {
+            // Add the order first to generate the ID
             _context.Orders.Add(order);
+            await _context.SaveChangesAsync(); // Save to get the order's Id
 
             // Attach items to the order
             foreach (var itemDto in itemDTOs)
@@ -102,17 +104,18 @@ namespace CargoHub.Services
                 {
                     var orderItem = new OrderItem
                     {
-                        OrderId = order.Id,
+                        OrderId = order.Id, // Set the OrderId correctly here
                         ItemId = item.Id,
                         Amount = itemDto.Amount
                     };
-                    _context.OrderItems.Add(orderItem);
+                    _context.OrderItems.Add(orderItem); // Add the orderItem to the context
                 }
             }
 
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(); // Save changes after adding items
             return order;
         }
+
 
         // Method to update an existing order
         public async Task<Order> UpdateOrder(int id, Order updatedOrder, List<ItemDTO> updatedItemDTOs)

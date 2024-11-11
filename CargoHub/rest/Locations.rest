@@ -1,0 +1,53 @@
+# GET all locations
+GET http://localhost:3000/api/v1/locations
+Accept: application/json
+
+---
+
+# GET a specific location by ID
+GET http://localhost:3000/api/v1/locations/1
+Accept: application/json
+
+
+### POST create a new location
+POST http://localhost:3000/api/v1/locations
+Content-Type: application/json
+
+{
+    "Code": "LOC001",
+    "Name": "Main Warehouse Location",
+    "WarehouseId": 18,
+    "CreatedAt": "2024-11-11T10:00:00Z",
+    "UpdatedAt": "2024-11-11T10:00:00Z"
+}
+
+
+### POST create a new location
+POST http://localhost:3000/api/v1/location
+Content-Type: application/json
+
+{
+  "code": "LC001",
+  "name": "Main Warehouse Location",
+  "warehouseId": 18,
+  "createdAt": "2024-11-11T10:00:00Z",
+  "updatedAt": "2024-11-11T10:00:00Z"
+}
+
+
+
+# PUT update a location by ID
+PUT http://localhost:3000/api/v1/locations/1
+Content-Type: application/json
+{
+    "Code": "LOC001",
+    "Name": "Updated Warehouse Location",
+    "WarehouseId": 18,
+    "CreatedAt": "2024-11-11T10:00:00Z",
+    "UpdatedAt": "2024-11-11T10:30:00Z"
+}
+
+---
+
+# DELETE a location by ID
+DELETE http://localhost:3000/api/v1/locations/1

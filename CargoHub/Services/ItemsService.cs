@@ -16,13 +16,9 @@ namespace CargoHub.Services
             _context = context;
         }
 
-        public async Task<List<Item>> GetItems(string uid)
+        public async Task<List<Item>> GetAllItems()
         {
-            return await _context.Items
-                .Where(item => item.Uid.CompareTo(uid) >= 0)  // Filter items die gelijk of groter zijn dan de opgegeven 'uid'
-                .OrderBy(item => item.Uid)                    // Sorteer op 'Uid'
-                .Take(100)                                    // Beperk het aantal records tot 100
-                .ToListAsync();                               // Voer de query uit en haal de lijst op
+            return await _context.Items.ToListAsync();
         }
 
         public async Task<Item> GetItem(string uid)

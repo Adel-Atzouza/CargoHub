@@ -16,16 +16,32 @@ namespace CargoHub.Controllers
             _itemsService = itemsService;
         }
 
+        // [HttpGet]
+        // public async Task<IActionResult> GetItems(string uid)
+        // {
+        //     // Fetch items from the service
+        //     var items = await _itemsService.GetItems(uid);
+
+        //     // If no items are found, return NotFound (404)
+        //     if (items == null)
+        //     {
+        //         return NotFound("No items found matching the provided UID.");
+        //     }
+
+        //     // Return the list of items with a 200 OK response
+        //     return Ok(items);
+        // }
+
         [HttpGet]
-        public async Task<IActionResult> GetItems(string uid)
+        public async Task<IActionResult> GetAllItems()
         {
-            // Fetch items from the service
-            var items = await _itemsService.GetItems(uid);
+            // Fetch all items from the service
+            var items = await _itemsService.GetAllItems();
 
             // If no items are found, return NotFound (404)
-            if (items == null)
+            if (items == null || items.Count == 0)
             {
-                return NotFound("No items found matching the provided UID.");
+                return NotFound("No items found.");
             }
 
             // Return the list of items with a 200 OK response

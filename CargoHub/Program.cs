@@ -9,7 +9,7 @@ builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlite("Dataso
 
 // Register your custom ItemsService
 builder.Services.AddScoped<ItemsService>();  // This line is necessary
-
+builder.Services.AddScoped<ItemTypesService>();
 // Add controllers to the services
 builder.Services.AddControllers();
 

@@ -25,6 +25,10 @@ Content-Type: application/json
     "updated_at": "2009-08-28T23:15:50"
 }
 
+###
+
+
+
 {
   "uid": "P000004",
   "code": "ABC123",
@@ -44,4 +48,15 @@ Content-Type: application/json
   "supplier_part_number": "PART123",
   "created_at": "2024-01-01T00:00:00",
   "updated_at": "2024-01-01T00:00:00"
+}
+
+###########
+// use to put and delete
+http://localhost:3000/ItemTypes/1
+
+{
+  "Name": "Electronics",
+  "Description": "Devices and gadgets.",
+  "CreatedAt": "2024-11-11T00:00:00Z",
+  "UpdatedAt": "2024-11-11T00:00:00Z"
 }

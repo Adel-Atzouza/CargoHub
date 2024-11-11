@@ -39,8 +39,9 @@ namespace CargoHub.Migrations
 
             modelBuilder.Entity("CargoHub.Item", b =>
                 {
-                    b.Property<string>("Uid")
-                        .HasColumnType("TEXT");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Code")
                         .HasColumnType("TEXT");
@@ -92,6 +93,9 @@ namespace CargoHub.Migrations
                         .HasColumnType("TEXT")
                         .HasAnnotation("Relational:JsonPropertyName", "supplier_part_number");
 
+                    b.Property<string>("Uid")
+                        .HasColumnType("TEXT");
+
                     b.Property<int>("UnitOrderQuantity")
                         .HasColumnType("INTEGER")
                         .HasAnnotation("Relational:JsonPropertyName", "unit_order_quantity");
@@ -108,9 +112,34 @@ namespace CargoHub.Migrations
                         .HasColumnType("TEXT")
                         .HasAnnotation("Relational:JsonPropertyName", "updated_at");
 
-                    b.HasKey("Uid");
+                    b.HasKey("Id");
 
                     b.ToTable("Items");
+                });
+
+            modelBuilder.Entity("CargoHub.Item_type", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("TEXT")
+                        .HasAnnotation("Relational:JsonPropertyName", "created_at");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("TEXT")
+                        .HasAnnotation("Relational:JsonPropertyName", "updated_at");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Item_Types");
                 });
 
             modelBuilder.Entity("CargoHub.Models.Warehouse", b =>
@@ -157,31 +186,6 @@ namespace CargoHub.Migrations
                         .IsUnique();
 
                     b.ToTable("Warehouses");
-                });
-
-            modelBuilder.Entity("CargoHub.item_type", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("TEXT")
-                        .HasAnnotation("Relational:JsonPropertyName", "created_at");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("TEXT")
-                        .HasAnnotation("Relational:JsonPropertyName", "updated_at");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("item_Types");
                 });
 
             modelBuilder.Entity("CargoHub.Models.Warehouse", b =>

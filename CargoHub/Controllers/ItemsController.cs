@@ -23,7 +23,7 @@ namespace CargoHub.Controllers
             var items = await _itemsService.GetItems(uid);
 
             // If no items are found, return NotFound (404)
-            if (items == null || items.Count == 0)
+            if (items == null)
             {
                 return NotFound("No items found matching the provided UID.");
             }
@@ -70,6 +70,5 @@ namespace CargoHub.Controllers
             string result = await _itemsService.UpdateItem(uid, updatedItem);
             return Ok(result);
         }
-
     }
 }

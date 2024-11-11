@@ -9,6 +9,7 @@ builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlite("Dataso
 builder.Services.AddTransient<StorageService>();
 builder.Services.AddTransient<OrderService>();
 builder.Services.AddTransient<LocationService>();
+builder.Services.AddTransient<ShipmentService>();
 
 
 var app = builder.Build();

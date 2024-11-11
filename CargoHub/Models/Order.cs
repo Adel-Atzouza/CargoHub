@@ -24,7 +24,7 @@ public class Order
     public int? BillTo { get; set; }
     [JsonIgnore]
     public int? ShipmentId { get; set; }
-
+    public Shipment Shipment { get; set; }  // Navigation property to Shipment
     public decimal TotalAmount { get; set; }
     public decimal TotalDiscount { get; set; }
     public decimal TotalTax { get; set; }

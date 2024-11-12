@@ -1,0 +1,84 @@
+### Get All Orders
+GET http://localhost:3000/api/v1/orders
+Accept: application/json
+
+###
+
+### Get Order by ID
+GET http://localhost:3000/api/v1/orders/1
+Accept: application/json
+
+###
+POST http://localhost:3000/api/v1/orders
+Content-Type: application/json
+
+{
+  "sourceId": 33,
+  "orderDate": "2023-05-15T10:00:00Z",
+  "requestDate": "2023-05-20T10:00:00Z",
+  "reference": "ORD00002",
+  "referenceExtra": "Extra details",
+  "orderStatus": "Pending",
+  "notes": "Order notes",
+  "shippingNotes": "Shipping notes",
+  "pickingNotes": "Picking notes",
+  "warehouseId": 5,
+  "shipTo": 10,
+  "billTo": 15,
+  "shipmentId": 1,
+  "totalAmount": 200.00,
+  "totalDiscount": 10.00,
+  "totalTax": 20.00,
+  "totalSurcharge": 5.00,
+  "createdAt": "2023-05-15T10:00:00Z",
+  "updatedAt": "2023-05-20T10:00:00Z",
+  "items": [
+    { "itemId": "P007435", "amount": 3 },
+    { "itemId": "P009557", "amount": 1 }
+  ]
+}
+
+
+
+###
+
+### Update an Existing Order
+PUT http://localhost:3000/api/v1/orders/1
+Content-Type: application/json
+
+{
+  "orderDto": {
+    "sourceId": 33,
+    "orderDate": "2023-01-01T00:00:00Z",
+    "requestDate": "2023-01-05T00:00:00Z",
+    "reference": "ORD00010",
+    "referenceExtra": "Extra informatie",
+    "orderStatus": "Pending",
+    "notes": "Opmerkingen over de bestelling",
+    "shippingNotes": "Verzendinformatie",
+    "pickingNotes": "Instructies voor picking",
+    "warehouseId": 1,
+    "shipTo": 123,  
+    "billTo": 456, 
+    "shipmentId": 2,
+    "totalAmount": 1000.00,
+    "totalDiscount": 50.00,
+    "totalTax": 100.00,
+    "totalSurcharge": 10.00,
+    "createdAt": "2023-01-01T00:00:00Z",
+    "updatedAt": "2023-01-02T00:00:00Z",
+    "items": [
+      {
+        "itemId": "P007435",
+        "amount": 5
+      }
+    ]
+  }
+}
+
+
+
+###
+
+### Delete an Order
+DELETE http://localhost:3000/api/v1/orders/4

@@ -4,6 +4,8 @@
 ## Get latest from `dotnet new gitignore`
 
 Migrations/
+CargoHub.db-shm
+CargoHub.db-wal
 
 # dotenv files
 .env

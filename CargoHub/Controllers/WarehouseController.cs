@@ -5,10 +5,10 @@ using Microsoft.EntityFrameworkCore;
 namespace CargoHub.Controllers
 {
     [Route("api/v1/warehouses")]
-    public class WarehouseController(AppDbContext appDbContext, StorageService storage) : Controller
+    public class WarehouseController(AppDbContext appDbContext, WarehouseService storage) : Controller
     {
         AppDbContext appDbContext = appDbContext;
-        StorageService storage = storage;
+        WarehouseService storage = storage;
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetWarehouse(int id)
@@ -22,9 +22,11 @@ namespace CargoHub.Controllers
         }
 
         [HttpGet()]
-        public async Task<IActionResult> GetAllWarehouses()
+        public async Task<IActionResult> GetAllWarehouses([FromQuery] int page = 0)
         {
-            return Ok(await storage.GetAllWarehouses());
+            var warehouses = await storage.GetAllWarehouses();
+            var paginatedWarehouses = warehouses.Skip(page * 100).Take(100).ToList();
+            return Ok(paginatedWarehouses);
         }
 
         [HttpPost()]

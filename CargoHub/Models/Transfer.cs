@@ -1,47 +1,40 @@
-using System.ComponentModel.DataAnnotations;
+using System;
+using System.Collections.Generic;
+using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CargoHub.Models
 {
     public record Transfer
     {
-        // Properties
-        public int Id {get; set;}
-        public string? Code {get; set;}
-        public string? Name {get; set;}
-        public string? Address {get; set;}
-        public string? Zip {get; set;}
-        public string? City {get; set;}
-        public string? Province {get; set;}
-        public string? Country {get; set;}
-        
-        // Contact relation
-        [JsonIgnore]
-        public Guid ContactId { get; set; }
-        public Contact? Contact {get; set;}
+        public int Id { get; set; }
+        public string? Reference { get; set; }
+        [JsonPropertyName("transfer_from")]
+        public int? TransferFrom { get; set; }
+        [JsonPropertyName("transfer_to")]
+        public int? TransferTo { get; set; }
+        [JsonPropertyName("transfer_status")]
+        public string? TransferStatus { get; set; }
         
         // Metadata
         [JsonPropertyName("created_at")]
-        public DateTime CreatedAt {get; set;}
-        
+        public DateTime CreatedAt { get; set; }
+
         [JsonPropertyName("updated_at")]
-        public DateTime UpdatedAt {get; set;}
+        public DateTime UpdatedAt { get; set; }
+
+        // Items list for JSON serialization/deserialization
+        [NotMapped]
+        [JsonPropertyName("items")]
+        public List<Dictionary<string, object>> Items
+        {
+            get => ItemsJson == null ? new List<Dictionary<string, object>>() : JsonSerializer.Deserialize<List<Dictionary<string, object>>>(ItemsJson) ?? new List<Dictionary<string, object>>();
+            set => ItemsJson = JsonSerializer.Serialize(value);
+        }
+
+        // Serialized JSON string for database persistence
+        [JsonIgnore]
+        public string ItemsJson { get; set; } = "[]";
     }
 }
-
-
-// {
-//         "id": 3,
-//         "reference": "TR00003",
-//         "transfer_from": null,
-//         "transfer_to": 9199,
-//         "transfer_status": "Completed",
-//         "created_at": "2000-03-11T13:11:14Z",
-//         "updated_at": "2000-03-12T14:11:14Z",
-//         "items": [
-//             {
-//                 "item_id": "P009557",
-//                 "amount": 1
-//             }
-//         ]
-//     },

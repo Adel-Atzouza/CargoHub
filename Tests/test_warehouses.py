@@ -2,7 +2,7 @@ import requests
 import test_helper
 
 url = "http://localhost:3000/api/v1/warehouses/"
-headers = {'API_KEY': "a1b2c3d4e5"}
+headers = {'APIKEY': "Admin"}
 current_id = 0
 
 

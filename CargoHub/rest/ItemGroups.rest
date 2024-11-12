@@ -1,10 +1,12 @@
 GET http://localhost:3000/api/v1/ItemGroups?Id=4
+ApiKey: Admin
 ####
 GET http://localhost:3000/api/v1/ItemGroups/GetMultiple?Ids=1&Ids=2&Ids=3&Ids=4
+ApiKey: Admin
 ####
 POST http://localhost:3000/api/v1/ItemGroups
+ApiKey: Admin
 Content-Type: application/json
-
 
 {
     "Id" : 4,
@@ -13,6 +15,7 @@ Content-Type: application/json
 }
 ###
 PUT http://localhost:3000/api/v1/ItemGroups?Id=4
+ApiKey: Admin
 Content-Type: application/json
 
 {
@@ -22,6 +25,7 @@ Content-Type: application/json
 }
 
 ####
-DELETE http://localhost:3000/api/v1/ItemGroups/Delete?Id=5
+DELETE http://localhost:3000/api/v1/ItemGroups/Delete?Id=4
+ApiKey: Admin
 
 

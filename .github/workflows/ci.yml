@@ -42,7 +42,7 @@ jobs:
     - name: Start API
       run: |
         cd CargoHub  # Navigate to the project folder (if not in root)
-        dotnet run --project CargoHub & 
+        dotnet run & 
         sleep 30  # wait for API to start
 
     - name: Setup Python

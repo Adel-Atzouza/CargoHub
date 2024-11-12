@@ -35,11 +35,13 @@ jobs:
 
     - name: Add and apply EF migrations
       run: |
+        cd CargoHub  # Navigate to the project folder (if not in root)
         dotnet ef migrations add setup
         dotnet ef database update
 
     - name: Start API
       run: |
+        cd CargoHub  # Navigate to the project folder (if not in root)
         dotnet run --project CargoHub & 
         sleep 10  # wait for API to start
 

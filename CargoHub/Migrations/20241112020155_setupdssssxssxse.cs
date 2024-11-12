@@ -5,7 +5,7 @@
 namespace CargoHub.Migrations
 {
     /// <inheritdoc />
-    public partial class updpodepd : Migration
+    public partial class setupdssssxssxse : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

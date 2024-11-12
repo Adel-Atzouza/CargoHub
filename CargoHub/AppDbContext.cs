@@ -6,15 +6,16 @@ namespace CargoHub
     public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(options)
     {
         public DbSet<Warehouse> Warehouses {get; set;}
-        public DbSet<Contact> Contacts {get; set;}
+        public DbSet<Transfer> Transfers {get; set;}
+        public DbSet<Supplier> Suppliers {get; set;}
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // Configure one-to-one relationship
-            modelBuilder.Entity<Warehouse>()
-                .HasOne(w => w.Contact)
-                .WithOne()
-                .HasForeignKey<Warehouse>(c => c.ContactId);
+            // // Configure one-to-one relationship
+            // modelBuilder.Entity<Warehouse>()
+            //     .HasOne(w => w.Contact)
+            //     .WithOne()
+            //     .HasForeignKey<Warehouse>(c => c.ContactId);
         }
     }
 }

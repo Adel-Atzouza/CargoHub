@@ -23,16 +23,27 @@ jobs:
       with:
         dotnet-version: '8.0'
 
+    - name: Install EF Core tools globally
+      run: |
+        dotnet tool install --global dotnet-ef
+
     - name: Install dependencies
       run: dotnet restore CargoHub
 
     - name: Build API
       run: dotnet build CargoHub --no-restore
 
+    - name: Add and apply EF migrations
+      run: |
+        cd CargoHub  # Navigate to the project folder (if not in root)
+        dotnet ef migrations add setup
+        dotnet ef database update
+
     - name: Start API
       run: |
-        dotnet run --project CargoHub &
-        sleep 10  # wait for API to start
+        cd CargoHub  # Navigate to the project folder (if not in root)
+        dotnet run & 
+        sleep 15  # wait for API to start
 
     - name: Setup Python
       uses: actions/setup-python@v4

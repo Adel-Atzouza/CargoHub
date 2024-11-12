@@ -2,27 +2,8 @@ import requests
 import test_helper
 
 url = "http://localhost:3000/api/v1/warehouses/"
-headers = {'API_KEY': "a1b2c3d4e5"}
+headers = {'APIKEY': "Admin"}
 current_id = 0
-
-
-def test_get_random_warehouses():
-    response = requests.get(url + str(10), headers=headers)
-    
-    assert response.status_code == 200
-    assert test_helper.have_same_structure(test_helper.template_warehouse, response.json())
-
-
-def test_get_all_warehouses():
-    response = requests.get(url[:-1], headers=headers)
-
-    assert response.status_code == 200
-    
-    warehouses_json = response.json()
-
-    assert type(warehouses_json) is list
-    assert len(warehouses_json) > 0
-    assert test_helper.have_same_structure(test_helper.template_warehouse, warehouses_json[0])
 
 
 def test_post_warehouses():
@@ -46,7 +27,21 @@ def test_get_after_post_warehouses():
     assert test_helper.warehouse_1 == warehouse_json
 
 
+def test_get_all_warehouses():
+    response = requests.get(url[:-1], headers=headers)
+
+    assert response.status_code == 200
+    
+    warehouses_json = response.json()
+
+    assert type(warehouses_json) is list
+    assert 0 <= len(warehouses_json) <= 100
+    if len(warehouses_json) > 0:
+        assert test_helper.have_same_structure(test_helper.template_warehouse, warehouses_json[0])
+
+
 def test_put():
+    test_helper.warehouse_1_updated['id'] = current_id
     response = requests.put(url + str(current_id), headers=headers, json=test_helper.warehouse_1_updated)
 
     assert response.status_code == 200

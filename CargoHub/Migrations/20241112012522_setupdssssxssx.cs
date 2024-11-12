@@ -6,30 +6,36 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace CargoHub.Migrations
 {
     /// <inheritdoc />
-    public partial class updpodep : Migration
+    public partial class setupdssssxssx : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Contacts",
+                name: "Transfers",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
-                    Email = table.Column<string>(type: "TEXT", nullable: true),
-                    Phone = table.Column<string>(type: "TEXT", nullable: true),
-                    Name = table.Column<string>(type: "TEXT", nullable: true)
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Reference = table.Column<string>(type: "TEXT", nullable: true),
+                    TransferFrom = table.Column<int>(type: "INTEGER", nullable: true),
+                    TransferTo = table.Column<int>(type: "INTEGER", nullable: true),
+                    TransferStatus = table.Column<string>(type: "TEXT", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    ItemsJson = table.Column<string>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Contacts", x => x.Id);
+                    table.PrimaryKey("PK_Transfers", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
                 name: "Warehouses",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
                     Code = table.Column<string>(type: "TEXT", nullable: true),
                     Name = table.Column<string>(type: "TEXT", nullable: true),
                     Address = table.Column<string>(type: "TEXT", nullable: true),
@@ -37,36 +43,26 @@ namespace CargoHub.Migrations
                     City = table.Column<string>(type: "TEXT", nullable: true),
                     Province = table.Column<string>(type: "TEXT", nullable: true),
                     Country = table.Column<string>(type: "TEXT", nullable: true),
-                    ContactId = table.Column<Guid>(type: "TEXT", nullable: false),
+                    ContactName = table.Column<string>(type: "TEXT", nullable: true),
+                    ContactPhone = table.Column<string>(type: "TEXT", nullable: true),
+                    ContactEmail = table.Column<string>(type: "TEXT", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "TEXT", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Warehouses", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Warehouses_Contacts_ContactId",
-                        column: x => x.ContactId,
-                        principalTable: "Contacts",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
                 });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Warehouses_ContactId",
-                table: "Warehouses",
-                column: "ContactId",
-                unique: true);
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Warehouses");
+                name: "Transfers");
 
             migrationBuilder.DropTable(
-                name: "Contacts");
+                name: "Warehouses");
         }
     }
 }

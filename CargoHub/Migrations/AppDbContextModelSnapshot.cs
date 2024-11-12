@@ -17,26 +17,6 @@ namespace CargoHub.Migrations
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.10");
 
-            modelBuilder.Entity("CargoHub.Contact", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Email")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Phone")
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Contacts");
-                });
-
             modelBuilder.Entity("CargoHub.ItemGroup", b =>
                 {
                     b.Property<int>("Id")
@@ -63,26 +43,26 @@ namespace CargoHub.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedAt = new DateTime(2024, 11, 11, 11, 12, 34, 507, DateTimeKind.Utc).AddTicks(6197),
+                            CreatedAt = new DateTime(2024, 11, 12, 3, 5, 56, 104, DateTimeKind.Utc).AddTicks(2648),
                             Description = "Items related to electronic devices and accessories.",
                             Name = "Electronics",
-                            UpdatedAt = new DateTime(2024, 11, 11, 11, 12, 34, 507, DateTimeKind.Utc).AddTicks(6200)
+                            UpdatedAt = new DateTime(2024, 11, 12, 3, 5, 56, 104, DateTimeKind.Utc).AddTicks(2650)
                         },
                         new
                         {
                             Id = 2,
-                            CreatedAt = new DateTime(2024, 11, 11, 11, 12, 34, 507, DateTimeKind.Utc).AddTicks(6203),
+                            CreatedAt = new DateTime(2024, 11, 12, 3, 5, 56, 104, DateTimeKind.Utc).AddTicks(2652),
                             Description = "Items for home and office furniture.",
                             Name = "Furniture",
-                            UpdatedAt = new DateTime(2024, 11, 11, 11, 12, 34, 507, DateTimeKind.Utc).AddTicks(6203)
+                            UpdatedAt = new DateTime(2024, 11, 12, 3, 5, 56, 104, DateTimeKind.Utc).AddTicks(2652)
                         },
                         new
                         {
                             Id = 3,
-                            CreatedAt = new DateTime(2024, 11, 11, 11, 12, 34, 507, DateTimeKind.Utc).AddTicks(6206),
+                            CreatedAt = new DateTime(2024, 11, 12, 3, 5, 56, 104, DateTimeKind.Utc).AddTicks(2654),
                             Description = "Items for writing, drawing, and office use.",
                             Name = "Stationery",
-                            UpdatedAt = new DateTime(2024, 11, 11, 11, 12, 34, 507, DateTimeKind.Utc).AddTicks(6206)
+                            UpdatedAt = new DateTime(2024, 11, 12, 3, 5, 56, 104, DateTimeKind.Utc).AddTicks(2654)
                         });
                 });
 
@@ -117,29 +97,29 @@ namespace CargoHub.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedAt = new DateTime(2024, 11, 11, 11, 12, 34, 507, DateTimeKind.Utc).AddTicks(6319),
+                            CreatedAt = new DateTime(2024, 11, 12, 3, 5, 56, 104, DateTimeKind.Utc).AddTicks(2769),
                             Description = "High-performance laptop for work and gaming.",
                             ItemGroupId = 3,
                             Name = "Laptop",
-                            UpdatedAt = new DateTime(2024, 11, 11, 11, 12, 34, 507, DateTimeKind.Utc).AddTicks(6320)
+                            UpdatedAt = new DateTime(2024, 11, 12, 3, 5, 56, 104, DateTimeKind.Utc).AddTicks(2770)
                         },
                         new
                         {
                             Id = 2,
-                            CreatedAt = new DateTime(2024, 11, 11, 11, 12, 34, 507, DateTimeKind.Utc).AddTicks(6323),
+                            CreatedAt = new DateTime(2024, 11, 12, 3, 5, 56, 104, DateTimeKind.Utc).AddTicks(2773),
                             Description = "Ergonomic chair for comfortable seating during long hours.",
                             ItemGroupId = 3,
                             Name = "Office Chair",
-                            UpdatedAt = new DateTime(2024, 11, 11, 11, 12, 34, 507, DateTimeKind.Utc).AddTicks(6324)
+                            UpdatedAt = new DateTime(2024, 11, 12, 3, 5, 56, 104, DateTimeKind.Utc).AddTicks(2773)
                         },
                         new
                         {
                             Id = 3,
-                            CreatedAt = new DateTime(2024, 11, 11, 11, 12, 34, 507, DateTimeKind.Utc).AddTicks(6326),
+                            CreatedAt = new DateTime(2024, 11, 12, 3, 5, 56, 104, DateTimeKind.Utc).AddTicks(2774),
                             Description = "Lined notebook for taking notes and organizing tasks.",
                             ItemGroupId = 3,
                             Name = "Notebook",
-                            UpdatedAt = new DateTime(2024, 11, 11, 11, 12, 34, 507, DateTimeKind.Utc).AddTicks(6327)
+                            UpdatedAt = new DateTime(2024, 11, 12, 3, 5, 56, 104, DateTimeKind.Utc).AddTicks(2775)
                         });
                 });
 
@@ -173,11 +153,104 @@ namespace CargoHub.Migrations
                     b.ToTable("ItemType");
                 });
 
+            modelBuilder.Entity("CargoHub.Models.Supplier", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Address")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("AddressExtra")
+                        .HasColumnType("TEXT")
+                        .HasAnnotation("Relational:JsonPropertyName", "address_extra");
+
+                    b.Property<string>("City")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Code")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ContactName")
+                        .HasColumnType("TEXT")
+                        .HasAnnotation("Relational:JsonPropertyName", "contact_name");
+
+                    b.Property<string>("Country")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("TEXT")
+                        .HasAnnotation("Relational:JsonPropertyName", "created_at");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Phonenumber")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Province")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Reference")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("TEXT")
+                        .HasAnnotation("Relational:JsonPropertyName", "updated_at");
+
+                    b.Property<string>("ZipCode")
+                        .HasColumnType("TEXT")
+                        .HasAnnotation("Relational:JsonPropertyName", "zip_code");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Suppliers");
+                });
+
+            modelBuilder.Entity("CargoHub.Models.Transfer", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("TEXT")
+                        .HasAnnotation("Relational:JsonPropertyName", "created_at");
+
+                    b.Property<string>("ItemsJson")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Reference")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int?>("TransferFrom")
+                        .HasColumnType("INTEGER")
+                        .HasAnnotation("Relational:JsonPropertyName", "transfer_from");
+
+                    b.Property<string>("TransferStatus")
+                        .HasColumnType("TEXT")
+                        .HasAnnotation("Relational:JsonPropertyName", "transfer_status");
+
+                    b.Property<int?>("TransferTo")
+                        .HasColumnType("INTEGER")
+                        .HasAnnotation("Relational:JsonPropertyName", "transfer_to");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("TEXT")
+                        .HasAnnotation("Relational:JsonPropertyName", "updated_at");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Transfers");
+                });
+
             modelBuilder.Entity("CargoHub.Models.Warehouse", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Address")
                         .HasColumnType("TEXT");
@@ -188,7 +261,13 @@ namespace CargoHub.Migrations
                     b.Property<string>("Code")
                         .HasColumnType("TEXT");
 
-                    b.Property<Guid>("ContactId")
+                    b.Property<string>("ContactEmail")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ContactName")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ContactPhone")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Country")
@@ -213,9 +292,6 @@ namespace CargoHub.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ContactId")
-                        .IsUnique();
-
                     b.ToTable("Warehouses");
                 });
 
@@ -239,17 +315,6 @@ namespace CargoHub.Migrations
                         .IsRequired();
 
                     b.Navigation("ItemLine");
-                });
-
-            modelBuilder.Entity("CargoHub.Models.Warehouse", b =>
-                {
-                    b.HasOne("CargoHub.Contact", "Contact")
-                        .WithOne()
-                        .HasForeignKey("CargoHub.Models.Warehouse", "ContactId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Contact");
                 });
 
             modelBuilder.Entity("CargoHub.ItemLine", b =>

@@ -8,6 +8,10 @@ builder.Services.AddScoped<ItemGroupsService>();
 builder.Services.AddScoped<ItemLinesService>();
 
 
+builder.Services.AddTransient<WarehouseService>();
+builder.Services.AddTransient<TransferService>();
+builder.Services.AddTransient<SupplierService>();
+
 var app = builder.Build();
 
 app.Use(async (context, next) =>

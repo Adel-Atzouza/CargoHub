@@ -1,0 +1,52 @@
+@baseUrl = http://localhost:3000/api/v1/transfers
+
+###
+GET {{baseUrl}}/3
+
+###
+GET {{baseUrl}}
+
+###
+POST {{baseUrl}}
+Content-Type: application/json
+
+{
+    "id": 5,
+    "reference": "TR00005",
+    "transfer_from": null,
+    "transfer_to": 9191,
+    "transfer_status": "Completed",
+    "created_at": "2000-03-11T13:11:14Z",
+    "updated_at": "2000-03-12T17:11:14Z",
+    "items": [
+        {
+            "item_id": "P010015",
+            "amount": 16
+        }
+    ]
+}
+
+###
+
+PUT {{baseUrl}}/3
+Content-Type: application/json
+
+{
+    "id": 3,
+    "reference": "TR00006",
+    "transfer_from": null,
+    "transfer_to": 9252,
+    "transfer_status": "Completed",
+    "created_at": "2000-03-11T13:11:14Z",
+    "updated_at": "2000-03-12T14:11:14Z",
+    "items": [
+        {
+            "item_id": "P002084",
+            "amount": 33
+        }
+    ]
+}
+
+###
+
+DELETE {{baseUrl}}/2

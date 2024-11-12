@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CargoHub.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20241101190438_updpodepd")]
-    partial class updpodepd
+    [Migration("20241112012522_setupdssssxssx")]
+    partial class setupdssssxssx
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -20,31 +20,46 @@ namespace CargoHub.Migrations
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.10");
 
-            modelBuilder.Entity("CargoHub.Models.Contact", b =>
+            modelBuilder.Entity("CargoHub.Models.Transfer", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("TEXT")
+                        .HasAnnotation("Relational:JsonPropertyName", "created_at");
+
+                    b.Property<string>("ItemsJson")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Email")
+                    b.Property<string>("Reference")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Name")
+                    b.Property<int?>("TransferFrom")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("TransferStatus")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Phone")
-                        .HasColumnType("TEXT");
+                    b.Property<int?>("TransferTo")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("TEXT")
+                        .HasAnnotation("Relational:JsonPropertyName", "updated_at");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Contacts");
+                    b.ToTable("Transfers");
                 });
 
             modelBuilder.Entity("CargoHub.Models.Warehouse", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Address")
                         .HasColumnType("TEXT");
@@ -55,14 +70,21 @@ namespace CargoHub.Migrations
                     b.Property<string>("Code")
                         .HasColumnType("TEXT");
 
-                    b.Property<Guid>("ContactId")
+                    b.Property<string>("ContactEmail")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ContactName")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ContactPhone")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Country")
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("TEXT")
+                        .HasAnnotation("Relational:JsonPropertyName", "created_at");
 
                     b.Property<string>("Name")
                         .HasColumnType("TEXT");
@@ -71,28 +93,15 @@ namespace CargoHub.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("TEXT")
+                        .HasAnnotation("Relational:JsonPropertyName", "updated_at");
 
                     b.Property<string>("Zip")
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ContactId")
-                        .IsUnique();
-
                     b.ToTable("Warehouses");
-                });
-
-            modelBuilder.Entity("CargoHub.Models.Warehouse", b =>
-                {
-                    b.HasOne("CargoHub.Models.Contact", "Contact")
-                        .WithOne()
-                        .HasForeignKey("CargoHub.Models.Warehouse", "ContactId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Contact");
                 });
 #pragma warning restore 612, 618
         }

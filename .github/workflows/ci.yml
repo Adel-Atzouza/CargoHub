@@ -29,9 +29,14 @@ jobs:
     - name: Build API
       run: dotnet build CargoHub --no-restore
 
+    - name: Add and apply EF migrations
+      run: |
+        dotnet ef migrations add setup
+        dotnet ef database update
+
     - name: Start API
       run: |
-        dotnet run --project CargoHub &
+        dotnet run --project CargoHub & 
         sleep 10  # wait for API to start
 
     - name: Setup Python

@@ -8,13 +8,17 @@ namespace CargoHub
 {
     public class AppDbContext : DbContext
     {
-<<<<<<< HEAD
         public DbSet<Warehouse> Warehouses { get; set; }
         public DbSet<Transfer> Transfers { get; set; }
         public DbSet<Supplier> Suppliers { get; set; }
         public DbSet<ItemLine> ItemLines { get; set; }
         public DbSet<ItemGroup> ItemGroups { get; set; }
-
+        public DbSet<Contact> Contacts { get; set; }
+        public DbSet<Order> Orders { get; set; }
+        public DbSet<Shipment> Shipments { get; set; }
+        public DbSet<Location> Locations { get; set; }
+        public DbSet<Item> Items { get; set; }
+        public DbSet<OrderItem> OrderItems { get; set; }
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
             foreach (var entry in ChangeTracker.Entries<BaseModel>())
@@ -41,6 +45,19 @@ namespace CargoHub
             // modelBuilder.Entity<ItemGroup>()
             //     .HasOne(Igr => Igr.ItemLines)
             //     .WithMany();
+            modelBuilder.Entity<OrderItem>()
+                .HasKey(oi => new { oi.OrderId, oi.ItemId }); // Composite key
+
+            modelBuilder.Entity<OrderItem>()
+                .HasOne(oi => oi.Order)
+                .WithMany(o => o.OrderItems)
+                .HasForeignKey(oi => oi.OrderId);
+
+            modelBuilder.Entity<OrderItem>()
+                .HasOne(oi => oi.Item)
+                .WithMany(i => i.OrderItems)
+                .HasForeignKey(oi => oi.ItemId);
+
 
             modelBuilder.Entity<ItemGroup>()
     .HasData(
@@ -98,35 +115,8 @@ namespace CargoHub
                         CreatedAt = DateTime.UtcNow,
                         UpdatedAt = DateTime.UtcNow
                     });
-=======
-        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
-
-        public DbSet<Warehouse> Warehouses { get; set; }
-        public DbSet<Contact> Contacts { get; set; }
-        public DbSet<Order> Orders { get; set; }
-        public DbSet<Shipment> Shipments { get; set; }
-        public DbSet<Location> Locations { get; set; }
-        public DbSet<Item> Items { get; set; }
-        public DbSet<OrderItem> OrderItems { get; set; }
-
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            // Configure many-to-many relationship between Order and Item
-            modelBuilder.Entity<OrderItem>()
-                .HasKey(oi => new { oi.OrderId, oi.ItemId }); // Composite key
-
-            modelBuilder.Entity<OrderItem>()
-                .HasOne(oi => oi.Order)
-                .WithMany(o => o.OrderItems)
-                .HasForeignKey(oi => oi.OrderId);
-
-            modelBuilder.Entity<OrderItem>()
-                .HasOne(oi => oi.Item)
-                .WithMany(i => i.OrderItems)
-                .HasForeignKey(oi => oi.ItemId);
-
-            // Seed data for Orders
-            modelBuilder.Entity<Order>().HasData(
+                
+                modelBuilder.Entity<Order>().HasData(
                 new Order
                 {
                     Id = 1,
@@ -163,7 +153,9 @@ namespace CargoHub
                 new OrderItem { OrderId = 1, ItemId = 2, Amount = 1 },
                 new OrderItem { OrderId = 1, ItemId = 3, Amount = 50 }
             );
->>>>>>> origin/sven3
         }
-    }
+        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
+
+
+}
 }

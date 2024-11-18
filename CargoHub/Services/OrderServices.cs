@@ -92,32 +92,41 @@ namespace CargoHub.Services
         // Method to create a new order with items
         public async Task<Order> CreateOrder(Order order, List<ItemDTO> itemDTOs)
         {
-            // Add the order first to generate the ID
-            _context.Orders.Add(order);
-            await _context.SaveChangesAsync(); // Save to get the order's Id
-
-            // Attach items to the order
-            foreach (var itemDto in itemDTOs)
+            try
             {
-                var item = await _context.Items.FirstOrDefaultAsync(i => i.Id == itemDto.ItemId);
-                if (item != null)
-                {
-                    var orderItem = new OrderItem
-                    {
-                        OrderId = order.Id, // Set the OrderId correctly here
-                        ItemId = item.Id,   // Use item.Id (int) as ItemId
-                        Amount = itemDto.Amount
-                    };
-                    _context.OrderItems.Add(orderItem); // Add the orderItem to the context
-                }
-                else
-                {
-                    throw new Exception($"Item with Uid {itemDto.ItemId} does not exist.");
-                }
-            }
+                // Add the order first to generate the ID
+                _context.Orders.Add(order);
+                await _context.SaveChangesAsync(); // Save to get the order's Id
 
-            await _context.SaveChangesAsync(); // Save changes after adding items
-            return order;
+                // Attach items to the order
+                foreach (var itemDto in itemDTOs)
+                {
+                    var item = await _context.Items.FirstOrDefaultAsync(i => i.Uid == itemDto.ItemId);
+                    if (item != null)
+                    {
+                        var orderItem = new OrderItem
+                        {
+                            OrderId = order.Id, // Set the OrderId correctly here
+                            ItemId = item.Id,   // Use item.Id (int) as ItemId
+                            Amount = itemDto.Amount
+                        };
+                        _context.OrderItems.Add(orderItem); // Add the orderItem to the context
+                    }
+                    else
+                    {
+                        throw new Exception($"Item with Uid {itemDto.ItemId} does not exist.");
+                    }
+                }
+
+                await _context.SaveChangesAsync(); // Save changes after adding items
+                return order;
+            }
+            catch (Exception ex)
+            {
+                // Log the error and rethrow for handling in the controller
+                Console.WriteLine($"Error creating order: {ex.Message}");
+                throw;
+            }
         }
 
         // Method to update an existing order

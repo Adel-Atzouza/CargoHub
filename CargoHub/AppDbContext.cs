@@ -58,6 +58,7 @@ namespace CargoHub
                 .HasForeignKey(oi => oi.ItemId);  // Foreign key relationship using ItemId (int)
 
             base.OnModelCreating(modelBuilder);
+            
 
             // Seed data for ItemGroup
             modelBuilder.Entity<ItemGroup>()

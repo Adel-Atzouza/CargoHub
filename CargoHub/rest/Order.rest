@@ -35,6 +35,43 @@ ApiKey : Admin
 }
 
 
+###
+POST http://localhost:3000/api/v1/orders
+Content-Type: application/json
+ApiKey : Admin 
+
+{
+  "sourceId": 1,
+  "orderDate": "2024-11-18T13:39:16.5035533Z",
+  "requestDate": "2024-11-19T13:39:16.5035533Z",
+  "reference": "ORD123",
+  "referenceExtra": "Urgent Delivery",
+  "orderStatus": "Pending",
+  "notes": "Order notes",
+  "shippingNotes": "Handle with care",
+  "pickingNotes": "Fragile items",
+  "warehouseId": 1,
+  "shipTo": 1,
+  "billTo": 1,
+  "shipmentId": null,
+  "totalAmount": 200.00,
+  "totalDiscount": 10.00,
+  "totalTax": 5.00,
+  "totalSurcharge": 2.00,
+  "createdAt": "2024-11-18T13:39:16.5035533Z",
+  "updatedAt": "2024-11-18T13:39:16.5035533Z",
+  "items": [
+    {
+      "itemId": "ITEM001",
+      "amount": 3
+    },
+    {
+      "itemId": "ITEM002",
+      "amount": 1
+    }
+  ]
+}
+
 
 ###
 GET http://localhost:3000/api/v1/orders/1

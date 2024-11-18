@@ -45,7 +45,7 @@ namespace CargoHub
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<OrderItem>()
-                .HasKey(oi => new { oi.OrderId, oi.ItemId });
+                .HasKey(oi => new { oi.OrderId, oi.ItemId });  // Composite key for OrderItem
 
             modelBuilder.Entity<OrderItem>()
                 .HasOne(oi => oi.Order)
@@ -55,8 +55,8 @@ namespace CargoHub
             modelBuilder.Entity<OrderItem>()
                 .HasOne(oi => oi.Item)
                 .WithMany(i => i.OrderItems)
-                .HasForeignKey(oi => oi.ItemId)
-                .HasPrincipalKey(i => i.Uid); // Use Uid as the principal key
+                .HasForeignKey(oi => oi.ItemId)  // Foreign key relationship using ItemId (int)
+                .HasPrincipalKey(i => i.Id);  // Use the primary key (Id) in Item (int) as the principal key
 
             base.OnModelCreating(modelBuilder);
 

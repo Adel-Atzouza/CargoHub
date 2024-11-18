@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using CargoHub.Models;
@@ -30,12 +31,10 @@ namespace CargoHub.Controllers
         public async Task<ActionResult<OrderWithItemsDTO>> GetOrder(int id)
         {
             var order = await _orderService.GetOrderWithItems(id);
-
             if (order == null)
             {
                 return NotFound();
             }
-
             return Ok(order);
         }
 
@@ -45,36 +44,42 @@ namespace CargoHub.Controllers
         {
             if (orderDto == null)
             {
-                return BadRequest();
+                return BadRequest("Order data is required.");
             }
 
-            // Map DTO to Order
-            var order = new Order
+            try
             {
-                SourceId = orderDto.SourceId,
-                OrderDate = orderDto.OrderDate,
-                RequestDate = orderDto.RequestDate,
-                Reference = orderDto.Reference,
-                ExtrReference = orderDto.ReferenceExtra,
-                OrderStatus = orderDto.OrderStatus,
-                Notes = orderDto.Notes,
-                ShippingNotes = orderDto.ShippingNotes,
-                PickingNotes = orderDto.PickingNotes,
-                WarehouseId = orderDto.WarehouseId,
-                ShipTo = (int)orderDto.ShipTo,
-                BillTo = (int)orderDto.BillTo,
-                ShipmentId = orderDto.ShipmentId ?? 0,
-                TotalAmount = orderDto.TotalAmount,
-                TotalDiscount = orderDto.TotalDiscount,
-                TotalTax = orderDto.TotalTax,
-                TotalSurcharge = orderDto.TotalSurcharge,
-                CreatedAt = DateTime.UtcNow,
-                UpdatedAt = DateTime.UtcNow
-            };
+                var order = new Order
+                {
+                    SourceId = orderDto.SourceId,
+                    OrderDate = orderDto.OrderDate,
+                    RequestDate = orderDto.RequestDate,
+                    Reference = orderDto.Reference,
+                    ExtrReference = orderDto.ReferenceExtra, // Corrected field name
+                    OrderStatus = orderDto.OrderStatus,
+                    Notes = orderDto.Notes,
+                    ShippingNotes = orderDto.ShippingNotes,
+                    PickingNotes = orderDto.PickingNotes,
+                    WarehouseId = orderDto.WarehouseId,
+                    ShipTo = orderDto.ShipTo ?? 0,
+                    BillTo = orderDto.BillTo ?? 0,
+                    ShipmentId = orderDto.ShipmentId ?? 0,
+                    TotalAmount = orderDto.TotalAmount,
+                    TotalDiscount = orderDto.TotalDiscount,
+                    TotalTax = orderDto.TotalTax,
+                    TotalSurcharge = orderDto.TotalSurcharge,
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow
+                };
 
-            var createdOrder = await _orderService.CreateOrder(order, orderDto.Items);
-
-            return CreatedAtAction(nameof(GetOrder), new { id = createdOrder.Id }, createdOrder);
+                // Create the order and return the result
+                var createdOrder = await _orderService.CreateOrder(order, orderDto.Items);
+                return CreatedAtAction(nameof(GetOrder), new { id = createdOrder.Id }, createdOrder);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
         }
 
         // PUT: api/v1/orders/{id}
@@ -83,52 +88,66 @@ namespace CargoHub.Controllers
         {
             if (orderDto == null || id != orderDto.Id)
             {
-                return BadRequest();
+                return BadRequest("Order ID mismatch.");
             }
 
-            var order = new Order
+            try
             {
-                Id = id,
-                SourceId = orderDto.SourceId,
-                OrderDate = orderDto.OrderDate,
-                RequestDate = orderDto.RequestDate,
-                Reference = orderDto.Reference,
-                ExtrReference = orderDto.ReferenceExtra,
-                OrderStatus = orderDto.OrderStatus,
-                Notes = orderDto.Notes,
-                ShippingNotes = orderDto.ShippingNotes,
-                PickingNotes = orderDto.PickingNotes,
-                WarehouseId = orderDto.WarehouseId,
-                ShipTo = (int)orderDto.ShipTo,
-                BillTo = (int)orderDto.BillTo,
-                ShipmentId = orderDto.ShipmentId ?? 0,
-                TotalAmount = orderDto.TotalAmount,
-                TotalDiscount = orderDto.TotalDiscount,
-                TotalTax = orderDto.TotalTax,
-                TotalSurcharge = orderDto.TotalSurcharge,
-                UpdatedAt = DateTime.UtcNow
-            };
+                var order = new Order
+                {
+                    Id = id,
+                    SourceId = orderDto.SourceId,
+                    OrderDate = orderDto.OrderDate,
+                    RequestDate = orderDto.RequestDate,
+                    Reference = orderDto.Reference,
+                    ExtrReference = orderDto.ReferenceExtra, // Corrected field name
+                    OrderStatus = orderDto.OrderStatus,
+                    Notes = orderDto.Notes,
+                    ShippingNotes = orderDto.ShippingNotes,
+                    PickingNotes = orderDto.PickingNotes,
+                    WarehouseId = orderDto.WarehouseId,
+                    ShipTo = orderDto.ShipTo ?? 0,
+                    BillTo = orderDto.BillTo ?? 0,
+                    ShipmentId = orderDto.ShipmentId ?? 0,
+                    TotalAmount = orderDto.TotalAmount,
+                    TotalDiscount = orderDto.TotalDiscount,
+                    TotalTax = orderDto.TotalTax,
+                    TotalSurcharge = orderDto.TotalSurcharge,
+                    UpdatedAt = DateTime.UtcNow
+                };
 
-            var result = await _orderService.UpdateOrder(id, order, orderDto.Items);
-            if (result == null)
-            {
-                return NotFound();
+                var updatedOrder = await _orderService.UpdateOrder(id, order, orderDto.Items);
+                if (updatedOrder == null)
+                {
+                    return NotFound();
+                }
+
+                return NoContent();
             }
-
-            return NoContent();
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
         }
 
         // DELETE: api/v1/orders/{id}
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteOrder(int id)
         {
-            var result = await _orderService.DeleteOrder(id);
-            if (!result)
+            try
             {
-                return NotFound();
-            }
+                var result = await _orderService.DeleteOrder(id);
+                if (!result)
+                {
+                    return NotFound();
+                }
 
-            return NoContent();
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
         }
     }
 }

@@ -108,7 +108,7 @@ namespace CargoHub.Controllers
                     WarehouseId = orderDto.WarehouseId,
                     ShipTo = orderDto.ShipTo ?? 0,
                     BillTo = orderDto.BillTo ?? 0,
-                    ShipmentId = orderDto.ShipmentId ?? 0,
+                    ShipmentId = orderDto.ShipmentId ?? null,
                     TotalAmount = orderDto.TotalAmount,
                     TotalDiscount = orderDto.TotalDiscount,
                     TotalTax = orderDto.TotalTax,

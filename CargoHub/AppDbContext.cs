@@ -70,6 +70,12 @@ namespace CargoHub
                 .HasForeignKey(oi => oi.ItemId);  // Foreign key relationship using ItemId (int)
 
             base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<Location>()
+            .HasOne(l => l.warehouse)  // A Location has one Warehouse
+            .WithMany()                 // A Warehouse can have many Locations
+            .HasForeignKey(l => l.WarehouseId) ; // Location uses WarehouseId as a foreign key
+            base.OnModelCreating(modelBuilder);
             
 
             // Seed data for ItemGroup

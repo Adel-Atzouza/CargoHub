@@ -44,6 +44,18 @@ namespace CargoHub
         // Configure model relationships and seed data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<Order>()
+                .HasOne(o => o.ShipToClient)
+                .WithMany()
+                .HasForeignKey(o => o.ShipTo);
+
+            modelBuilder.Entity<Order>()
+                .HasOne(o => o.BillToClient)
+                .WithMany()
+                .HasForeignKey(o => o.BillTo);
+                
             modelBuilder.Entity<OrderItem>()
                 .HasKey(oi => new { oi.OrderId, oi.ItemId });  // Composite key for OrderItem
 

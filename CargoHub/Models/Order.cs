@@ -20,8 +20,10 @@ public class Order
     public int? WarehouseId { get; set; }
     [JsonIgnore]
     public int? ShipTo { get; set; }
+    public Client? ShipToClient { get; set; }
     [JsonIgnore]
     public int? BillTo { get; set; }
+    public Client? BillToClient { get; set; }
     [JsonIgnore]
     public int? ShipmentId { get; set; }
     public Shipment? Shipment { get; set; }  // Navigation property to Shipment

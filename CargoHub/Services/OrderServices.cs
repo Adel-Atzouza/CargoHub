@@ -54,6 +54,13 @@ namespace CargoHub.Services
             return order;
         }
 
+        public async Task<List<Order>> GetOrdersCLient(int id)
+        {
+            return await _context.Orders
+                .Where(c => c.BillTo == id || c.ShipTo == id)
+                .ToListAsync();
+        }  
+
         // Method to get all orders with items
         public async Task<List<OrderWithItemsDTO>> GetAllOrdersWithItems()
         {

@@ -38,6 +38,19 @@ namespace CargoHub.Controllers
             return Ok(order);
         }
 
+        [HttpGet("client/{clientId}")]
+            public async Task<ActionResult<List<Order>>> GetOrdersForClient(int clientId)
+            {
+                var orders = await _orderService.GetOrdersCLient(clientId);
+
+                if (orders == null || orders.Count == 0)
+                {
+                    return NotFound();
+                }
+
+                return Ok(orders);
+            }
+
         // POST: api/v1/orders
         [HttpPost]
         public async Task<ActionResult<Order>> CreateOrder([FromBody] OrderWithItemsDTO orderDto)

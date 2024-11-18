@@ -3,7 +3,8 @@
 # ===============================
 
 ### Get Order by ID
-GET http://localhost:3000/api/v1/orders/1
+GET http://localhost:3000/api/orders/1
+ApiKey: FM-WH01
 Accept: application/json
 
 # Response:
@@ -40,84 +41,48 @@ Accept: application/json
   "updatedAt": "2024-11-18T00:00:00Z"
 }
 
-### Get Order by Non-Existing ID
-GET http://localhost:3000/api/v1/orders/999
-Accept: application/json
-
-# Response:
-{
-  "message": "Order not found."
-}
-
-### Get All Orders
-GET http://localhost:3000/api/v1/orders
-Accept: application/json
-
-# Response:
-[
-  {
-    "id": 1,
-    "sourceId": 1001,
-    "orderDate": "2024-11-18T00:00:00Z",
-    "requestDate": "2024-11-20T00:00:00Z",
-    "reference": "ORD1001",
-    "orderStatus": "Pending",
-    "totalAmount": 2500.00,
-    "createdAt": "2024-11-18T00:00:00Z",
-    "updatedAt": "2024-11-18T00:00:00Z"
-  },
-  {
-    "id": 2,
-    "sourceId": 1002,
-    "orderDate": "2024-11-19T00:00:00Z",
-    "requestDate": "2024-11-21T00:00:00Z",
-    "reference": "ORD1002",
-    "orderStatus": "Shipped",
-    "totalAmount": 3000.00,
-    "createdAt": "2024-11-19T00:00:00Z",
-    "updatedAt": "2024-11-19T00:00:00Z"
-  }
-]
-
 ### Add New Order
-POST http://localhost:3000/api/v1/orders
+POST http://localhost:3000/api/order
+ApiKey: FM-WH01
 Content-Type: application/json
 
 {
   "sourceId": 1001,
   "orderDate": "2024-11-18T00:00:00Z",
   "requestDate": "2024-11-20T00:00:00Z",
-  "reference": "ORD1003",
-  "referenceExtra": "Standard delivery",
+  "reference": "ORD1001",
+  "referenceExtra": "Urgent delivery",
   "orderStatus": "Pending",
-  "notes": "Leave at front door",
-  "shippingNotes": "No signature required",
-  "pickingNotes": "Standard packing",
+  "notes": "Handle with care",
+  "shippingNotes": "Fragile items",
+  "pickingNotes": "Double-check quantities",
   "warehouseId": 1,
-  "shipTo": 2,
-  "billTo": 2,
+  "shipTo": null,
+  "billTo": null,
   "shipmentId": null,
-  "totalAmount": 2000.00,
-  "totalDiscount": 100.00,
-  "totalTax": 250.00,
-  "totalSurcharge": 25.00,
+  "totalAmount": 2500.00,
+  "totalDiscount": 200.00,
+  "totalTax": 300.00,
+  "totalSurcharge": 50.00,
   "items": [
     {
       "itemId": "ITEM001",
-      "amount": 5
+      "amount": 10
     },
     {
       "itemId": "ITEM002",
-      "amount": 10
+      "amount": 5
     }
   ]
 }
+
 
 # Response:
 "Order created successfully."
 
 ### Update Existing Order
 PUT http://localhost:3000/api/v1/orders/1
+ApiKey: FM-WH01
 Content-Type: application/json
 
 {
@@ -155,6 +120,7 @@ Content-Type: application/json
 
 ### Remove Order
 DELETE http://localhost:3000/api/v1/orders/1
+ApiKey: Admin
 Accept: application/json
 
 # Response:

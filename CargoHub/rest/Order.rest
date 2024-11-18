@@ -12,10 +12,10 @@ ApiKey : Admin
   "notes": "Order notes",
   "shippingNotes": "Shipping notes",
   "pickingNotes": "Picking notes",
-  "warehouseId": 5,
-  "shipTo": 10,
-  "billTo": 15,
-  "shipmentId": 1,
+  "warehouseId": null,
+  "shipTo": null,
+  "billTo": null,
+  "shipmentId": null,
   "totalAmount": 200.00,
   "totalDiscount": 10.00,
   "totalTax": 20.00,
@@ -27,3 +27,7 @@ ApiKey : Admin
     { "itemId": "ITEM002", "amount": 1 }
   ]
 }
+
+###
+GET http://localhost:3000/api/v1/orders/1
+ApiKey : Admin 

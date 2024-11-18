@@ -55,8 +55,7 @@ namespace CargoHub
             modelBuilder.Entity<OrderItem>()
                 .HasOne(oi => oi.Item)
                 .WithMany(i => i.OrderItems)
-                .HasForeignKey(oi => oi.ItemId)  // Foreign key relationship using ItemId (int)
-                .HasPrincipalKey(i => i.Id);  // Use the primary key (Id) in Item (int) as the principal key
+                .HasForeignKey(oi => oi.ItemId);  // Foreign key relationship using ItemId (int)
 
             base.OnModelCreating(modelBuilder);
 
@@ -169,6 +168,52 @@ namespace CargoHub
             );
 
             // Call the base method
+            base.OnModelCreating(modelBuilder);
+
+
+                // Seed data for Orders
+            modelBuilder.Entity<Order>().HasData(
+                new Order
+                {
+                    Id = 1,
+                    SourceId = 1,
+                    OrderDate = DateTime.UtcNow,
+                    RequestDate = DateTime.UtcNow.AddDays(1),
+                    Reference = "ORD123",
+                    ExtrReference = "Urgent Delivery",
+                    OrderStatus = "Pending",
+                    Notes = "Order notes",
+                    ShippingNotes = "Handle with care",
+                    PickingNotes = "Fragile items",
+                    WarehouseId = 1,
+                    ShipTo = 1,
+                    BillTo = 1,
+                    ShipmentId = null,
+                    TotalAmount = 250.00M,
+                    TotalDiscount = 10.00M,
+                    TotalTax = 5.00M,
+                    TotalSurcharge = 2.00M,
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow
+                }
+            );
+
+            // Seed data for OrderItems
+            modelBuilder.Entity<OrderItem>().HasData(
+                new OrderItem
+                {
+                    OrderId = 1,
+                    ItemId = 1, // Referring to Item 1
+                    Amount = 3
+                },
+                new OrderItem
+                {
+                    OrderId = 1,
+                    ItemId = 2, // Referring to Item 2
+                    Amount = 2
+                }
+            );
+
             base.OnModelCreating(modelBuilder);
         }
 

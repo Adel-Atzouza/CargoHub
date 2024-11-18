@@ -99,7 +99,7 @@ namespace CargoHub.Services
             // Attach items to the order
             foreach (var itemDto in itemDTOs)
             {
-                var item = await _context.Items.FirstOrDefaultAsync(i => i.Uid == itemDto.ItemId);
+                var item = await _context.Items.FirstOrDefaultAsync(i => i.Id == itemDto.ItemId);
                 if (item != null)
                 {
                     var orderItem = new OrderItem

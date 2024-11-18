@@ -49,7 +49,7 @@ namespace CargoHub
 
             modelBuilder.Entity<OrderItem>()
                 .HasOne(oi => oi.Order)
-                .WithMany(o => o.Items)
+                .WithMany(o => o.OrderItems)
                 .HasForeignKey(oi => oi.OrderId);
 
             modelBuilder.Entity<OrderItem>()

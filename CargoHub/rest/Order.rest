@@ -1,131 +1,29 @@
-# ===============================
-# Orders API
-# ===============================
+POST http://localhost:3000/api/v1/orders
+Content-Type: application/json
+ApiKey : Admin 
 
-### Get Order by ID
-GET http://localhost:3000/api/orders/1
-ApiKey: FM-WH01
-Accept: application/json
-
-# Response:
 {
-  "id": 1,
-  "sourceId": 1001,
-  "orderDate": "2024-11-18T00:00:00Z",
-  "requestDate": "2024-11-20T00:00:00Z",
-  "reference": "ORD1001",
-  "referenceExtra": "Urgent delivery",
+  "sourceId": 33,
+  "orderDate": "2023-05-15T10:00:00Z",
+  "requestDate": "2023-05-20T10:00:00Z",
+  "reference": "ORD00002",
+  "referenceExtra": "Extra details",
   "orderStatus": "Pending",
-  "notes": "Handle with care",
-  "shippingNotes": "Fragile items",
-  "pickingNotes": "Double-check quantities",
-  "warehouseId": 1,
-  "shipTo": 1,
-  "billTo": 1,
-  "shipmentId": null,
-  "totalAmount": 2500.00,
-  "totalDiscount": 200.00,
-  "totalTax": 300.00,
-  "totalSurcharge": 50.00,
+  "notes": "Order notes",
+  "shippingNotes": "Shipping notes",
+  "pickingNotes": "Picking notes",
+  "warehouseId": 5,
+  "shipTo": 10,
+  "billTo": 15,
+  "shipmentId": 1,
+  "totalAmount": 200.00,
+  "totalDiscount": 10.00,
+  "totalTax": 20.00,
+  "totalSurcharge": 5.00,
+  "createdAt": "2023-05-15T10:00:00Z",
+  "updatedAt": "2023-05-20T10:00:00Z",
   "items": [
-    {
-      "itemId": "ITEM001",
-      "amount": 10
-    },
-    {
-      "itemId": "ITEM002",
-      "amount": 5
-    }
-  ],
-  "createdAt": "2024-11-18T00:00:00Z",
-  "updatedAt": "2024-11-18T00:00:00Z"
-}
-
-### Add New Order
-POST http://localhost:3000/api/order
-Content-Type: application/json
-ApiKey: Admin
-
-
-{
-    "sourceId": 1,
-    "orderDate": "2024-11-18T00:00:00Z",
-    "requestDate": "2024-11-20T00:00:00Z",
-    "reference": "ORD123",
-    "referenceExtra": "Extra details",
-    "orderStatus": "Pending",
-    "notes": "Order notes",
-    "shippingNotes": "Shipping instructions",
-    "pickingNotes": "Picking instructions",
-    "warehouseId": 1,
-    "shipTo": 2,
-    "billTo": 3,
-    "shipmentId": 4,
-    "totalAmount": 100.50,
-    "totalDiscount": 5.50,
-    "totalTax": 10.00,
-    "totalSurcharge": 2.00,
-    "items": [
-        {
-            "itemId": "UID123",
-            "amount": 2
-        },
-        {
-            "itemId": "UID456",
-            "amount": 5
-        }
-    ]
-}
-
-
-
-
-
-# Response:
-"Order created successfully."
-
-### Update Existing Order
-PUT http://localhost:3000/api/v1/orders/1
-ApiKey: FM-WH01
-Content-Type: application/json
-
-{
-  "sourceId": 1001,
-  "orderDate": "2024-11-18T00:00:00Z",
-  "requestDate": "2024-11-25T00:00:00Z",
-  "reference": "ORD1001",
-  "referenceExtra": "Updated urgent delivery",
-  "orderStatus": "Processing",
-  "notes": "Handle with extra care",
-  "shippingNotes": "Updated fragile handling",
-  "pickingNotes": "Triple-check quantities",
-  "warehouseId": 1,
-  "shipTo": 1,
-  "billTo": 1,
-  "shipmentId": null,
-  "totalAmount": 2700.00,
-  "totalDiscount": 150.00,
-  "totalTax": 350.00,
-  "totalSurcharge": 75.00,
-  "items": [
-    {
-      "itemId": "ITEM001",
-      "amount": 15
-    },
-    {
-      "itemId": "ITEM002",
-      "amount": 10
-    }
+    { "itemId": "ITEM001", "amount": 3 },
+    { "itemId": "ITEM002", "amount": 1 }
   ]
 }
-
-# Response:
-"Order updated successfully."
-
-### Remove Order
-DELETE http://localhost:3000/api/v1/orders/1
-ApiKey: Admin
-Accept: application/json
-
-# Response:
-"Order removed successfully."

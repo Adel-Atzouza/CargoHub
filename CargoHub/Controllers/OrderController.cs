@@ -1,101 +1,134 @@
+using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using CargoHub.Models;
 using CargoHub.Services;
-using Microsoft.AspNetCore.Mvc;
-using System.Linq;
-using System.Threading.Tasks;
 
-[ApiController]
-[Route("api/[controller]")]
-public class OrderController : ControllerBase
+namespace CargoHub.Controllers
 {
-    private readonly OrderService _orderService;
-
-    public OrderController(OrderService orderService)
+    [Route("api/v1/[controller]")]
+    [ApiController]
+    public class OrdersController : ControllerBase
     {
-        _orderService = orderService;
-    }
+        private readonly OrderService _orderService;
 
-    [HttpPost]
-    public async Task<IActionResult> CreateOrder([FromBody] OrderCreateDto orderDto)
-    {
-        if (!ModelState.IsValid)
+        public OrdersController(OrderService orderService)
         {
-            var errors = ModelState.Values.SelectMany(v => v.Errors.Select(e => e.ErrorMessage));
-            return BadRequest(new { errors });
+            _orderService = orderService;
         }
 
-        var order = new Order
+        // GET: api/v1/orders
+        [HttpGet]
+        public async Task<ActionResult<List<OrderWithItemsDTO>>> GetAllOrders()
         {
-            SourceId = orderDto.SourceId,
-            OrderDate = orderDto.OrderDate,
-            RequestDate = orderDto.RequestDate,
-            Reference = orderDto.Reference,
-            ReferenceExtra = orderDto.ReferenceExtra,
-            OrderStatus = orderDto.OrderStatus,
-            Notes = orderDto.Notes,
-            ShippingNotes = orderDto.ShippingNotes,
-            PickingNotes = orderDto.PickingNotes,
-            WarehouseId = orderDto.WarehouseId,
-            ShipTo = orderDto.ShipTo,
-            BillTo = orderDto.BillTo,
-            ShipmentId = orderDto.ShipmentId,
-            TotalAmount = orderDto.TotalAmount,
-            TotalDiscount = orderDto.TotalDiscount,
-            TotalTax = orderDto.TotalTax,
-            TotalSurcharge = orderDto.TotalSurcharge,
-            CreatedAt = DateTime.UtcNow,
-            UpdatedAt = DateTime.UtcNow,
-            Items = orderDto.Items.Select(i => new OrderItem
-            {
-                ItemId = i.ItemId, // Now uses string
-                Amount = i.Amount
-            }).ToList()
-        };
-
-        await _orderService.CreateOrderAsync(order);
-
-        return CreatedAtAction(nameof(GetOrderById), new { id = order.Id }, order);
-    }
-
-    [HttpGet("{id}")]
-    public async Task<IActionResult> GetOrderById(int id)
-    {
-        var order = await _orderService.GetOrderByIdAsync(id);
-
-        if (order == null)
-        {
-            return NotFound();
+            var orders = await _orderService.GetAllOrdersWithItems();
+            return Ok(orders);
         }
 
-        var result = new OrderResponseDto
+        // GET: api/v1/orders/{id}
+        [HttpGet("{id}")]
+        public async Task<ActionResult<OrderWithItemsDTO>> GetOrder(int id)
         {
-            Id = order.Id,
-            SourceId = order.SourceId,
-            OrderDate = order.OrderDate,
-            RequestDate = order.RequestDate,
-            Reference = order.Reference,
-            ReferenceExtra = order.ReferenceExtra,
-            OrderStatus = order.OrderStatus,
-            Notes = order.Notes,
-            ShippingNotes = order.ShippingNotes,
-            PickingNotes = order.PickingNotes,
-            WarehouseId = order.WarehouseId,
-            ShipTo = order.ShipTo,
-            BillTo = order.BillTo,
-            ShipmentId = order.ShipmentId,
-            TotalAmount = order.TotalAmount,
-            TotalDiscount = order.TotalDiscount,
-            TotalTax = order.TotalTax,
-            TotalSurcharge = order.TotalSurcharge,
-            CreatedAt = order.CreatedAt,
-            UpdatedAt = order.UpdatedAt,
-            Items = order.Items.Select(i => new OrderItemResponseDto
-            {
-                ItemId = i.ItemId,
-                Amount = i.Amount
-            }).ToList()
-        };
+            var order = await _orderService.GetOrderWithItems(id);
 
-        return Ok(result);
+            if (order == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(order);
+        }
+
+        // POST: api/v1/orders
+        [HttpPost]
+        public async Task<ActionResult<Order>> CreateOrder([FromBody] OrderWithItemsDTO orderDto)
+        {
+            if (orderDto == null)
+            {
+                return BadRequest();
+            }
+
+            // Map DTO to Order
+            var order = new Order
+            {
+                SourceId = orderDto.SourceId,
+                OrderDate = orderDto.OrderDate,
+                RequestDate = orderDto.RequestDate,
+                Reference = orderDto.Reference,
+                ExtrReference = orderDto.ReferenceExtra,
+                OrderStatus = orderDto.OrderStatus,
+                Notes = orderDto.Notes,
+                ShippingNotes = orderDto.ShippingNotes,
+                PickingNotes = orderDto.PickingNotes,
+                WarehouseId = orderDto.WarehouseId,
+                ShipTo = (int)orderDto.ShipTo,
+                BillTo = (int)orderDto.BillTo,
+                ShipmentId = orderDto.ShipmentId ?? 0,
+                TotalAmount = orderDto.TotalAmount,
+                TotalDiscount = orderDto.TotalDiscount,
+                TotalTax = orderDto.TotalTax,
+                TotalSurcharge = orderDto.TotalSurcharge,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            };
+
+            var createdOrder = await _orderService.CreateOrder(order, orderDto.Items);
+
+            return CreatedAtAction(nameof(GetOrder), new { id = createdOrder.Id }, createdOrder);
+        }
+
+        // PUT: api/v1/orders/{id}
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateOrder(int id, [FromBody] OrderWithItemsDTO orderDto)
+        {
+            if (orderDto == null || id != orderDto.Id)
+            {
+                return BadRequest();
+            }
+
+            var order = new Order
+            {
+                Id = id,
+                SourceId = orderDto.SourceId,
+                OrderDate = orderDto.OrderDate,
+                RequestDate = orderDto.RequestDate,
+                Reference = orderDto.Reference,
+                ExtrReference = orderDto.ReferenceExtra,
+                OrderStatus = orderDto.OrderStatus,
+                Notes = orderDto.Notes,
+                ShippingNotes = orderDto.ShippingNotes,
+                PickingNotes = orderDto.PickingNotes,
+                WarehouseId = orderDto.WarehouseId,
+                ShipTo = (int)orderDto.ShipTo,
+                BillTo = (int)orderDto.BillTo,
+                ShipmentId = orderDto.ShipmentId ?? 0,
+                TotalAmount = orderDto.TotalAmount,
+                TotalDiscount = orderDto.TotalDiscount,
+                TotalTax = orderDto.TotalTax,
+                TotalSurcharge = orderDto.TotalSurcharge,
+                UpdatedAt = DateTime.UtcNow
+            };
+
+            var result = await _orderService.UpdateOrder(id, order, orderDto.Items);
+            if (result == null)
+            {
+                return NotFound();
+            }
+
+            return NoContent();
+        }
+
+        // DELETE: api/v1/orders/{id}
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteOrder(int id)
+        {
+            var result = await _orderService.DeleteOrder(id);
+            if (!result)
+            {
+                return NotFound();
+            }
+
+            return NoContent();
+        }
     }
 }

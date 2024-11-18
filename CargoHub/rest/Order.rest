@@ -1,84 +1,161 @@
-### Get All Orders
-GET http://localhost:3000/api/v1/orders
-Accept: application/json
-
-###
+# ===============================
+# Orders API
+# ===============================
 
 ### Get Order by ID
 GET http://localhost:3000/api/v1/orders/1
 Accept: application/json
 
-###
+# Response:
+{
+  "id": 1,
+  "sourceId": 1001,
+  "orderDate": "2024-11-18T00:00:00Z",
+  "requestDate": "2024-11-20T00:00:00Z",
+  "reference": "ORD1001",
+  "referenceExtra": "Urgent delivery",
+  "orderStatus": "Pending",
+  "notes": "Handle with care",
+  "shippingNotes": "Fragile items",
+  "pickingNotes": "Double-check quantities",
+  "warehouseId": 1,
+  "shipTo": 1,
+  "billTo": 1,
+  "shipmentId": null,
+  "totalAmount": 2500.00,
+  "totalDiscount": 200.00,
+  "totalTax": 300.00,
+  "totalSurcharge": 50.00,
+  "items": [
+    {
+      "itemId": "ITEM001",
+      "amount": 10
+    },
+    {
+      "itemId": "ITEM002",
+      "amount": 5
+    }
+  ],
+  "createdAt": "2024-11-18T00:00:00Z",
+  "updatedAt": "2024-11-18T00:00:00Z"
+}
+
+### Get Order by Non-Existing ID
+GET http://localhost:3000/api/v1/orders/999
+Accept: application/json
+
+# Response:
+{
+  "message": "Order not found."
+}
+
+### Get All Orders
+GET http://localhost:3000/api/v1/orders
+Accept: application/json
+
+# Response:
+[
+  {
+    "id": 1,
+    "sourceId": 1001,
+    "orderDate": "2024-11-18T00:00:00Z",
+    "requestDate": "2024-11-20T00:00:00Z",
+    "reference": "ORD1001",
+    "orderStatus": "Pending",
+    "totalAmount": 2500.00,
+    "createdAt": "2024-11-18T00:00:00Z",
+    "updatedAt": "2024-11-18T00:00:00Z"
+  },
+  {
+    "id": 2,
+    "sourceId": 1002,
+    "orderDate": "2024-11-19T00:00:00Z",
+    "requestDate": "2024-11-21T00:00:00Z",
+    "reference": "ORD1002",
+    "orderStatus": "Shipped",
+    "totalAmount": 3000.00,
+    "createdAt": "2024-11-19T00:00:00Z",
+    "updatedAt": "2024-11-19T00:00:00Z"
+  }
+]
+
+### Add New Order
 POST http://localhost:3000/api/v1/orders
 Content-Type: application/json
 
 {
-  "sourceId": 33,
-  "orderDate": "2023-05-15T10:00:00Z",
-  "requestDate": "2023-05-20T10:00:00Z",
-  "reference": "ORD00002",
-  "referenceExtra": "Extra details",
+  "sourceId": 1001,
+  "orderDate": "2024-11-18T00:00:00Z",
+  "requestDate": "2024-11-20T00:00:00Z",
+  "reference": "ORD1003",
+  "referenceExtra": "Standard delivery",
   "orderStatus": "Pending",
-  "notes": "Order notes",
-  "shippingNotes": "Shipping notes",
-  "pickingNotes": "Picking notes",
-  "warehouseId": 5,
-  "shipTo": 10,
-  "billTo": 15,
-  "shipmentId": 1,
-  "totalAmount": 200.00,
-  "totalDiscount": 10.00,
-  "totalTax": 20.00,
-  "totalSurcharge": 5.00,
-  "createdAt": "2023-05-15T10:00:00Z",
-  "updatedAt": "2023-05-20T10:00:00Z",
+  "notes": "Leave at front door",
+  "shippingNotes": "No signature required",
+  "pickingNotes": "Standard packing",
+  "warehouseId": 1,
+  "shipTo": 2,
+  "billTo": 2,
+  "shipmentId": null,
+  "totalAmount": 2000.00,
+  "totalDiscount": 100.00,
+  "totalTax": 250.00,
+  "totalSurcharge": 25.00,
   "items": [
-    { "itemId": "P007435", "amount": 3 },
-    { "itemId": "P009557", "amount": 1 }
+    {
+      "itemId": "ITEM001",
+      "amount": 5
+    },
+    {
+      "itemId": "ITEM002",
+      "amount": 10
+    }
   ]
 }
 
+# Response:
+"Order created successfully."
 
-
-###
-
-### Update an Existing Order
+### Update Existing Order
 PUT http://localhost:3000/api/v1/orders/1
 Content-Type: application/json
 
 {
-  "orderDto": {
-    "sourceId": 33,
-    "orderDate": "2023-01-01T00:00:00Z",
-    "requestDate": "2023-01-05T00:00:00Z",
-    "reference": "ORD00010",
-    "referenceExtra": "Extra informatie",
-    "orderStatus": "Pending",
-    "notes": "Opmerkingen over de bestelling",
-    "shippingNotes": "Verzendinformatie",
-    "pickingNotes": "Instructies voor picking",
-    "warehouseId": 1,
-    "shipTo": 123,  
-    "billTo": 456, 
-    "shipmentId": 2,
-    "totalAmount": 1000.00,
-    "totalDiscount": 50.00,
-    "totalTax": 100.00,
-    "totalSurcharge": 10.00,
-    "createdAt": "2023-01-01T00:00:00Z",
-    "updatedAt": "2023-01-02T00:00:00Z",
-    "items": [
-      {
-        "itemId": "P007435",
-        "amount": 5
-      }
-    ]
-  }
+  "sourceId": 1001,
+  "orderDate": "2024-11-18T00:00:00Z",
+  "requestDate": "2024-11-25T00:00:00Z",
+  "reference": "ORD1001",
+  "referenceExtra": "Updated urgent delivery",
+  "orderStatus": "Processing",
+  "notes": "Handle with extra care",
+  "shippingNotes": "Updated fragile handling",
+  "pickingNotes": "Triple-check quantities",
+  "warehouseId": 1,
+  "shipTo": 1,
+  "billTo": 1,
+  "shipmentId": null,
+  "totalAmount": 2700.00,
+  "totalDiscount": 150.00,
+  "totalTax": 350.00,
+  "totalSurcharge": 75.00,
+  "items": [
+    {
+      "itemId": "ITEM001",
+      "amount": 15
+    },
+    {
+      "itemId": "ITEM002",
+      "amount": 10
+    }
+  ]
 }
 
+# Response:
+"Order updated successfully."
 
+### Remove Order
+DELETE http://localhost:3000/api/v1/orders/1
+Accept: application/json
 
-###
-
-### Delete an Order
-DELETE http://localhost:3000/api/v1/orders/4
+# Response:
+"Order removed successfully."

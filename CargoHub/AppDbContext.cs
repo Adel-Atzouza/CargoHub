@@ -120,6 +120,56 @@ namespace CargoHub
                     });
 
             base.OnModelCreating(modelBuilder);
+
+                        modelBuilder.Entity<Item>().HasData(
+                new Item
+                {
+                    Id = 1,
+                    Uid = "ITEM001",
+                    Code = "ITEMCODE001",
+                    Description = "High-quality widget",
+                    ShortDescription = "Widget",
+                    UpcCode = "123456789012",
+                    ModelNumber = "WID001",
+                    CommodityCode = "C001",
+                    ItemLine = 1,
+                    ItemGroup = 1,
+                    ItemType = 1,
+                    UnitPurchaseQuantity = 100,
+                    UnitOrderQuantity = 1,
+                    PackOrderQuantity = 10,
+                    SupplierId = 1,
+                    SupplierCode = "SUP001",
+                    SupplierPartNumber = "SPN001",
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow
+                },
+                new Item
+                {
+                    Id = 2,
+                    Uid = "ITEM002",
+                    Code = "ITEMCODE002",
+                    Description = "Durable gadget",
+                    ShortDescription = "Gadget",
+                    UpcCode = "987654321098",
+                    ModelNumber = "GAD002",
+                    CommodityCode = "C002",
+                    ItemLine = 2,
+                    ItemGroup = 2,
+                    ItemType = 2,
+                    UnitPurchaseQuantity = 200,
+                    UnitOrderQuantity = 2,
+                    PackOrderQuantity = 20,
+                    SupplierId = 2,
+                    SupplierCode = "SUP002",
+                    SupplierPartNumber = "SPN002",
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow
+                }
+            );
+
+            // Call the base method
+            base.OnModelCreating(modelBuilder);
         }
 
         // Constructor accepting DbContextOptions

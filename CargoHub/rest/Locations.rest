@@ -4,7 +4,7 @@ Content-Type: application/json
 ApiKey: Admin
 
 {
-  "warehouseId": 1,
+  "WarehouseId": null,
   "code": "LOC001",
   "name": "Location 1",
   "createdAt": "2024-11-18T00:00:00",
@@ -21,7 +21,7 @@ ApiKey: Admin
   "name": "Location 3",
   "createdAt": "2024-11-18T22:36:53",
   "updatedAt": "2024-11-18T22:36:53",
-  "warehouseId": 2
+  "WarehouseId": 2
 }
 
 
@@ -47,5 +47,5 @@ ApiKey: Admin
 }
 
 ### Delete location by id
-DELETE http://localhost:3000/api/v1/locations/{id}
+DELETE http://localhost:3000/api/v1/location/6
 ApiKey: Admin

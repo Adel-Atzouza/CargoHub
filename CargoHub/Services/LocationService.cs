@@ -38,22 +38,19 @@ namespace CargoHub.Services
                 .ToListAsync();
         }
 
-       public async Task<string> AddLocation(Location location)
-        {
-            try
+            public async Task<string> AddLocation(Location location)
             {
+                if (location.WarehouseId != null && !await _context.Warehouses.AnyAsync(w => w.Id == location.WarehouseId))
+                {
+                    return "Invalid WarehouseId provided."; // Ensure the provided WarehouseId exists in the database
+                }
+
                 location.CreatedAt = DateTime.UtcNow;
                 location.UpdatedAt = DateTime.UtcNow;
-
                 _context.Locations.Add(location);
                 await _context.SaveChangesAsync();
                 return "Location added successfully.";
             }
-            catch (Exception ex)
-            {
-                return $"Error adding location: {ex.Message}";
-            }
-        }
 
         public async Task<string> UpdateLocation(int locationId, Location updatedLocation)
         {

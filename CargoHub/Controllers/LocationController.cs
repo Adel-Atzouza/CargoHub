@@ -36,17 +36,16 @@ namespace CargoHub.Controllers
         {
             return await _locationService.GetLocationWarehouse(warehouseId);
         }
-       [HttpPost]
-        public async Task<ActionResult<string>> AddLocation([FromBody] Location location)
-        {
-            if (location.WarehouseId == null)
+            [HttpPost]
+            public async Task<ActionResult<string>> AddLocation([FromBody] Location location)
             {
-                return BadRequest("WarehouseId is required.");
+                var result = await _locationService.AddLocation(location);
+                if (result.Contains("Invalid"))
+                {
+                    return BadRequest(result); // Return a bad request if there's an invalid WarehouseId
+                }
+                return Ok(result);
             }
-
-            var result = await _locationService.AddLocation(location);
-            return Ok(result);
-        }
 
 
         [HttpPut("{id}")]

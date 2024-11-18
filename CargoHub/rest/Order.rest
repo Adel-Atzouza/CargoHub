@@ -43,38 +43,42 @@ Accept: application/json
 
 ### Add New Order
 POST http://localhost:3000/api/order
-ApiKey: FM-WH01
 Content-Type: application/json
+ApiKey: Admin
+
 
 {
-  "sourceId": 1001,
-  "orderDate": "2024-11-18T00:00:00Z",
-  "requestDate": "2024-11-20T00:00:00Z",
-  "reference": "ORD1001",
-  "referenceExtra": "Urgent delivery",
-  "orderStatus": "Pending",
-  "notes": "Handle with care",
-  "shippingNotes": "Fragile items",
-  "pickingNotes": "Double-check quantities",
-  "warehouseId": 1,
-  "shipTo": null,
-  "billTo": null,
-  "shipmentId": null,
-  "totalAmount": 2500.00,
-  "totalDiscount": 200.00,
-  "totalTax": 300.00,
-  "totalSurcharge": 50.00,
-  "items": [
-    {
-      "itemId": "ITEM001",
-      "amount": 10
-    },
-    {
-      "itemId": "ITEM002",
-      "amount": 5
-    }
-  ]
+    "sourceId": 1,
+    "orderDate": "2024-11-18T00:00:00Z",
+    "requestDate": "2024-11-20T00:00:00Z",
+    "reference": "ORD123",
+    "referenceExtra": "Extra details",
+    "orderStatus": "Pending",
+    "notes": "Order notes",
+    "shippingNotes": "Shipping instructions",
+    "pickingNotes": "Picking instructions",
+    "warehouseId": 1,
+    "shipTo": 2,
+    "billTo": 3,
+    "shipmentId": 4,
+    "totalAmount": 100.50,
+    "totalDiscount": 5.50,
+    "totalTax": 10.00,
+    "totalSurcharge": 2.00,
+    "items": [
+        {
+            "itemId": "UID123",
+            "amount": 2
+        },
+        {
+            "itemId": "UID456",
+            "amount": 5
+        }
+    ]
 }
+
+
+
 
 
 # Response:

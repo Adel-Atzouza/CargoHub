@@ -46,6 +46,12 @@ namespace CargoHub
         {
             base.OnModelCreating(modelBuilder);
 
+
+            modelBuilder.Entity<Shipment>()
+                .HasMany(s => s.orders)  // A Shipment can have many Orders
+                .WithOne(o => o.Shipment)  // Each Order belongs to one Shipment
+                .HasForeignKey(o => o.ShipmentId);  // The foreign key in Order is 'ShipmentId'
+
             modelBuilder.Entity<Order>()
                 .HasOne(o => o.ShipToClient)
                 .WithMany()

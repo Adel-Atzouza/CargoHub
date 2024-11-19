@@ -1,196 +1,43 @@
-# Add Shipment with a List of Order IDs
-POST http://localhost:3000/api/v1/shipment
-Content-Type: application/json
-
-{
-  "sourceId": 33,
-  "orderdate": "2024-11-11T00:00:00Z",
-  "requestDate": "2024-11-12T00:00:00Z",
-  "shipmentDate": "2024-11-15T00:00:00Z",
-  "shipmentType": "Express",
-  "shipmentStatus": "Shipped",
-  "notes": "Express delivery",
-  "carrierCode": "XYZ456",
-  "carrierDescription": "XYZ Logistics",
-  "serviceCode": "Express",
-  "paymentType": "Prepaid",
-  "transferMode": "Air",
-  "totalPackageCount": 5,
-  "totalPackageWeight": 50.5,
-  "orderIds": [1, 2, 3]
-}
-
-### Response:
-"Shipment added successfully."
-
-### Get All Shipments (with related Orders and Items)
-GET http://localhost:3000/api/v1/shipment
-Accept: application/json
-
-#Response:
-[
-  {
-    "id": 1,
-    "sourceId": 33,
-    "orderdate": "2019-04-03T11:33:15Z",
-    "requestDate": "2019-04-07T11:33:15Z",
-    "shipmentDate": "2024-11-11T00:00:00Z",
-    "shipmentType": "Express",
-    "shipmentStatus": "Shipped",
-    "notes": "Urgent shipment",
-    "carrierCode": "XYZ123",
-    "carrierDescription": "XYZ Logistics",
-    "serviceCode": "Standard",
-    "paymentType": "Prepaid",
-    "transferMode": "Air",
-    "totalPackageCount": 10,
-    "totalPackageWeight": 100.5,
-    "createdAt": "2024-11-11T00:00:00Z",
-    "updatedAt": "2024-11-11T00:00:00Z",
-    "orders": [
-      {
-        "id": 1,
-        "sourceId": 33,
-        "orderDate": "2019-04-03T11:33:15Z",
-        "requestDate": "2019-04-07T11:33:15Z",
-        "reference": "ORD00001",
-        "totalAmount": 9905.13,
-        "createdAt": "2019-04-03T11:33:15Z",
-        "updatedAt": "2019-04-05T07:33:15Z",
-        "orderItems": [
-          {
-            "item": {
-              "id": 1,
-              "uid": "P007435",
-              "code": "Item1",
-              "description": "First item",
-              "unitOrderQuantity": 23
-            },
-            "amount": 23
-          },
-          {
-            "item": {
-              "id": 2,
-              "uid": "P009557",
-              "code": "Item2",
-              "description": "Second item",
-              "unitOrderQuantity": 1
-            },
-            "amount": 1
-          },
-          {
-            "item": {
-              "id": 3,
-              "uid": "P009553",
-              "code": "Item3",
-              "description": "Third item",
-              "unitOrderQuantity": 50
-            },
-            "amount": 50
-          }
-        ]
-      }
-    ]
-  }
-]
-
-# Get Shipment by ID (with related Orders and Items)
+### Get a shipment by id
 GET http://localhost:3000/api/v1/shipment/1
-Accept: application/json
+Content-Type: application/json
+ApiKey: Admin
 
-### Response:
+#### Response Example
 {
   "id": 1,
-  "sourceId": 33,
-  "orderdate": "2019-04-03T11:33:15Z",
-  "requestDate": "2019-04-07T11:33:15Z",
-  "shipmentDate": "2024-11-11T00:00:00Z",
-  "shipmentType": "Express",
-  "shipmentStatus": "Shipped",
-  "notes": "Urgent shipment",
-  "carrierCode": "XYZ123",
-  "carrierDescription": "XYZ Logistics",
-  "serviceCode": "Standard",
+  "sourceId": 1,
+  "orderdate": "2024-11-18T13:39:15",
+  "requestDate": "2024-11-19T13:39:15",
+  "shipmentDate": "2024-11-19T14:00:00",
+  "shipmentType": "Air",
+  "shipmentStatus": "Pending",
+  "notes": "Fragile items",
+  "carrierCode": "DHL",
+  "carrierDescription": "DHL Express",
+  "serviceCode": "DHL01",
   "paymentType": "Prepaid",
-  "transferMode": "Air",
-  "totalPackageCount": 10,
-  "totalPackageWeight": 100.5,
-  "createdAt": "2024-11-11T00:00:00Z",
-  "updatedAt": "2024-11-11T00:00:00Z",
+  "totalPackageCount": 3,
+  "totalPackageWeight": 15.5,
+  "createdAt": "2024-11-18T13:39:15",
+  "updatedAt": "2024-11-19T13:39:15",
   "orders": [
     {
       "id": 1,
-      "sourceId": 33,
-      "orderDate": "2019-04-03T11:33:15Z",
-      "requestDate": "2019-04-07T11:33:15Z",
-      "reference": "ORD00001",
-      "totalAmount": 9905.13,
-      "createdAt": "2019-04-03T11:33:15Z",
-      "updatedAt": "2019-04-05T07:33:15Z",
+      "orderDate": "2024-11-19T08:45:47",
+      "requestDate": "2024-11-20T08:45:47",
+      "reference": "ORD123",
+      "orderStatus": "Pending",
       "orderItems": [
         {
-          "item": {
-            "id": 1,
-            "uid": "P007435",
-            "code": "Item1",
-            "description": "First item",
-            "unitOrderQuantity": 23
-          },
-          "amount": 23
+          "itemId": "ITEM001",
+          "amount": 2
         },
         {
-          "item": {
-            "id": 2,
-            "uid": "P009557",
-            "code": "Item2",
-            "description": "Second item",
-            "unitOrderQuantity": 1
-          },
-          "amount": 1
-        },
-        {
-          "item": {
-            "id": 3,
-            "uid": "P009553",
-            "code": "Item3",
-            "description": "Third item",
-            "unitOrderQuantity": 50
-          },
-          "amount": 50
+          "itemId": "ITEM002",
+          "amount": 3
         }
       ]
     }
   ]
 }
-
-# Update Existing Shipment
-PUT http://localhost:3000/api/v1/shipment/1
-Content-Type: application/json
-
-{
-  "sourceId": 33,
-  "orderdate": "2024-11-11T00:00:00Z",
-  "requestDate": "2024-11-12T00:00:00Z",
-  "shipmentDate": "2024-11-15T00:00:00Z",
-  "shipmentType": "Express",
-  "shipmentStatus": "Shipped",
-  "notes": "Updated delivery",
-  "carrierCode": "XYZ789",
-  "carrierDescription": "XYZ Logistics",
-  "serviceCode": "Express",
-  "paymentType": "Prepaid",
-  "transferMode": "Air",
-  "totalPackageCount": 8,
-  "totalPackageWeight": 75.0,
-  "orderIds": [1, 2, 3]
-}
-
-### Response:
-"Shipment updated successfully."
-
-# Remove Shipment
-DELETE http://localhost:3000/api/v1/shipment/1
-Accept: application/json
-
-### Response:
-"Shipment removed successfully."

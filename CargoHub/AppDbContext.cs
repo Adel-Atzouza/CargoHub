@@ -46,11 +46,18 @@ namespace CargoHub
         {
             base.OnModelCreating(modelBuilder);
 
-
+    // Shipment - Order relationship: one shipment can have multiple orders
             modelBuilder.Entity<Shipment>()
-                .HasMany(s => s.orders)  // A Shipment can have many Orders
-                .WithOne(o => o.Shipment)  // Each Order belongs to one Shipment
-                .HasForeignKey(o => o.ShipmentId);  // The foreign key in Order is 'ShipmentId'
+                .HasMany(s => s.orders)          // One shipment has many orders
+                .WithOne(o => o.Shipment)       // Each order has one shipment
+                .HasForeignKey(o => o.ShipmentId)  // Foreign key in the Orders table
+                .IsRequired(false);  // ShipmentId in Orders is optional (nullable)
+
+            modelBuilder.Entity<Order>()
+                .HasOne(o => o.Shipment)
+                .WithMany(s => s.orders)
+                .HasForeignKey(o => o.ShipmentId)
+                .IsRequired(false);  // Allow nulls for shipment in Orders (since some orders might not have shipments)
 
             modelBuilder.Entity<Order>()
                 .HasOne(o => o.ShipToClient)

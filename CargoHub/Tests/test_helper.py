@@ -78,7 +78,6 @@ item_1 = {
 }
 
 item_2 = {
-    "id": 0,
     "uid": "P000001",
     "code": "sjQ23408K",
     "description": "Face-to-face clear-thinking complexity",

@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CargoHub.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20241111114439_ItemsAndItemTypes")]
-    partial class ItemsAndItemTypes
+    [Migration("20241120140018_itemsnewwwversion")]
+    partial class itemsnewwwversion
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -42,9 +42,8 @@ namespace CargoHub.Migrations
 
             modelBuilder.Entity("CargoHub.Item", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("Uid")
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Code")
                         .HasColumnType("TEXT");
@@ -96,9 +95,6 @@ namespace CargoHub.Migrations
                         .HasColumnType("TEXT")
                         .HasAnnotation("Relational:JsonPropertyName", "supplier_part_number");
 
-                    b.Property<string>("Uid")
-                        .HasColumnType("TEXT");
-
                     b.Property<int>("UnitOrderQuantity")
                         .HasColumnType("INTEGER")
                         .HasAnnotation("Relational:JsonPropertyName", "unit_order_quantity");
@@ -115,7 +111,7 @@ namespace CargoHub.Migrations
                         .HasColumnType("TEXT")
                         .HasAnnotation("Relational:JsonPropertyName", "updated_at");
 
-                    b.HasKey("Id");
+                    b.HasKey("Uid");
 
                     b.ToTable("Items");
                 });

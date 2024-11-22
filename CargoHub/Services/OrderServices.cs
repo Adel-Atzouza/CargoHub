@@ -4,6 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using CargoHub.Models;
+using System.Runtime.CompilerServices;
+using Microsoft.EntityFrameworkCore.Infrastructure.Internal;
 
 namespace CargoHub.Services
 {
@@ -186,6 +188,64 @@ namespace CargoHub.Services
             return order;
         }
 
+        public async Task<bool> ItemExist(string itemid)
+        {
+            return await _context.Items.AnyAsync(i => i.Uid == itemid);
+        }
+
+        public async Task<string> UpdateitemsInOrder(int orderid, List<ItemDTO> orderitems )
+        {
+            foreach( var x in orderitems)
+            {
+                if(!await ItemExist(x.ItemId))
+                {
+                    return $"item met id {x.ItemId} is not found";
+                }
+            }
+            var Updateorder = await GetOrderWithItems(orderid);
+            if(Updateorder == null ){
+                return $"order with {orderid} not found";
+            }
+
+            var currentitems = Updateorder.Items;
+
+            //STAP 1 het updaten van bestaande items in the huidige order
+            foreach (var x in currentitems)
+            {
+                foreach(var y in orderitems)
+                {
+
+                    if (x.ItemId == y.ItemId)
+                    {
+                        var inventoryitem = await _context.Inventory.FirstOrDefaultAsync(i => i.ItemId == x.ItemId);
+                        if(inventoryitem != null){
+                            inventoryitem.TotalAllocated += y.Amount - x.Amount;
+                        }
+                        x.Amount = y.Amount;
+                        break;
+                    }
+                }
+            }
+
+            //STAP 2 het toevoegen van nieuwe items aan de huidige order
+            foreach (var y in orderitems)
+            {
+                var existingItem = currentitems.FirstOrDefault(i => i.ItemId == y.ItemId);
+                {
+
+                }
+            }
+            
+
+
+
+
+            
+
+
+
+            
+        }
         // Method to delete an order by ID
         public async Task<bool> DeleteOrder(int id)
         {

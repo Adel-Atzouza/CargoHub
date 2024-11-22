@@ -12,7 +12,7 @@ public class ItemLinesService
     public async Task<List<object>> GetMultipleItemLines(int[] LinesIds)
     {
         List<object> FoundItemLines = new();
-        foreach(int id in LinesIds)
+        foreach (int id in LinesIds)
         {
             ItemLine? FoundItemLine = await GetItemLine(id);
             if (FoundItemLine == null)
@@ -30,6 +30,7 @@ public class ItemLinesService
     {
         ItemLine? ItemLine = await _context.ItemLines.FindAsync(Id);
         return ItemLine;
+        
     }
 
     public async Task<bool> AddItemLine(ItemLine itemLine)
@@ -40,29 +41,29 @@ public class ItemLinesService
             return false;
         }
         _context.ItemLines.Add(itemLine);
-        _context.SaveChanges();
-        return true;
+        int result = _context.SaveChanges();
+        return result > 0 ? true : false;
 
     }
 
     public async Task<bool> UpdateItemLine(int id, ItemLine itemLine)
     {
         ItemLine? Found = await _context.ItemLines.FindAsync(id);
-        if(itemLine == null || Found == null) return false;
+        if (itemLine == null || Found == null) return false;
         Found.Name = itemLine.Name;
         Found.Description = itemLine.Description;
         _context.ItemLines.Update(Found);
-        _context.SaveChanges();
-        return true;
+        int result = _context.SaveChanges();
+        return result > 0 ? true : false;
     }
 
     public async Task<bool> DeleteItemLine(int id)
     {
         ItemLine? Found = await _context.ItemLines.FindAsync(id);
-        if(Found == null) return false;
+        if (Found == null) return false;
         _context.ItemLines.Remove(Found);
-        _context.SaveChanges();
-        return true;
+        int result = _context.SaveChanges();
+        return result > 0 ? true : false;
 
     }
 

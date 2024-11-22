@@ -14,15 +14,15 @@ builder.Services.AddTransient<SupplierService>();
 
 var app = builder.Build();
 
-app.Use(async (context, next) =>
-{
-    if (!context.Request.Headers.ContainsKey("ApiKey"))
-    {
-        context.Response.StatusCode = 401;
-        return;
-    }
-    await next.Invoke();
-});
+// app.Use(async (context, next) =>
+// {
+//     if (!context.Request.Headers.ContainsKey("ApiKey"))
+//     {
+//         context.Response.StatusCode = 401;
+//         return;
+//     }
+//     await next.Invoke();
+// });
 app.MapControllers();
 app.Urls.Add("http://localhost:3000");
 

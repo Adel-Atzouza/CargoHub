@@ -16,7 +16,7 @@ public class ItemGroupsService
     public async Task<List<object>> GetMultipleItemGroups(int[] GroupsIds)
     {
         List<object> FoundItemGroups = new();
-        foreach(int id in GroupsIds)
+        foreach (int id in GroupsIds)
         {
             ItemGroup? FoundItemGroup = await GetItemGroup(id);
             if (FoundItemGroup == null)
@@ -30,9 +30,13 @@ public class ItemGroupsService
         }
         return FoundItemGroups;
     }
+
     public async Task<ItemGroup?> GetItemGroup(int Id)
     {
         ItemGroup? ItemGroup = await _context.ItemGroups.FindAsync(Id);
+        Console.WriteLine("========");
+        Console.WriteLine(ItemGroup);
+        Console.WriteLine("========");
         return ItemGroup;
     }
 
@@ -44,12 +48,11 @@ public class ItemGroupsService
             return false;
         }
         _context.ItemGroups.Add(itemGroup);
-        await _context.SaveChangesAsync();
-        return true;
-
-
-
+        int result = await _context.SaveChangesAsync();
+        return result > 0 ? true : false;
     }
+
+
 
     public async Task<bool> UpdateItemGroup(int id, ItemGroup itemGroup)
     {
@@ -59,8 +62,8 @@ public class ItemGroupsService
         Found.Name = itemGroup.Name;
         Found.Description = itemGroup.Description;
         _context.ItemGroups.Update(Found);
-        await _context.SaveChangesAsync();
-        return true;
+        int result = await _context.SaveChangesAsync();
+        return result > 0 ? true : false;
     }
 
     public async Task<bool> DeleteItemGroup(int id)
@@ -68,8 +71,8 @@ public class ItemGroupsService
         ItemGroup? Found = await _context.ItemGroups.FindAsync(id);
         if (Found == null) return false;
         _context.ItemGroups.Remove(Found);
-        _context.SaveChanges();
-        return true;
+        int result = _context.SaveChanges();
+        return result > 0 ? true : false;
 
     }
 

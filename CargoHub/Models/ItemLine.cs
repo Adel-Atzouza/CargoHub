@@ -1,15 +1,17 @@
 namespace CargoHub
 {
-    public class ItemLine: BaseModel
+
+    public class ItemLine : BaseModel
     {
         public int Id { get; set; }
-        public string? Name { get; set; }
-        public string? Description { get; set; }
+        public string Name { get; set; }
+        public string Description { get; set; }
 
+        // Foreign key
         public int ItemGroupId { get; set; }
-        public ItemGroup ItemGroup { get; set; }
 
-        // Navigation property
-        public ICollection<ItemType> ItemTypes { get; set; } = new List<ItemType>();
+        // Navigation properties
+        public ItemGroup ItemGroup { get; set; }
+        public ICollection<ItemType> ItemTypes { get; set; }
     }
 }

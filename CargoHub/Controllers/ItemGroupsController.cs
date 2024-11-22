@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Mvc;
 namespace CargoHub
 {
     [Route("api/v1/[Controller]")]
-    [AuthorizationFilter]
     public class ItemGroupsController : ControllerBase
     {
         ItemGroupsService Service;
@@ -26,12 +25,13 @@ namespace CargoHub
             ItemGroup? Response = await Service.GetItemGroup(id);
             return Response is null ? NotFound($"The ItemGroup with Id {id} cannot be found") : Ok(Response);
         }
+
         [HttpPost()]
         public async Task<IActionResult> PostItemGroup([FromBody] ItemGroup itemGroup)
         {
             bool response = await Service.AddItemGroup(itemGroup);
-            return response ? Ok($"The item groups with id {itemGroup.Id} has been added")
-                            : BadRequest("The item group that you're trying to add already exists");
+            return response ? Ok($"The item groups {itemGroup} has been added")
+                            : BadRequest("The item group that you're trying to add is not valid or already exists");
         }
         [HttpPut()]
         public async Task<IActionResult> PutItemGroup([FromQuery] int id, [FromBody] ItemGroup Group)

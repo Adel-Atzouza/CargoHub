@@ -27,7 +27,6 @@ public class ShipmentController : ControllerBase
         {
             return NotFound($"Shipment with ID {id} not found.");
         }
-
         return Ok(shipment);
     }
 }

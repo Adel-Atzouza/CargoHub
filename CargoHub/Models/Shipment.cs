@@ -9,8 +9,6 @@ namespace CargoHub.Models{
 public class Shipment{
 
     public int Id {get; set;}
-    [JsonIgnore]
-    public int OrderId {get; set;}
     public int SourceId {get; set;}
     public DateTime Orderdate {get; set;}
     public DateTime RequestDate { get; set; }
@@ -30,5 +28,12 @@ public class Shipment{
     public List<Order>? orders { get; set; }
 
 }
-
+public class ShipmentDTO
+{
+    public int Id { get; set; }
+    public DateTime ShipmentDate { get; set; }
+    public string ShipmentType { get; set; }
+    public string ShipmentStatus { get; set; }
+    public List<OrderWithItemsDTO> Orders { get; set; } = new List<OrderWithItemsDTO>();
+}
 }

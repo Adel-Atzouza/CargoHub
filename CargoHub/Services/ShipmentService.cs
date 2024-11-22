@@ -7,25 +7,50 @@ using System.Threading.Tasks;
 
 namespace CargoHub.Services
 {
-    public class ShipmentService
-    {
-        private readonly AppDbContext _context;
+public class ShipmentService
+{
+    private readonly AppDbContext _context;
 
-        public ShipmentService(AppDbContext context)
+    public ShipmentService(AppDbContext context)
+    {
+        _context = context;
+    }
+
+    public async Task<ShipmentDTO?> GetShipmentByIdAsync(int shipmentId)
+    {
+        var shipment = await _context.Shipments
+            .Include(s => s.orders)
+                .ThenInclude(o => o.OrderItems)
+                    .ThenInclude(oi => oi.Item)
+            .FirstOrDefaultAsync(s => s.Id == shipmentId);
+
+        if (shipment == null)
         {
-            _context = context;
+            return null;
         }
 
-        public async Task<Shipment?> GetShipmentByIdAsync(int id)
+        // Map to ShipmentDTO
+        var shipmentDTO = new ShipmentDTO
+        {
+            Id = shipment.Id,
+            ShipmentDate = shipment.ShipmentDate,
+            ShipmentType = shipment.ShipmentType,
+            ShipmentStatus = shipment.ShipmentStatus,
+            Orders = shipment.orders.Select(o => new OrderWithItemsDTO
             {
-                var shipment = await _context.Shipments
-                    .Include(s => s.orders)            // Load Orders related to the Shipment
-                    .ThenInclude(o => o.OrderItems)    // Load OrderItems for each Order
-                    .FirstOrDefaultAsync(s => s.Id == id);
+                Id = o.Id,
+                Reference = o.Reference,
+                OrderDate = o.OrderDate,
+                TotalAmount = o.TotalAmount,
+                Items = o.OrderItems.Select(oi => new ItemDTO
+                {
+                    ItemId = oi.Item.Uid,
+                    Amount = oi.Amount
+                }).ToList()
+            }).ToList()
+        };
 
-                return shipment;
-            }
-
-
+        return shipmentDTO;
     }
+}
 }

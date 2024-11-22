@@ -18,6 +18,7 @@ builder.Services.AddTransient<LocationService>();
 builder.Services.AddTransient<ShipmentService>();
 
 
+
 var app = builder.Build();
 app.Use(async (context, next) =>
 {

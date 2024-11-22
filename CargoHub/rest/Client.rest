@@ -1,0 +1,26 @@
+@baseUrl = http://localhost:3000/api/v1/clients
+
+###
+POST {{baseUrl}}
+Content-Type: application/json
+
+{
+    "id": 0,
+    "name": "RandomName",
+    "address": "RandomAdress101",
+    "city": "CityOfTheRandom",
+    "zipcode": "3251FY",
+    "province": "Gelderland",
+    "country": "NL",
+    "contactname": "DikkePopper",
+    "contactphone": "06 123 456 78",
+    "contactemail": "nickteunissen@example.com",
+    "created_at": "2008-02-22T19:55:39",
+    "updated_at": "2009-08-28T23:15:50"
+}
+
+###
+GET {{baseUrl}}/10
+
+###
+GET {{baseUrl}}

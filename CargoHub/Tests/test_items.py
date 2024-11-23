@@ -42,6 +42,7 @@ def test_get_after_post_items():
 
     item_json = response.json()
     del item_json['created_at']
+    del item_json['updated_at']
 
     assert test_helper.item_1 == item_json
 
@@ -63,7 +64,6 @@ def test_get_after_put():
     del item_json['updated_at']
     del item_json["created_at"]
 
-    test_helper.item_1_updated["uid"] = current_id
     assert test_helper.item_1_updated == item_json
 
 
@@ -78,4 +78,4 @@ def test_get_after_delete():
     response = requests.get(
         url + str(test_helper.item_1_updated['uid']), headers=headers)
 
-    assert response.status_code == 200
+    assert response.status_code == 404

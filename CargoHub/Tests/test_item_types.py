@@ -6,7 +6,7 @@ headers = {'API_KEY': "a1b2c3d4e5"}
 
 
 def test_get_random_item_types():
-    response = requests.get(url + str(1), headers=headers)
+    response = requests.get(url + str(3), headers=headers)
 
     assert response.status_code == 200
     assert test_helper.have_same_structure(

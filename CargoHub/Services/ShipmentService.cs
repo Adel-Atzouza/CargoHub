@@ -69,5 +69,18 @@ namespace CargoHub.Services
             // Return the mapped shipment object
             return result;
         }
+
+        public async Task<bool> DeleteShipment(int id)
+        {
+            var shipment = await _context.Shipments.FindAsync(id);
+
+            if (shipment == null)
+            {
+                return false;
+            }
+            _context.Shipments.Remove(shipment);
+            await _context.SaveChangesAsync();
+            return true;
+        }
     }
 }

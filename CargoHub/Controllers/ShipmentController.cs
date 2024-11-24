@@ -29,6 +29,16 @@ public class ShipmentController : ControllerBase
         }
         return Ok(shipment);
     }
-}
 
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteShipment(int id){
+        var shipment = await _shipmentService.DeleteShipment(id);
+
+        if (!shipment)
+        {
+            return NotFound($"shipment with {id} does not exist");
+        }
+        return Ok($"Order with ID {id} deleted successfully.");
+    }
+}
 }

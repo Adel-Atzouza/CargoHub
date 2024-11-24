@@ -1,0 +1,100 @@
+# Get Location by ID
+GET http://localhost:3000/api/v1/location/1
+ApiKey: 
+Accept: application/json
+
+
+### Response:
+{
+  "id": 1,
+  "code": "T01",
+  "name": "Test Location",
+  "createdAt": "2024-11-11T00:00:00Z",
+  "updatedAt": "2024-11-11T00:00:00Z"
+}
+
+### Get Location by Non-Existing ID
+GET http://localhost:3000/api/v1/location/999
+Accept: application/json
+
+ Response:
+{
+  "message": "Location not found."
+}
+
+### Get All Locations (with query parameter)
+GET http://localhost:3000/api/v1/location?id=0
+Accept: application/json
+
+# Response:
+[
+  {
+    "id": 1,
+    "code": "T01",
+    "name": "Location 1",
+    "createdAt": "2024-11-11T00:00:00Z",
+    "updatedAt": "2024-11-11T00:00:00Z"
+  },
+  {
+    "id": 2,
+    "code": "T02",
+    "name": "Location 2",
+    "createdAt": "2024-11-11T00:00:00Z",
+    "updatedAt": "2024-11-11T00:00:00Z"
+  }
+]
+
+###Get Locations in a Specific Warehouse
+GET http://localhost:3000/api/v1/location/warehouse/1
+Accept: application/json
+
+#Response:
+[
+  {
+    "id": 1,
+    "code": "T01",
+    "name": "Location 1",
+    "createdAt": "2024-11-11T00:00:00Z",
+    "updatedAt": "2024-11-11T00:00:00Z"
+  }
+]
+
+
+### Add New Location (with all fields)
+POST http://localhost:3000/api/v1/location
+Content-Type: application/json
+
+{
+  "id": 0,
+  "warehouseId": 1,
+  "code": "L03",
+  "name": "New Location",
+  "createdAt": "2024-11-11T00:00:00Z",
+  "updatedAt": "2024-11-11T00:00:00Z"
+}
+
+# Response:
+"Location added successfully."
+
+### Update Existing Location
+PUT http://localhost:3000/api/v1/location/1
+Content-Type: application/json
+
+{
+  "id": 1,
+  "warehouseId": 1,
+  "code": "L01",
+  "name": "Updated Location",
+  "createdAt": "2024-11-11T00:00:00Z",
+  "updatedAt": "2024-11-11T00:00:00Z"
+}
+
+# Response:
+"Location updated successfully."
+
+### Remove Location
+DELETE http://localhost:3000/api/v1/location/1
+Accept: application/json
+
+### Response:
+"Location removed successfully."

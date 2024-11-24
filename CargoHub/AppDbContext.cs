@@ -86,4 +86,4 @@ namespace CargoHub
 
         // Constructor accepting DbContextOptions
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
-}
+}}

@@ -7,50 +7,67 @@ using System.Threading.Tasks;
 
 namespace CargoHub.Services
 {
-public class ShipmentService
-{
-    private readonly AppDbContext _context;
-
-    public ShipmentService(AppDbContext context)
+    public class ShipmentService
     {
-        _context = context;
-    }
+        private readonly AppDbContext _context;
 
-    public async Task<ShipmentDTO?> GetShipmentByIdAsync(int shipmentId)
-    {
-        var shipment = await _context.Shipments
-            .Include(s => s.orders)
-                .ThenInclude(o => o.OrderItems)
-                    .ThenInclude(oi => oi.Item)
-            .FirstOrDefaultAsync(s => s.Id == shipmentId);
-
-        if (shipment == null)
+        // Constructor to inject the AppDbContext dependency
+        public ShipmentService(AppDbContext context)
         {
-            return null;
+            _context = context;
         }
 
-        // Map to ShipmentDTO
-        var shipmentDTO = new ShipmentDTO
+        // Method to get a specific shipment by its ID, including related orders and items
+        public async Task<object?> GetShipmentByIdAsync(int shipmentId)
         {
-            Id = shipment.Id,
-            ShipmentDate = shipment.ShipmentDate,
-            ShipmentType = shipment.ShipmentType,
-            ShipmentStatus = shipment.ShipmentStatus,
-            Orders = shipment.orders.Select(o => new OrderWithItemsDTO
-            {
-                Id = o.Id,
-                Reference = o.Reference,
-                OrderDate = o.OrderDate,
-                TotalAmount = o.TotalAmount,
-                Items = o.OrderItems.Select(oi => new ItemDTO
-                {
-                    ItemId = oi.Item.Uid,
-                    Amount = oi.Amount
-                }).ToList()
-            }).ToList()
-        };
+            // Query the database to retrieve the shipment by its ID
+            var shipment = await _context.Shipments
+                .Include(s => s.orders) // Include related orders
+                .ThenInclude(o => o.OrderItems) // Include order items for each order
+                .ThenInclude(oi => oi.Item) // Include item details for each order item
+                .FirstOrDefaultAsync(s => s.Id == shipmentId); // Find the shipment by its ID
 
-        return shipmentDTO;
+            // If the shipment is not found, return null
+            if (shipment == null)
+            {
+                return null;
+            }
+
+            // Map the shipment to a custom object with the desired structure
+            var result = new
+            {
+                shipment.Id, // Shipment ID
+                shipment.SourceId, // Source ID
+                shipment.ShipmentDate, // Date of shipment
+                shipment.ShipmentType, // Type of shipment (e.g., Air, Sea)
+                shipment.ShipmentStatus, // Current status of the shipment
+                shipment.Notes, // Additional notes for the shipment
+                shipment.CarrierCode, // Carrier code (e.g., DHL, FedEx)
+                shipment.CarrierDescription, // Description of the carrier
+                shipment.ServiceCode, // Service code for the shipment
+                shipment.PaymentType, // Payment type (e.g., Prepaid, Collect)
+                shipment.TransferMode, // Mode of transfer (e.g., Road, Rail)
+                shipment.TotalPackageCount, // Total number of packages in the shipment
+                shipment.TotalPackageWeight, // Total weight of the packages
+                shipment.CreatedAt, // Timestamp for when the shipment was created
+                shipment.UpdatedAt, // Timestamp for the last update to the shipment
+                Orders = shipment.orders.Select(o => new
+                {
+                    o.Id, // Order ID
+                    o.OrderDate, // Date the order was placed
+                    o.RequestDate, // Requested delivery date
+                    o.Reference, // Order reference number
+                    o.OrderStatus, // Status of the order (e.g., Pending, Delivered)
+                    Items = o.OrderItems.Select(oi => new
+                    {
+                        ItemId = oi.Item.Uid, // Unique identifier for the item
+                        oi.Amount // Quantity of the item in the order
+                    })
+                })
+            };
+
+            // Return the mapped shipment object
+            return result;
+        }
     }
-}
 }

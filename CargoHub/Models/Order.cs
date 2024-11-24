@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace CargoHub.Models{
 
-public class Order
+public class Order : BaseModel
 {
     public int Id { get; set; }
     public int SourceId { get; set; }
@@ -33,8 +33,6 @@ public class Order
     public decimal TotalDiscount { get; set; }
     public decimal TotalTax { get; set; }
     public decimal TotalSurcharge { get; set; }
-    public DateTime CreatedAt { get; set; }
-    public DateTime UpdatedAt { get; set; }
 
     // Avoid serializing the OrderItems navigation property
     [JsonIgnore]

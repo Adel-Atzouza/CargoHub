@@ -6,7 +6,7 @@ using System.Text.Json.Serialization;
 
 namespace CargoHub.Models{
 
-public class Shipment{
+public class Shipment : BaseModel{
 
     public int Id {get; set;}
     public int SourceId {get; set;}
@@ -23,8 +23,6 @@ public class Shipment{
     public string? TransferMode { get; set; }
     public int TotalPackageCount { get; set; }
     public decimal TotalPackageWeight { get; set; }
-    public DateTime CreatedAt { get; set; }
-    public DateTime UpdatedAt { get; set; }
     public List<Order>? orders { get; set; }
 
 }

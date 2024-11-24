@@ -46,41 +46,41 @@ namespace CargoHub
         {
             base.OnModelCreating(modelBuilder);
 
-    // Shipment - Order relationship: one shipment can have multiple orders
             modelBuilder.Entity<Shipment>()
-                .HasMany(s => s.orders)          // One shipment has many orders
-                .WithOne(o => o.Shipment)       // Each order has one shipment
-                .HasForeignKey(o => o.ShipmentId)  // Foreign key in the Orders table
-                .IsRequired(false);  // ShipmentId in Orders is optional (nullable)
+                .HasMany(s => s.orders)          // Een zending kan meerdere orders bevatten
+                .WithOne(o => o.Shipment)       // Elke order hoort bij één zending
+                .HasForeignKey(o => o.ShipmentId)  // Dit is de koppeling via ShipmentId in de Orders-tabel
+                .IsRequired(false);  // ShipmentId mag leeg zijn, want niet elke order heeft een zending
 
             modelBuilder.Entity<Order>()
-                .HasOne(o => o.Shipment)
-                .WithMany(s => s.orders)
-                .HasForeignKey(o => o.ShipmentId)
-                .IsRequired(false);  // Allow nulls for shipment in Orders (since some orders might not have shipments)
+                .HasOne(o => o.Shipment)       // Een order kan gekoppeld zijn aan één zending
+                .WithMany(s => s.orders)       // Een zending kan meerdere orders bevatten
+                .HasForeignKey(o => o.ShipmentId) // De koppeling is via ShipmentId in de Orders-tabel
+                .IsRequired(false);            // Toegestaan dat een order geen zending heeft (nullable)
 
             modelBuilder.Entity<Order>()
-                .HasOne(o => o.ShipToClient)
-                .WithMany()
-                .HasForeignKey(o => o.ShipTo);
+                .HasOne(o => o.ShipToClient)   // Een order heeft één ontvanger (ShipTo)
+                .WithMany()                    // Er is geen navigatie terug naar alle orders van de ontvanger
+                .HasForeignKey(o => o.ShipTo); // De koppeling gebeurt via ShipTo (foreign key)
 
             modelBuilder.Entity<Order>()
-                .HasOne(o => o.BillToClient)
-                .WithMany()
-                .HasForeignKey(o => o.BillTo);
-                
-            modelBuilder.Entity<OrderItem>()
-                .HasKey(oi => new { oi.OrderId, oi.ItemId });  // Composite key for OrderItem
+                .HasOne(o => o.BillToClient)   // Een order heeft één klant die de rekening krijgt (BillTo)
+                .WithMany()                    // Geen navigatie terug naar alle orders van de klant
+                .HasForeignKey(o => o.BillTo); // De koppeling gebeurt via BillTo (foreign key)
 
             modelBuilder.Entity<OrderItem>()
-                .HasOne(oi => oi.Order)
-                .WithMany(o => o.OrderItems)
-                .HasForeignKey(oi => oi.OrderId);
+                .HasKey(oi => new { oi.OrderId, oi.ItemUid });  // Primaire sleutel: combinatie van OrderId en ItemUid
 
             modelBuilder.Entity<OrderItem>()
-                .HasOne(oi => oi.Item)
-                .WithMany(i => i.OrderItems)
-                .HasForeignKey(oi => oi.ItemId);  // Foreign key relationship using ItemId (int)
+                .HasOne(oi => oi.Order)        // Een OrderItem hoort bij één order
+                .WithMany(o => o.OrderItems)   // Een order kan meerdere OrderItems hebben
+                .HasForeignKey(oi => oi.OrderId); // De koppeling is via OrderId
+
+            modelBuilder.Entity<OrderItem>()
+                .HasOne(oi => oi.Item)         // Een OrderItem hoort bij één specifiek item
+                .WithMany(i => i.OrderItems)   // Een item kan in meerdere orders voorkomen
+                .HasForeignKey(oi => oi.ItemUid);  // De koppeling is via ItemUid
+
 
         }
 

@@ -11,72 +11,91 @@ namespace CargoHub.Services
     {
         private readonly AppDbContext _context;
 
+        // Constructor: Inject de databasecontext (AppDbContext)
         public LocationService(AppDbContext context)
         {
             _context = context;
         }
 
+        // Haal een lijst van locaties op, beginnend vanaf een bepaalde ID
         public async Task<List<Location>> GetLocations(int id)
         {
-            return await _context.Locations // Corrected to 'Locations'
-                .Where(location => location.Id >= id)
-                .OrderBy(location => location.Id)
-                .Take(100)
-                .ToListAsync();
+            return await _context.Locations
+                .Where(location => location.Id >= id) // Filter: ID moet gelijk of groter zijn dan meegegeven ID
+                .OrderBy(location => location.Id) // Sorteer de locaties op ID (oplopend)
+                .Take(100) // Pak de eerste 100 resultaten
+                .ToListAsync(); // Haal de lijst asynchroon op
         }
 
+        // Haal één specifieke locatie op op basis van ID
         public async Task<Location> GetLocation(int id)
         {
-            return await _context.Locations // Corrected to 'Locations'
-                .FirstOrDefaultAsync(location => location.Id == id);
+            return await _context.Locations
+                .FirstOrDefaultAsync(location => location.Id == id); // Zoek naar de eerste locatie met de juiste ID
         }
 
+        // Haal alle locaties op die horen bij een specifieke warehouse
         public async Task<List<Location>> GetLocationWarehouse(int id)
         {
-            return await _context.Locations // Corrected to 'Locations'
-                .Where(loc => loc.WarehouseId == id)
-                .ToListAsync();
+            return await _context.Locations
+                .Where(loc => loc.WarehouseId == id) // Filter: WarehouseId moet overeenkomen
+                .ToListAsync(); // Haal de lijst asynchroon op
         }
 
-            public async Task<string> AddLocation(Location location)
+        // Voeg een nieuwe locatie toe
+        public async Task<string> AddLocation(Location location)
+        {
+            // Check of WarehouseId geldig is
+            if (location.WarehouseId != null && !await _context.Warehouses.AnyAsync(w => w.Id == location.WarehouseId))
             {
-                if (location.WarehouseId != null && !await _context.Warehouses.AnyAsync(w => w.Id == location.WarehouseId))
-                {
-                    return "Invalid WarehouseId provided."; // Ensure the provided WarehouseId exists in the database
-                }
-
-                location.CreatedAt = DateTime.UtcNow;
-                location.UpdatedAt = DateTime.UtcNow;
-                _context.Locations.Add(location);
-                await _context.SaveChangesAsync();
-                return "Location added successfully.";
+                return "Ongeldige WarehouseId opgegeven."; // Foutmelding als de WarehouseId niet bestaat
             }
 
+            // Stel de aanmaak- en update-tijd in
+            location.CreatedAt = DateTime.UtcNow;
+            location.UpdatedAt = DateTime.UtcNow;
+
+            // Voeg de locatie toe aan de database
+            _context.Locations.Add(location);
+            await _context.SaveChangesAsync(); // Sla de wijzigingen op
+            return "Locatie succesvol toegevoegd."; // Succesbericht
+        }
+
+        // Werk een bestaande locatie bij
         public async Task<string> UpdateLocation(int locationId, Location updatedLocation)
         {
-            var existingLocation = await _context.Locations.FindAsync(locationId); // Corrected to 'Locations'
+            // Zoek de bestaande locatie op
+            var existingLocation = await _context.Locations.FindAsync(locationId);
             if (existingLocation == null)
             {
-                return "Error: Location not found.";
+                return "Fout: Locatie niet gevonden."; // Foutmelding als de locatie niet bestaat
             }
 
-            updatedLocation.UpdatedAt = DateTime.UtcNow;
-            _context.Entry(existingLocation).CurrentValues.SetValues(updatedLocation);
+            // Update alleen de velden die mogen worden aangepast
+            existingLocation.WarehouseId = updatedLocation.WarehouseId;
+            existingLocation.Code = updatedLocation.Code;
+            existingLocation.Name = updatedLocation.Name;
+            existingLocation.UpdatedAt = DateTime.UtcNow; // Update de bewerktijd
+
+            // Sla de wijzigingen op
             await _context.SaveChangesAsync();
-            return "Location updated successfully.";
+            return "Locatie succesvol bijgewerkt."; // Succesbericht
         }
 
+        // Verwijder een locatie op basis van ID
         public async Task<string> RemoveLocation(int locationId)
         {
-            var location = await _context.Locations.FindAsync(locationId); // Corrected to 'Locations'
+            // Zoek de locatie op
+            var location = await _context.Locations.FindAsync(locationId);
             if (location == null)
             {
-                return "Error: Location not found.";
+                return "Fout: Locatie niet gevonden."; // Foutmelding als de locatie niet bestaat
             }
 
-            _context.Locations.Remove(location); // Corrected to 'Locations'
-            await _context.SaveChangesAsync();
-            return "Location removed successfully.";
+            // Verwijder de locatie uit de database
+            _context.Locations.Remove(location);
+            await _context.SaveChangesAsync(); // Sla de wijzigingen op
+            return "Locatie succesvol verwijderd."; // Succesbericht
         }
     }
 }

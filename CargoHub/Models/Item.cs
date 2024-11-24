@@ -5,8 +5,7 @@ namespace CargoHub.Models
 {
     public class Item
     {
-        [JsonIgnore]
-        public int Id { get; set; }
+        [Key]
         public string? Uid { get; set; }
         public string? Code { get; set; }
         public string? Description { get; set; }

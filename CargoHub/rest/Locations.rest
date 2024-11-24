@@ -1,117 +1,41 @@
-<<<<<<< HEAD
-### Create a new location
-=======
-# Get Location by ID
-GET http://localhost:3000/api/v1/location/1
-ApiKey: 
-Accept: application/json
+### Get Location by ID
+GET http://localhost:3000/api/v1/Location/1
+Content-Type: application/json
+ApiKey: Admin
 
+### Get Locations with ID greater than or equal to
+GET http://localhost:3000/api/v1/Location?id=1
+Content-Type: application/json
+ApiKey: Admin
 
-### Response:
-{
-  "id": 1,
-  "code": "T01",
-  "name": "Test Location",
-  "createdAt": "2024-11-11T00:00:00Z",
-  "updatedAt": "2024-11-11T00:00:00Z"
-}
+### Get Locations in a Warehouse
+GET http://localhost:3000/api/v1/Location/warehouse/1
+Content-Type: application/json
+ApiKey: Admin
 
-### Get Location by Non-Existing ID
-GET http://localhost:3000/api/v1/location/999
-Accept: application/json
-
- Response:
-{
-  "message": "Location not found."
-}
-
-### Get All Locations (with query parameter)
-GET http://localhost:3000/api/v1/location?id=0
-Accept: application/json
-
-# Response:
-[
-  {
-    "id": 1,
-    "code": "T01",
-    "name": "Location 1",
-    "createdAt": "2024-11-11T00:00:00Z",
-    "updatedAt": "2024-11-11T00:00:00Z"
-  },
-  {
-    "id": 2,
-    "code": "T02",
-    "name": "Location 2",
-    "createdAt": "2024-11-11T00:00:00Z",
-    "updatedAt": "2024-11-11T00:00:00Z"
-  }
-]
-
-###Get Locations in a Specific Warehouse
-GET http://localhost:3000/api/v1/location/warehouse/1
-Accept: application/json
-
-#Response:
-[
-  {
-    "id": 1,
-    "code": "T01",
-    "name": "Location 1",
-    "createdAt": "2024-11-11T00:00:00Z",
-    "updatedAt": "2024-11-11T00:00:00Z"
-  }
-]
-
-
-### Add New Location (with all fields)
->>>>>>> development
-POST http://localhost:3000/api/v1/location
+### Add a New Location
+POST http://localhost:3000/api/v1/Location
 Content-Type: application/json
 ApiKey: Admin
 
 {
-  "WarehouseId": null,
-  "code": "LOC001",
-  "name": "Location 1",
-  "createdAt": "2024-11-18T00:00:00",
-  "updatedAt": "2024-11-18T00:00:00"
+    "WarehouseId": null,
+    "Code": "LOC001",
+    "Name": "Main Storage"
 }
 
-###
-POST http://localhost:3000/api/v1/location
+### Update an Existing Location
+PUT http://localhost:3000/api/v1/Location/1
 Content-Type: application/json
 ApiKey: Admin
 
 {
-  "code": "LOC003",
-  "name": "Location 3",
-  "createdAt": "2024-11-18T22:36:53",
-  "updatedAt": "2024-11-18T22:36:53",
-  "WarehouseId": 2
+    "WarehouseId": null,
+    "Code": "LOC001_UPDATED",
+    "Name": "Main Storage Updated"
 }
 
-
-### Get all locations
-GET http://localhost:3000/api/v1/location
-ApiKey: Admin
-
-### Get location by id
-GET http://localhost:3000/api/v1/locations/{id}
-ApiKey: Admin
-
-### Update location by id
-PUT http://localhost:3000/api/v1/locations/{id}
+### Remove a Location
+DELETE http://localhost:3000/api/v1/Location/1
 Content-Type: application/json
-ApiKey: Admin
-
-{
-  "warehouseId": 2,  // Updated warehouse ID or null if no warehouse
-  "code": "LOC002",
-  "name": "Location 2",
-  "createdAt": "2024-11-18T00:00:00",
-  "updatedAt": "2024-11-18T00:00:00"
-}
-
-### Delete location by id
-DELETE http://localhost:3000/api/v1/location/6
 ApiKey: Admin

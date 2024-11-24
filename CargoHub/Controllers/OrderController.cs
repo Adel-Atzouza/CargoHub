@@ -13,36 +13,36 @@ namespace CargoHub.Controllers
     {
         private readonly OrderService _orderService;
 
-        // Constructor to inject the OrderService dependency
+        // Constructor: Inject hier gewoon de service die alle orderlogica regelt
         public OrdersController(OrderService orderService)
         {
             _orderService = orderService;
         }
 
         // GET: api/v1/orders
-        // Retrieves all orders with their associated items
+        // Haal alle orders op, inclusief hun items
         [HttpGet]
         public async Task<ActionResult<List<OrderWithItemsDTO>>> GetAllOrders()
         {
             var orders = await _orderService.GetAllOrdersWithItems();
-            return Ok(orders); // Return the list of orders in the response
+            return Ok(orders); //lijst met orders
         }
 
         // GET: api/v1/orders/{id}
-        // Retrieves a specific order with its associated items by order ID
+        // Haal een specifieke order op (inclusief items) via het ID
         [HttpGet("{id}")]
         public async Task<ActionResult<OrderWithItemsDTO>> GetOrder(int id)
         {
             var order = await _orderService.GetOrderWithItems(id);
             if (order == null)
             {
-                return NotFound(); // Return 404 if the order is not found
+                return NotFound($"Order met ID {id} niet gevonden."); // 404 als we niets vinden
             }
-            return Ok(order); // Return the order with a 200 OK status
+            return Ok(order); // Alles goed
         }
 
         // GET: api/v1/orders/client/{clientId}
-        // Retrieves all orders associated with a specific client by client ID
+        // Haal alle orders van een specifieke klant op via hun ID
         [HttpGet("client/{clientId}")]
         public async Task<ActionResult<List<Order>>> GetOrdersForClient(int clientId)
         {
@@ -50,133 +50,81 @@ namespace CargoHub.Controllers
 
             if (orders == null || orders.Count == 0)
             {
-                return NotFound(); // Return 404 if no orders are found for the client
+                return NotFound(); // Geen orders
             }
 
-            return Ok(orders); // Return the list of orders for the client
+            return Ok(orders); // Alles gevonden
         }
 
         // POST: api/v1/orders
-        // Creates a new order with associated items
+        // Maak een nieuwe order aan met items
         [HttpPost]
         public async Task<ActionResult<Order>> CreateOrder([FromBody] OrderWithItemsDTO orderDto)
         {
             if (orderDto == null)
             {
-                return BadRequest("Order data is required."); // Return 400 if the request body is null
+                return BadRequest("Ordergegevens zijn verplicht."); // Geen gegevens
             }
 
             try
             {
-                // Map the DTO to the Order entity
+                //alles netjes mappen naar een Order-object
                 var order = new Order
                 {
                     SourceId = orderDto.SourceId,
                     OrderDate = orderDto.OrderDate,
                     RequestDate = orderDto.RequestDate,
                     Reference = orderDto.Reference,
-                    ExtrReference = orderDto.ReferenceExtra, // Map extra reference field
+                    ExtrReference = orderDto.ReferenceExtra,
                     OrderStatus = orderDto.OrderStatus,
                     Notes = orderDto.Notes,
                     ShippingNotes = orderDto.ShippingNotes,
                     PickingNotes = orderDto.PickingNotes,
                     WarehouseId = orderDto.WarehouseId,
-                    ShipTo = orderDto.ShipTo ?? null, // Handle nullable ShipTo
-                    BillTo = orderDto.BillTo ?? null, // Handle nullable BillTo
-                    ShipmentId = orderDto.ShipmentId ?? null, // Handle nullable ShipmentId
+                    ShipTo = orderDto.ShipTo ?? null, // Nullable veld
+                    BillTo = orderDto.BillTo ?? null, // Idem voor BillTo
+                    ShipmentId = orderDto.ShipmentId ?? null, // En ShipmentId ook
                     TotalAmount = orderDto.TotalAmount,
                     TotalDiscount = orderDto.TotalDiscount,
                     TotalTax = orderDto.TotalTax,
                     TotalSurcharge = orderDto.TotalSurcharge,
-                    CreatedAt = DateTime.UtcNow, // Set creation timestamp
-                    UpdatedAt = DateTime.UtcNow // Set update timestamp
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow
                 };
 
-                // Call the service to create the order
+                // Laat de service de order aanmaken
                 var createdOrder = await _orderService.CreateOrder(order, orderDto.Items);
 
-                // Return a 201 Created response with the created order
+                // Klaar, retourneet de order
                 return CreatedAtAction(nameof(GetOrder), new { id = createdOrder.Id }, createdOrder);
             }
             catch (Exception ex)
             {
-                // Return a 500 Internal Server Error if something goes wrong
-                return StatusCode(500, $"Internal server error: {ex.Message}");
-            }
-        }
-
-        // PUT: api/v1/orders/{id}
-        // Updates an existing order with new data
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateOrder(int id, [FromBody] OrderWithItemsDTO orderDto)
-        {
-            if (orderDto == null || id != orderDto.Id)
-            {
-                return BadRequest("Order ID mismatch."); // Return 400 if the IDs don't match
-            }
-
-            try
-            {
-                // Map the DTO to the Order entity
-                var order = new Order
-                {
-                    Id = id, // Ensure the correct order ID is set
-                    SourceId = orderDto.SourceId,
-                    OrderDate = orderDto.OrderDate,
-                    RequestDate = orderDto.RequestDate,
-                    Reference = orderDto.Reference,
-                    ExtrReference = orderDto.ReferenceExtra, // Map extra reference field
-                    OrderStatus = orderDto.OrderStatus,
-                    Notes = orderDto.Notes,
-                    ShippingNotes = orderDto.ShippingNotes,
-                    PickingNotes = orderDto.PickingNotes,
-                    WarehouseId = orderDto.WarehouseId,
-                    ShipTo = orderDto.ShipTo ?? null, // Handle nullable ShipTo
-                    BillTo = orderDto.BillTo ?? null, // Handle nullable BillTo
-                    ShipmentId = orderDto.ShipmentId ?? null, // Handle nullable ShipmentId
-                    TotalAmount = orderDto.TotalAmount,
-                    TotalDiscount = orderDto.TotalDiscount,
-                    TotalTax = orderDto.TotalTax,
-                    TotalSurcharge = orderDto.TotalSurcharge,
-                    UpdatedAt = DateTime.UtcNow // Update the timestamp
-                };
-
-                // Call the service to update the order
-                var updatedOrder = await _orderService.UpdateOrder(id, order, orderDto.Items);
-                if (updatedOrder == null)
-                {
-                    return NotFound(); // Return 404 if the order is not found
-                }
-
-                return NoContent(); // Return 204 No Content to indicate success
-            }
-            catch (Exception ex)
-            {
-                // Return a 500 Internal Server Error if something goes wrong
-                return StatusCode(500, $"Internal server error: {ex.Message}");
+                //iets is er verkeerd gegaan. dit is voor debuggen
+                return StatusCode(500, $"Interne serverfout: {ex.Message}");
             }
         }
 
         // DELETE: api/v1/orders/{id}
-        // Deletes an order by ID
+        // Verwijder een order via het ID
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteOrder(int id)
         {
             try
             {
-                // Call the service to delete the order
+                // Laat de service de order verwijderen
                 var result = await _orderService.DeleteOrder(id);
                 if (!result)
                 {
-                    return NotFound(); // Return 404 if the order is not found
+                    return NotFound($"Order met ID {id} niet gevonden."); // 404 als er niets is
                 }
 
-                return Ok($"Order with ID {id} deleted successfully.");
+                return Ok($"Order met ID {id} succesvol verwijderd."); // Alles goed
             }
             catch (Exception ex)
             {
-                // Return a 500 Internal Server Error if something goes wrong
-                return StatusCode(500, $"Internal server error: {ex.Message}");
+                //iets is er verkeerd gegaan. dit is voor debuggen
+                return StatusCode(500, $"Interne serverfout: {ex.Message}");
             }
         }
     }

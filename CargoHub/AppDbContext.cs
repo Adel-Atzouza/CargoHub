@@ -80,7 +80,4 @@ namespace CargoHub
                 .HasForeignKey(oi => oi.ItemId);  // Foreign key relationship using ItemId (int)
 
         }
-
-        // Constructor accepting DbContextOptions
-        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 }}

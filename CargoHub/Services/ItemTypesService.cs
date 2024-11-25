@@ -17,27 +17,24 @@ namespace CargoHub.Services
         }
 
         // Get up to 100 Item_type records, ordered by Id
-        public async Task<List<Item_type>> GetItemTypes()
+        public async Task<List<ItemType>> GetItemTypes()
         {
-            return await _context.Item_Types
+            return await _context.ItemTypes
                 .OrderBy(itemType => itemType.Id)
                 .Take(100) // Limit to 100 records
                 .ToListAsync();
         }
 
         // Get a single Item_type by Id
-        public async Task<Item_type> GetItemTypeById(int id)
+        public async Task<ItemType> GetItemTypeById(int id)
         {
-            return await _context.Item_Types.FirstOrDefaultAsync(itemType => itemType.Id == id);
+            return await _context.ItemTypes.FirstOrDefaultAsync(itemType => itemType.Id == id);
         }
 
         // Create a new Item_type
-        public async Task<Item_type> PostItemType(Item_type newItemType)
+        public async Task<ItemType> PostItemType(ItemType newItemType)
         {
-            newItemType.CreatedAt = DateTime.UtcNow;
-            newItemType.UpdatedAt = DateTime.UtcNow;
-
-            _context.Item_Types.Add(newItemType);
+            _context.ItemTypes.Add(newItemType);
             await _context.SaveChangesAsync();
 
             return newItemType;
@@ -46,21 +43,21 @@ namespace CargoHub.Services
         // Delete an Item_type by Id
         public async Task<bool> DeleteItemTypeById(int id)
         {
-            var itemType = await _context.Item_Types.FindAsync(id);
+            var itemType = await _context.ItemTypes.FindAsync(id);
             if (itemType == null)
             {
                 return false;
             }
 
-            _context.Item_Types.Remove(itemType);
+            _context.ItemTypes.Remove(itemType);
             await _context.SaveChangesAsync();
             return true;
         }
 
         // Update an Item_type by Id
-        public async Task<string> UpdateItemType(int id, Item_type updatedItemType)
+        public async Task<string> UpdateItemType(int id, ItemType updatedItemType)
         {
-            var existingItemType = await _context.Item_Types.FindAsync(id);
+            var existingItemType = await _context.ItemTypes.FindAsync(id);
             if (existingItemType == null)
             {
                 return "Error: Item type not found.";

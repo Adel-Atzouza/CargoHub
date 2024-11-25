@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace CargoHub
 {
-    public class Item
+    public class Item : BaseModel
     {
         [Key]
         public string? Uid { get; set; }
@@ -36,11 +36,6 @@ namespace CargoHub
         [JsonPropertyName("supplier_part_number")]
         public string? SupplierPartNumber { get; set; }
         // Metadata
-        [JsonPropertyName("created_at")]
-        public DateTime CreatedAt { get; set; }
-
-        [JsonPropertyName("updated_at")]
-        public DateTime UpdatedAt { get; set; }
     }
 
 }

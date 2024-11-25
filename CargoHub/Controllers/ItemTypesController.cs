@@ -52,7 +52,7 @@ namespace CargoHub.Controllers
 
         // POST: /ItemTypes
         [HttpPost]
-        public async Task<IActionResult> PostItemType([FromBody] Item_type newItemType)
+        public async Task<IActionResult> PostItemType([FromBody] ItemType newItemType)
         {
             // Create a new item type using the service
             var createdItemType = await _itemTypesService.PostItemType(newItemType);
@@ -73,7 +73,7 @@ namespace CargoHub.Controllers
 
         // PUT: /ItemTypes/{id}
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateItemType(int id, [FromBody] Item_type updatedItemType)
+        public async Task<IActionResult> UpdateItemType(int id, [FromBody] ItemType updatedItemType)
         {
             string result = await _itemTypesService.UpdateItemType(id, updatedItemType);
             if (result.Contains("Error"))

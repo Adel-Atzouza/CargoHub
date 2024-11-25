@@ -1,56 +1,38 @@
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
-namespace CargoHub.Models{
+namespace CargoHub{
 
-public class Order : BaseModel
+public class Order
 {
     public int Id { get; set; }
-
-    [JsonPropertyName("source_id")]
-    public int? SourceId { get; set; }
-
-    [JsonPropertyName("order_date")]
-    public DateTime? OrderDate { get; set; }
-
-    [JsonPropertyName("request_date")]
-
-    public DateTime? RequestDate { get; set; }
+    public int SourceId { get; set; }
+    public DateTime OrderDate { get; set; }
+    public DateTime RequestDate { get; set; }
     public string? Reference { get; set; }
-
-    [JsonPropertyName("reference_extra")]
-    public string? ExtraReference { get; set; }
-
-
-    [JsonPropertyName("order_status")]
-
+    public string? ExtrReference { get; set; }
     public string? OrderStatus { get; set; }
     public string? Notes { get; set; }
-
-    [JsonPropertyName("shipping_notes")]
-
     public string? ShippingNotes { get; set; }
-    [JsonPropertyName("picking_notes")]
-
     public string? PickingNotes { get; set; }
 
-
+    [JsonIgnore]
     public int? WarehouseId { get; set; }
     [JsonIgnore]
-    public Warehouse? Warehouse {get; set;}
     public int? ShipTo { get; set; }
-    [JsonIgnore]
     public Client? ShipToClient { get; set; }
+    [JsonIgnore]
     public int? BillTo { get; set; }
-    [JsonIgnore]
     public Client? BillToClient { get; set; }
-    public int? ShipmentId { get; set; }
     [JsonIgnore]
+    public int? ShipmentId { get; set; }
     public Shipment? Shipment { get; set; }  // Navigation property to Shipment
     public decimal TotalAmount { get; set; }
     public decimal TotalDiscount { get; set; }
     public decimal TotalTax { get; set; }
     public decimal TotalSurcharge { get; set; }
+    public DateTime CreatedAt { get; set; }
+    public DateTime UpdatedAt { get; set; }
 
     // Avoid serializing the OrderItems navigation property
     [JsonIgnore]
@@ -100,9 +82,5 @@ public class ItemDTO
     public string ItemId { get; set; }
     public int Amount { get; set; }
 }
-
-
-
-
 
 }

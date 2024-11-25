@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 
 
-namespace CargoHub.Models{
+namespace CargoHub{
 
 public class Shipment : BaseModel{
 

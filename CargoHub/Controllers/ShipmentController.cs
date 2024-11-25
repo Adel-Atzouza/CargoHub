@@ -1,4 +1,3 @@
-using CargoHub.Models;
 using CargoHub.Services;
 using Microsoft.AspNetCore.Mvc;
 using System;

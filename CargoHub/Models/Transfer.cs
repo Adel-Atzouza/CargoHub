@@ -4,7 +4,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace CargoHub.Models
+namespace CargoHub
 {
     public record Transfer
     {

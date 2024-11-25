@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using CargoHub.Models;
 
-namespace CargoHub.Services
+namespace CargoHub
 {
     public class OrderService
     {

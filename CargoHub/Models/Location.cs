@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
-namespace CargoHub.Models
+namespace CargoHub
 {
     public class Location : BaseModel
     {

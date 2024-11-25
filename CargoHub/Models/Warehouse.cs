@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 
-namespace CargoHub.Models
+namespace CargoHub
 {
     public record Warehouse
     {

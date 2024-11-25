@@ -1,4 +1,3 @@
-using CargoHub.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 

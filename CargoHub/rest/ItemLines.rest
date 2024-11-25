@@ -1,32 +1,72 @@
-GET http://localhost:3000/api/v1/ItemLines?Id=2
+### Test Get Multiple Item Lines with valid IDs
+GET http://localhost:3000/api/v1/ItemLines/GetMultiple?Ids=1&Ids=2
+Content-Type: application/json
 
-####
-GET http://localhost:3000/api/v1/ItemLines/GetMultiple?Ids=1&Ids=2&Ids=3&Ids=7
+### Test Get Multiple Item Lines with invalid IDs
+GET http://localhost:3000/api/v1/ItemLines/GetMultiple?Ids=102&Ids=101
+Content-Type: application/json
 
-####
+### Test Get Item Line with a valid ID
+GET http://localhost:3000/api/v1/ItemLines?id=1
+Content-Type: application/json
+
+### Test Get Item Line with an invalid ID
+GET http://localhost:3000/api/v1/ItemLines?id=999
+Content-Type: application/json
+
+### Test Add a new Item Line with valid data
 POST http://localhost:3000/api/v1/ItemLines
- 
-Content-Type: application/json
-
-
-{
-    "Id": 4,
-    "Name": "No name",
-    "Description": "No Description"
-}
-###
-PUT http://localhost:3000/api/v1/ItemLines?Id=4
- 
 Content-Type: application/json
 
 {
-    "Id": 4,
-    "Name": "Desk Lamp",
-    "Description": "Adjustable LED desk lamp with brightness settings."
+    "id": 3,
+    "name": "Line 3",
+    "description": "This is Line 3"
 }
 
-####
-DELETE http://localhost:3000/api/v1/ItemLines/Delete?Id=3
- 
+### Test Add a new Item Line with missing required fields
+POST http://localhost:3000/api/v1/ItemLines
+Content-Type: application/json
 
+{
+    "name": null,
+    "description": "This has no name"
+}
 
+### Test Add a new Item Line with duplicate ID
+POST http://localhost:3000/api/v1/ItemLines
+Content-Type: application/json
+
+{
+    "id": 1,
+    "name": "Duplicate Line",
+    "description": "This is a duplicate ID"
+}
+
+### Test Update an Item Line with valid data
+PUT http://localhost:3000/api/v1/ItemLines?id=1
+Content-Type: application/json
+
+{
+    "id": 1,
+    "name": "Updated Line Name",
+    "description": "Updated description"
+}
+
+### Test Update an Item Line with invalid ID
+PUT http://localhost:3000/api/v1/ItemLines?id=999
+Content-Type: application/json
+
+{
+    "id": 999,
+    "name": "Non-existent Line",
+    "description": "Trying to update a Line that doesn't exist"
+}
+
+### Test Delete an Item Line with a valid ID
+DELETE http://localhost:3000/api/v1/ItemLines/Delete?id=1
+Content-Type: application/json
+
+### Test Delete an Item Line with an invalid ID
+DELETE http://localhost:3000/api/v1/ItemLines/Delete?id=999
+Content-Type: application/json

@@ -43,6 +43,13 @@ public class ItemGroupsService
     public async Task<bool> AddItemGroup(ItemGroup itemGroup)
     {
         bool AlreadyExists = await _context.ItemGroups.ContainsAsync(itemGroup);
+        var Properties = itemGroup.GetType().GetProperties();
+        foreach (var property in Properties)
+        {
+            var value = property.GetValue(itemGroup, null);
+            if (value == null) return false;
+
+        }
         if (itemGroup == null || AlreadyExists)
         {
             return false;

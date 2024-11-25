@@ -36,6 +36,13 @@ public class ItemLinesService
     public async Task<bool> AddItemLine(ItemLine itemLine)
     {
         bool AlreadyExists = await _context.ItemLines.ContainsAsync(itemLine);
+        var Properties = itemLine.GetType().GetProperties();
+        foreach (var property in Properties)
+        {
+            var value = property.GetValue(itemLine, null);
+            if (value == null) return false;
+
+        }
         if (itemLine == null || AlreadyExists)
         {
             return false;

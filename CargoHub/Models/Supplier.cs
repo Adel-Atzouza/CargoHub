@@ -1,8 +1,8 @@
 using System.Text.Json.Serialization;
 
-namespace CargoHub.Models
+namespace CargoHub
 {
-    public record Supplier
+    public class Supplier : BaseModel
     {
         // Properties
         public int Id {get; set;}
@@ -19,14 +19,11 @@ namespace CargoHub.Models
         
         [JsonPropertyName("contact_name")]
         public string? ContactName {get; set;}
+
+        [JsonPropertyName("phone_number")]
+
         public string? Phonenumber {get; set;}
         public string? Reference {get; set;}
         
-        // Metadata
-        [JsonPropertyName("created_at")]
-        public DateTime CreatedAt {get; set;}
-        
-        [JsonPropertyName("updated_at")]
-        public DateTime UpdatedAt {get; set;}
     }
 }

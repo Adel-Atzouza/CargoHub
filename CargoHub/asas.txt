@@ -1,0 +1,25 @@
+case "item_types":
+                    try
+                    {
+                        var ItemTypes = JsonSerializer.Deserialize<List<ItemType>>(await File.ReadAllTextAsync(filePath), options);
+                        if (ItemTypes[0].Id == 0)
+                        {
+                            foreach (var ItemType in ItemTypes)
+                            {
+                                ItemType.Id += 1;
+                            }
+
+                        }
+                        await _context.ItemTypes.AddRangeAsync(ItemTypes);
+                        await _context.SaveChangesAsync();
+                        break;
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine($"{e.Message}");
+                        if (e.InnerException != null)
+                        {
+                            Console.WriteLine("InnerException: " + e.InnerException);
+                        }
+                        break;
+                    }

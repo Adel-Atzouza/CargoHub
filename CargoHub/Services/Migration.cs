@@ -48,7 +48,7 @@ namespace CargoHub
                         await _context.Clients.AddRangeAsync(clients);
                         await _context.SaveChangesAsync();
 
-                        return;
+                        break;
                     }
                     catch (Microsoft.EntityFrameworkCore.DbUpdateException e)
                     {
@@ -69,41 +69,110 @@ namespace CargoHub
                 //     }
                 //     return;
 
-                //                 case "item_groups":
-                //                     try
-                //                     {
-                //                         var ItemGroups = JsonSerializer.Deserialize<List<ItemGroup>>(await File.ReadAllTextAsync(filePath), options);
-                //                         await _context.ItemGroups.AddRangeAsync(ItemGroups);
-                //                         await _context.SaveChangesAsync();
-                //                         return;
-                //                     }
-                //                     catch (Exception e)
-                //                     {
-                //                         Console.WriteLine($"{e.Message}");
-                //                         if (e.InnerException != null) 
-                //                         {
-                //                             Console.WriteLine("InnerException: " + e.InnerException);
-                //                         }
-                //                         break;
-                //                     }
+                case "item_groups":
+                    try
+                    {
+                        var ItemGroups = JsonSerializer.Deserialize<List<ItemGroup>>(await File.ReadAllTextAsync(filePath), options);
+                        if (ItemGroups[0].Id == 0)
+                        {
+                            foreach (var itemGroup in ItemGroups)
+                            {
+                                itemGroup.Id += 1;
+                            }
+                        }
 
-                //                 case "item_lines":
-                //                     var ItemLines = JsonSerializer.Deserialize<List<ItemLine>>(await File.ReadAllTextAsync(filePath), options);
-                //                     try
-                //                     {
-                // _context.ItemLines.AddRange(ItemLines);
-                //                         await _context.SaveChangesAsync();
-                //                         break;
-                //                     }
-                //                     catch (Exception e)
-                //                     {
-                //                         Console.WriteLine($"{e.Message}");
-                //                         if (e.InnerException != null) 
-                //                         {
-                //                             Console.WriteLine("InnerException: " + e.InnerException);
-                //                         }
-                //                         break;
-                //                     }
+                        await _context.ItemGroups.AddRangeAsync(ItemGroups);
+                        await _context.SaveChangesAsync();
+                        break;
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine($"{e.Message}");
+                        if (e.InnerException != null)
+                        {
+                            Console.WriteLine("InnerException: " + e.InnerException);
+                        }
+                        break;
+                    }
+
+                case "item_lines":
+                    try
+                    {
+                        var ItemLines = JsonSerializer.Deserialize<List<ItemLine>>(await File.ReadAllTextAsync(filePath), options);
+                        if (ItemLines[0].Id == 0)
+                        {
+                            foreach (var itemLine in ItemLines)
+                            {
+                                itemLine.Id += 1;
+                            }
+
+                        }
+                        await _context.ItemLines.AddRangeAsync(ItemLines);
+                        await _context.SaveChangesAsync();
+                        break;
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine($"{e.Message}");
+                        if (e.InnerException != null)
+                        {
+                            Console.WriteLine("InnerException: " + e.InnerException);
+                        }
+                        break;
+                    }
+
+
+                case "item_types":
+                    try
+                    {
+                        var ItemTypes = JsonSerializer.Deserialize<List<ItemType>>(await File.ReadAllTextAsync(filePath), options);
+                        if (ItemTypes[0].Id == 0)
+                        {
+                            foreach (var ItemType in ItemTypes)
+                            {
+                                ItemType.Id += 1;
+                            }
+
+                        }
+                        await _context.ItemTypes.AddRangeAsync(ItemTypes);
+                        await _context.SaveChangesAsync();
+                        break;
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine($"{e.Message}");
+                        if (e.InnerException != null)
+                        {
+                            Console.WriteLine("InnerException: " + e.InnerException);
+                        }
+                        break;
+                    }
+
+                case "shipments":
+                    try
+                    {
+                        var Shipments = JsonSerializer.Deserialize<List<Shipment>>(await File.ReadAllTextAsync(filePath), options);
+                        if (Shipments[0].Id == 0)
+                        {
+                            foreach (var Shipment in Shipments)
+                            {
+                                Shipment.Id += 1;
+                            }
+
+                        }
+                        await _context.Shipments.AddRangeAsync(Shipments);
+                        await _context.SaveChangesAsync();
+                        break;
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine($"{e.Message}");
+                        if (e.InnerException != null)
+                        {
+                            Console.WriteLine("InnerException: " + e.InnerException);
+                        }
+                        break;
+                    }
 
 
                 // case "locations":

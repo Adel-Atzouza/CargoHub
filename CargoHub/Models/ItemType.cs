@@ -8,6 +8,7 @@ namespace CargoHub
         public string Description { get; set; }
         public int ItemLineId { get; set; }
         public ItemLine? ItemLine { get; set; }
+
     }
 }
 

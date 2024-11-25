@@ -89,3 +89,4 @@ namespace CargoHub
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
     }
 }
+

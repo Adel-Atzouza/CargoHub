@@ -19,6 +19,20 @@ builder.Services.AddTransient<LocationService>();
 builder.Services.AddTransient<ShipmentService>();
 
 
+var app = builder.Build();
+app.Use(async (context, next) =>
+{
+    if (!context.Request.Headers.ContainsKey("ApiKey"))
+    {
+        context.Response.StatusCode = 401;
+        return;
+    }
+    await next.Invoke();
+});
+app.MapControllers();
+app.Urls.Add("http://localhost:3000");
+
+
 // Register your custom ItemsService
 builder.Services.AddScoped<ItemsService>();  // This line is necessary
 builder.Services.AddScoped<ItemTypesService>();

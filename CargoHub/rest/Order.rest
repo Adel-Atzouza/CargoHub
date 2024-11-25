@@ -14,9 +14,9 @@ ApiKey : Admin
   "notes": "Order notes",
   "shippingNotes": "Handle with care",
   "pickingNotes": "Fragile items",
-  "warehouseId": null,
-  "shipTo": null,
-  "billTo": null,
+  "warehouseId": 1,
+  "shipTo": 1,
+  "billTo": 1,
   "shipmentId": null,
   "totalAmount": 200.00,
   "totalDiscount": 10.00,
@@ -36,17 +36,12 @@ ApiKey : Admin
   ]
 }
 
-### Get all orders with items (paginated)
-GET http://localhost:3000/api/v1/orders?page=0
-Content-Type: application/json
-ApiKey: Admin
-
 ###
 GET http://localhost:3000/api/v1/orders/client/1
 ApiKey : Admin 
 
 ### Delete an order by ID
-DELETE http://localhost:3000/api/v1/orders/2
+DELETE http://localhost:3000/api/v1/orders/3
 ApiKey : Admin
 Content-Type: application/json
 

@@ -3,10 +3,9 @@ using System.Text.Json.Serialization;
 
 namespace CargoHub.Models
 {
-    public class Item
+    public class Item : BaseModel
     {
-        [JsonIgnore]
-        public int Id { get; set; }
+        [Key]
         public string? Uid { get; set; }
         public string? Code { get; set; }
         public string? Description { get; set; }
@@ -37,13 +36,6 @@ namespace CargoHub.Models
         public string? SupplierCode { get; set; }
         [JsonPropertyName("supplier_part_number")]
         public string? SupplierPartNumber { get; set; }
-
-        // Metadata
-        [JsonPropertyName("created_at")]
-        public DateTime CreatedAt { get; set; }
-        [JsonPropertyName("updated_at")]
-        public DateTime UpdatedAt { get; set; }
-
         // Navigation property for many-to-many relationship with Order
         public List<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
     }

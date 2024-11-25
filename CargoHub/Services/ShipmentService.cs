@@ -11,133 +11,236 @@ namespace CargoHub.Services
     {
         private readonly AppDbContext _context;
 
+        // Constructor om de databasecontext te injecteren
         public ShipmentService(AppDbContext context)
         {
             _context = context;
         }
 
-        // Get all shipments with related Orders and OrderItems (including Items)
-        public async Task<List<Shipment>> GetShipmentswithdetails()
+        public async Task<List<dynamic>> GetAllShipmentsWithItems()
         {
-            return await _context.Shipments
-                .Include(s => s.orders) // Include related orders in the shipment
-                .ThenInclude(o => o.OrderItems) // Include order items in the order
-                .ThenInclude(oi => oi.Item) // Include the related item in the order item
+             // Haal alle zendingen op uit de database, inclusief hun gerelateerde orders en items
+            var shipments = await _context.Shipments
+                .Include(s => s.orders)
+                .ThenInclude(o => o.OrderItems)
+                .ThenInclude(oi => oi.Item)
                 .ToListAsync();
-        }
 
-        // Get shipment by ID with related Orders and OrderItems (including Items)
-        public async Task<Shipment?> GetShipmentID(int shipmentId)
-        {
-            return await _context.Shipments
-                .Include(s => s.orders) // Include related orders in the shipment
-                .ThenInclude(o => o.OrderItems) // Include order items in the order
-                .ThenInclude(oi => oi.Item) // Include the related item in the order item
-                .FirstOrDefaultAsync(s => s.Id == shipmentId);
-        }
-
-        // Get shipments by date range
-        public async Task<List<Shipment>> GetShipmentsByShipmentDateRange(DateTime startDate, DateTime endDate)
-        {
-            return await _context.Shipments
-                .Where(shipment => shipment.ShipmentDate >= startDate && shipment.ShipmentDate <= endDate)
-                .OrderBy(shipment => shipment.ShipmentDate)
-                .ToListAsync();
-        }
-
-        // Add a new shipment with a list of Order IDs
-        public async Task<string> AddShipment(ShipmentRequest shipmentRequest)
-        {
-            var shipment = new Shipment
+            var result = shipments.Select(shipment => new
             {
-                SourceId = shipmentRequest.SourceId,
-                Orderdate = shipmentRequest.Orderdate,
-                RequestDate = shipmentRequest.RequestDate,
-                ShipmentDate = shipmentRequest.ShipmentDate,
-                ShipmentType = shipmentRequest.ShipmentType,
-                ShipmentStatus = shipmentRequest.ShipmentStatus,
-                Notes = shipmentRequest.Notes,
-                CarrierCode = shipmentRequest.CarrierCode,
-                CarrierDescription = shipmentRequest.CarrierDescription,
-                ServiceCode = shipmentRequest.ServiceCode,
-                PaymentType = shipmentRequest.PaymentType,
-                TransferMode = shipmentRequest.TransferMode,
-                TotalPackageCount = shipmentRequest.TotalPackageCount,
-                TotalPackageWeight = shipmentRequest.TotalPackageWeight,
-                CreatedAt = DateTime.UtcNow,
-                UpdatedAt = DateTime.UtcNow,
-                orders = new List<Order>() // Initialize the Orders list
-            };
-
-            // Add the orders associated with the shipment
-            foreach (var orderId in shipmentRequest.OrderIds)
-            {
-                var order = await _context.Orders.FindAsync(orderId);
-                if (order != null)
-                {
-                    order.ShipmentId = shipment.Id; // Link the Order to the Shipment
-                    shipment.orders.Add(order); // Add the Order to the Shipment's Orders list
-                }
-            }
-
-            _context.Shipments.Add(shipment);
-            await _context.SaveChangesAsync();
-            return "Shipment added successfully.";
+                shipment.Id,
+                shipment.ShipmentDate,
+                shipment.ShipmentType,
+                shipment.ShipmentStatus,
+                shipment.Notes,
+                shipment.CarrierCode,
+                shipment.CarrierDescription,
+                shipment.ServiceCode,
+                shipment.PaymentType,
+                shipment.TransferMode,
+                shipment.TotalPackageCount,
+                shipment.TotalPackageWeight,
+                shipment.CreatedAt,
+                shipment.UpdatedAt,
+                items = shipment.orders
+                    .SelectMany(o => o.OrderItems)
+                    .GroupBy(oi => oi.Item.Uid)
+                    .Select(group => new
+                    {
+                        itemId = group.Key,
+                        amount = group.Sum(oi => oi.Amount)
+                    }).ToList()
+            }).ToList();
+            // Retourneer het resultaat als een lijst van dynamische objecten
+            return result.Cast<dynamic>().ToList();
         }
 
-        // Update an existing shipment with new details
-        public async Task<string> UpdateShipment(int shipmentId, ShipmentRequest shipmentRequest)
+
+
+        // Haal een specifieke zending op, inclusief orders en hun details
+        public async Task<object?> GetShipmentByIdWithOrderDetails(int shipmentId)
         {
-            var existingShipment = await _context.Shipments.FindAsync(shipmentId);
-            if (existingShipment == null)
-            {
-                return "Error: Shipment not found.";
-            }
+            // Zoek de zending op in de database, inclusief de gerelateerde orders en items
+            var shipment = await _context.Shipments
+                .Include(s => s.orders) // Voeg orders toe
+                .ThenInclude(o => o.OrderItems) // Voeg items van de orders toe
+                .ThenInclude(oi => oi.Item) // Voeg details van elk item toe
+                .FirstOrDefaultAsync(s => s.Id == shipmentId); // Zoek de zending met het opgegeven ID
 
-            existingShipment.SourceId = shipmentRequest.SourceId;
-            existingShipment.Orderdate = shipmentRequest.Orderdate;
-            existingShipment.RequestDate = shipmentRequest.RequestDate;
-            existingShipment.ShipmentDate = shipmentRequest.ShipmentDate;
-            existingShipment.ShipmentType = shipmentRequest.ShipmentType;
-            existingShipment.ShipmentStatus = shipmentRequest.ShipmentStatus;
-            existingShipment.Notes = shipmentRequest.Notes;
-            existingShipment.CarrierCode = shipmentRequest.CarrierCode;
-            existingShipment.CarrierDescription = shipmentRequest.CarrierDescription;
-            existingShipment.ServiceCode = shipmentRequest.ServiceCode;
-            existingShipment.PaymentType = shipmentRequest.PaymentType;
-            existingShipment.TransferMode = shipmentRequest.TransferMode;
-            existingShipment.TotalPackageCount = shipmentRequest.TotalPackageCount;
-            existingShipment.TotalPackageWeight = shipmentRequest.TotalPackageWeight;
-            existingShipment.UpdatedAt = DateTime.UtcNow;
-
-            // Update the Orders for the Shipment
-            existingShipment.orders.Clear(); // Clear the existing orders
-            foreach (var orderId in shipmentRequest.OrderIds)
-            {
-                var order = await _context.Orders.FindAsync(orderId);
-                if (order != null)
-                {
-                    order.ShipmentId = existingShipment.Id;
-                    existingShipment.orders.Add(order);
-                }
-            }
-
-            await _context.SaveChangesAsync();
-            return "Shipment updated successfully.";
-        }
-
-        // Remove a shipment by its ID
-        public async Task<string> RemoveShipment(int shipmentId)
-        {
-            var shipment = await _context.Shipments.FindAsync(shipmentId);
             if (shipment == null)
             {
-                return "Error: Shipment not found.";
+                return null; // Als de zending niet bestaat, geef null terug
             }
 
-            _context.Shipments.Remove(shipment);
-            await _context.SaveChangesAsync();
-            return "Shipment removed successfully.";
+            // Bouw een object met alleen de velden die je wilt teruggeven
+            var result = new
+            {
+                shipment.Id,
+                shipment.SourceId,
+                shipment.ShipmentDate,
+                shipment.ShipmentType,
+                shipment.ShipmentStatus,
+                shipment.Notes,
+                shipment.CarrierCode,
+                shipment.CarrierDescription,
+                shipment.ServiceCode,
+                shipment.PaymentType,
+                shipment.TransferMode,
+                shipment.TotalPackageCount,
+                shipment.TotalPackageWeight,
+                shipment.CreatedAt,
+                shipment.UpdatedAt,
+                Orders = shipment.orders.Select(o => new
+                {
+                    o.Id,
+                    o.OrderDate,
+                    o.RequestDate,
+                    o.Reference,
+                    o.OrderStatus,
+                    Items = o.OrderItems.Select(oi => new
+                    {
+                        ItemId = oi.Item.Uid,
+                        oi.Amount
+                    })
+                })
+            };
+
+            return result; // Retourneer het aangepaste object
+        }
+
+        // Ken orders toe aan een specifieke zending
+        public async Task<bool> AssignOrdersToShipment(int shipmentId, List<int> orderIds)
+        {
+            var shipment = await _context.Shipments
+                .Include(s => s.orders) // Laad bestaande orders in de zending
+                .FirstOrDefaultAsync(s => s.Id == shipmentId);
+
+            if (shipment == null)
+            {
+                return false; // Als de zending niet bestaat, stop
+            }
+
+            var orders = await _context.Orders
+                .Where(o => orderIds.Contains(o.Id)) // Zoek orders op basis van de gegeven IDs
+                .ToListAsync();
+
+            if (orders.Count != orderIds.Count)
+            {
+                return false; // Stop als er ontbrekende orders zijn
+            }
+
+            foreach (var order in orders)
+            {
+                order.ShipmentId = shipmentId; // Koppel de order aan de zending
+            }
+
+            await _context.SaveChangesAsync(); // Sla de wijzigingen op
+            return true;
+        }
+
+        // Haal alleen de items uit een zending (zonder duplicaten en met samengevoegde hoeveelheden)
+        public async Task<object?> GetShipmentItems(int shipmentId)
+        {
+            var shipment = await _context.Shipments
+                .Include(s => s.orders)
+                .ThenInclude(o => o.OrderItems)
+                .ThenInclude(oi => oi.Item)
+                .FirstOrDefaultAsync(s => s.Id == shipmentId);
+
+            if (shipment == null)
+            {
+                return null; // Zending niet gevonden
+            }
+
+            var items = shipment.orders
+                .SelectMany(o => o.OrderItems) // Pak alle items van alle orders
+                .GroupBy(oi => oi.Item.Uid) // Groepeer op unieke item-ID
+                .Select(group => new
+                {
+                    itemId = group.Key, // Unieke item-ID
+                    amount = group.Sum(oi => oi.Amount) // Tel de hoeveelheden bij elkaar op
+                }).ToList();
+
+            var result = new
+            {
+                shipment.Id,
+                shipment.ShipmentDate,
+                shipment.ShipmentType,
+                shipment.ShipmentStatus,
+                shipment.Notes,
+                shipment.CarrierCode,
+                shipment.CarrierDescription,
+                shipment.ServiceCode,
+                shipment.PaymentType,
+                shipment.TransferMode,
+                shipment.TotalPackageCount,
+                shipment.TotalPackageWeight,
+                shipment.CreatedAt,
+                shipment.UpdatedAt,
+                items
+            };
+
+            return result; // Retourneer de zending met items
+        }
+
+        // Maak een nieuwe zending aan
+        public async Task<Shipment> CreateShipment(Shipment shipment)
+        {
+            try
+            {
+                _context.Shipments.Add(shipment); // Voeg de zending toe
+                await _context.SaveChangesAsync(); // Sla de zending op
+                return shipment; // Retourneer de gemaakte zending
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error creating shipment: {ex.Message}");
+                throw; // Gooi de fout opnieuw voor debugging
+            }
+        }
+
+        // Update welke orders aan een zending gekoppeld zijn
+        public async Task<bool> UpdateOrdersInShipment(int shipmentId, List<int> orderIds)
+        {
+            var packedOrders = await _context.Orders
+                .Where(o => o.ShipmentId == shipmentId)
+                .ToListAsync();
+
+            foreach (var order in packedOrders)
+            {
+                if (!orderIds.Contains(order.Id))
+                {
+                    order.ShipmentId = null; // Haal de koppeling met de zending weg
+                    order.OrderStatus = "Scheduled"; // Update de status
+                }
+            }
+
+            foreach (var orderId in orderIds)
+            {
+                var order = await _context.Orders.FirstOrDefaultAsync(o => o.Id == orderId);
+                if (order != null)
+                {
+                    order.ShipmentId = shipmentId; // Koppel de order aan de zending
+                    order.OrderStatus = "Packed"; // Update de status
+                }
+            }
+
+            await _context.SaveChangesAsync(); // Sla de wijzigingen op
+            return true;
+        }
+
+        // Verwijder een zending
+        public async Task<bool> DeleteShipment(int id)
+        {
+            var shipment = await _context.Shipments.FindAsync(id);
+            if (shipment == null)
+            {
+                return false; // Zending bestaat niet
+            }
+
+            _context.Shipments.Remove(shipment); // Verwijder de zending
+            await _context.SaveChangesAsync(); // Sla de wijzigingen op
+            return true; // Retourneer succes
         }
     }
 }

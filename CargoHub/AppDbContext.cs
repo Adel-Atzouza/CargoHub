@@ -1,10 +1,13 @@
 using CargoHub.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace CargoHub
 {
     public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(options)
     {
+        public DbSet<Client> Clients { get; set; }
+
         public DbSet<Warehouse> Warehouses { get; set; }
         public DbSet<Transfer> Transfers { get; set; }
         public DbSet<Supplier> Suppliers { get; set; }
@@ -30,26 +33,9 @@ namespace CargoHub
 
 
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            modelBuilder.Entity<ItemGroup>()
-                .HasMany(g => g.ItemLines)
-                .WithOne(l => l.ItemGroup)
-                .HasForeignKey(l => l.ItemGroupId);
+        // protected override void OnModelCreating(ModelBuilder modelBuilder)
+        // {
 
-            // ItemLine -> ItemTypes (One-to-Many)
-            modelBuilder.Entity<ItemLine>()
-                .HasMany(l => l.ItemTypes)
-                .WithOne(t => t.ItemLine)
-                .HasForeignKey(t => t.ItemLineId);
-
-            // ItemType -> Items (One-to-Many)
-            modelBuilder.Entity<ItemType>()
-                .HasMany(t => t.Items)
-                .WithOne(i => i.ItemType)
-                .HasForeignKey(i => i.ItemTypeId);
-
-
-        }
+        // }
     }
 }

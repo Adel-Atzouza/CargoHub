@@ -10,6 +10,7 @@ builder.Services.AddScoped<ItemLinesService>();
 
 builder.Services.AddTransient<WarehouseService>();
 builder.Services.AddTransient<TransferService>();
+builder.Services.AddScoped<DataMigration>();
 builder.Services.AddTransient<SupplierService>();
 
 var app = builder.Build();

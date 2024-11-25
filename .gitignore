@@ -6,6 +6,7 @@
 Migrations/
 CargoHub.db-shm
 CargoHub.db-wal
+CargoHub.db
 
 # dotenv files
 .env

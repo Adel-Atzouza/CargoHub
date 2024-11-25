@@ -60,9 +60,8 @@ namespace CargoHub
 
 
         [JsonPropertyName("supplier_part_number")]
-        public string SupplierPartNumber { get; set; }
-
-        // Foreign key
-        public int ItemTypeId { get; set; }
+        public string? SupplierPartNumber { get; set; }
+        // Navigation property for many-to-many relationship with Order
+        public List<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
     }
 }

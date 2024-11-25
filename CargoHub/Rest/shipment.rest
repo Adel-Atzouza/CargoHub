@@ -1,0 +1,174 @@
+### Get a shipment by ID with order details
+GET http://localhost:3000/api/v1/shipment/Orderdetails/2
+Content-Type: application/json
+ApiKey: Admin
+
+#### Response Example
+{
+  "id": 1,
+  "sourceId": 1,
+  "orderdate": "2024-11-18T13:39:15",
+  "requestDate": "2024-11-19T13:39:15",
+  "shipmentDate": "2024-11-19T14:00:00",
+  "shipmentType": "Air",
+  "shipmentStatus": "Pending",
+  "notes": "Fragile items",
+  "carrierCode": "DHL",
+  "carrierDescription": "DHL Express",
+  "serviceCode": "DHL01",
+  "paymentType": "Prepaid",
+  "totalPackageCount": 3,
+  "totalPackageWeight": 15.5,
+  "createdAt": "2024-11-18T13:39:15",
+  "updatedAt": "2024-11-19T13:39:15",
+  "orders": [
+    {
+      "id": 1,
+      "orderDate": "2024-11-19T08:45:47",
+      "requestDate": "2024-11-20T08:45:47",
+      "reference": "ORD123",
+      "orderStatus": "Pending",
+      "orderItems": [
+        {
+          "itemId": "ITEM001",
+          "amount": 2
+        },
+        {
+          "itemId": "ITEM002",
+          "amount": 3
+        }
+      ]
+    }
+  ]
+}
+
+### Get all shipments with items (paginated)
+GET http://localhost:3000/api/v1/shipment?page=0
+Content-Type: application/json
+ApiKey: Admin
+
+### Get a shipment by ID with only items
+GET http://localhost:3000/api/v1/shipment/2
+Content-Type: application/json
+ApiKey: Admin
+
+#### Response Example
+{
+  "id": 1,
+  "shipmentDate": "2024-11-19T14:00:00",
+  "shipmentType": "Air",
+  "shipmentStatus": "Pending",
+  "notes": "Fragile items",
+  "carrierCode": "DHL",
+  "carrierDescription": "DHL Express",
+  "serviceCode": "DHL01",
+  "paymentType": "Prepaid",
+  "totalPackageCount": 3,
+  "totalPackageWeight": 15.5,
+  "createdAt": "2024-11-18T13:39:15",
+  "updatedAt": "2024-11-19T13:39:15",
+  "items": [
+    {
+      "itemId": "ITEM001",
+      "amount": 2
+    },
+    {
+      "itemId": "ITEM002",
+      "amount": 3
+    }
+  ]
+}
+
+### Get all shipments
+GET http://localhost:3000/api/v1/shipment
+Content-Type: application/json
+ApiKey: Admin
+
+#### Response Example
+[
+  {
+    "id": 1,
+    "shipmentDate": "2024-11-19T14:00:00",
+    "shipmentType": "Air",
+    "shipmentStatus": "Pending",
+    "notes": "Fragile items",
+    "carrierCode": "DHL",
+    "carrierDescription": "DHL Express",
+    "serviceCode": "DHL01",
+    "paymentType": "Prepaid",
+    "totalPackageCount": 3,
+    "totalPackageWeight": 15.5,
+    "createdAt": "2024-11-18T13:39:15",
+    "updatedAt": "2024-11-19T13:39:15"
+  },
+  {
+    "id": 2,
+    "shipmentDate": "2024-11-20T10:00:00",
+    "shipmentType": "Sea",
+    "shipmentStatus": "In Transit",
+    "notes": "Heavy goods",
+    "carrierCode": "FedEx",
+    "carrierDescription": "FedEx International",
+    "serviceCode": "Standard",
+    "paymentType": "Collect",
+    "totalPackageCount": 10,
+    "totalPackageWeight": 500.0,
+    "createdAt": "2024-11-18T10:00:00",
+    "updatedAt": "2024-11-20T12:00:00"
+  }
+]
+
+### Create a new shipment
+POST http://localhost:3000/api/v1/shipment
+Content-Type: application/json
+ApiKey: Admin
+
+{
+    "sourceId": 1,
+    "orderDate": "2024-11-24T10:00:00",
+    "requestDate": "2024-11-26T10:00:00",
+    "shipmentDate": "2024-11-25T10:00:00",
+    "shipmentType": "Air",
+    "shipmentStatus": "Pending",
+    "notes": "Fragile goods",
+    "carrierCode": "DHL",
+    "carrierDescription": "DHL Express",
+    "serviceCode": "DHL01",
+    "paymentType": "Prepaid",
+    "transferMode": "Road",
+    "totalPackageCount": 5,
+    "totalPackageWeight": 200.5
+}
+
+###
+PUT http://localhost:3000/api/v1/shipment/2/assign-orders
+Content-Type: application/json
+ApiKey: Admin
+
+[
+    3,
+    4,
+    5
+]
+
+### Update Orders in Shipment
+PUT http://localhost:3000/api/v1/shipment/2/orders
+Content-Type: application/json
+ApiKey: Admin
+
+[
+  4, 5, 6
+]
+
+
+
+
+### Delete a shipment by ID
+DELETE http://localhost:3000/api/v1/shipment/1
+Content-Type: application/json
+ApiKey: Admin
+
+#### Response Example
+{
+  "message": "Shipment with ID 1 deleted successfully."
+}

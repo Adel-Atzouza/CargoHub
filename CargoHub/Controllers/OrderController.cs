@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using CargoHub.Models;
 using CargoHub.Services;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace CargoHub.Controllers
 {
@@ -22,10 +23,13 @@ namespace CargoHub.Controllers
         // GET: api/v1/orders
         // Haal alle orders op, inclusief hun items
         [HttpGet]
-        public async Task<ActionResult<List<OrderWithItemsDTO>>> GetAllOrders()
+        public async Task<ActionResult<List<OrderWithItemsDTO>>> GetAllOrders([FromQuery] int page = 0)
         {
-            var orders = await _orderService.GetAllOrdersWithItems();
-            return Ok(orders); //lijst met orders
+            var orderwithitems = await _orderService.GetAllOrdersWithItems();
+            var paginatedorders = orderwithitems.Skip(page * 100).Take(100).ToList();
+            return Ok(paginatedorders);
+            // var orders = await _orderService.GetAllOrdersWithItems();
+            // return Ok(orders); //lijst met orders
         }
 
         // GET: api/v1/orders/{id}

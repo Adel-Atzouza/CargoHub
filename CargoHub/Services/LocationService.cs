@@ -17,16 +17,11 @@ namespace CargoHub.Services
             _context = context;
         }
 
-        // Haal een lijst van locaties op, beginnend vanaf een bepaalde ID
-        public async Task<List<Location>> GetLocations(int id)
+        public async Task<List<Location>> GetAllLocations()
         {
             return await _context.Locations
-                .Where(location => location.Id >= id) // Filter: ID moet gelijk of groter zijn dan meegegeven ID
-                .OrderBy(location => location.Id) // Sorteer de locaties op ID (oplopend)
-                .Take(100) // Pak de eerste 100 resultaten
-                .ToListAsync(); // Haal de lijst asynchroon op
+                .ToListAsync();
         }
-
         // Haal één specifieke locatie op op basis van ID
         public async Task<Location> GetLocation(int id)
         {

@@ -19,6 +19,14 @@ namespace CargoHub.Controllers
             _shipmentService = shipmentService;
         }
 
+        [HttpGet]
+        public async Task<ActionResult<List<object>>> GetAllShipmentsWithItems(int page = 0)
+        {
+            var shipments = await _shipmentService.GetAllShipmentsWithItems();
+            var paginatedshipments = shipments.Skip(page * 100).Take(100).ToList();
+            return Ok(paginatedshipments);
+        }
+
         // GET: api/v1/shipment/Orderdetails/{id}
         // Haal een shipment op met alle orders en hun details
         [HttpGet("Orderdetails/{id}")]

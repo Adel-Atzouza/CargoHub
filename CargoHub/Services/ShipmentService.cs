@@ -17,6 +17,46 @@ namespace CargoHub.Services
             _context = context;
         }
 
+        public async Task<List<dynamic>> GetAllShipmentsWithItems()
+        {
+             // Haal alle zendingen op uit de database, inclusief hun gerelateerde orders en items
+            var shipments = await _context.Shipments
+                .Include(s => s.orders)
+                .ThenInclude(o => o.OrderItems)
+                .ThenInclude(oi => oi.Item)
+                .ToListAsync();
+
+            var result = shipments.Select(shipment => new
+            {
+                shipment.Id,
+                shipment.ShipmentDate,
+                shipment.ShipmentType,
+                shipment.ShipmentStatus,
+                shipment.Notes,
+                shipment.CarrierCode,
+                shipment.CarrierDescription,
+                shipment.ServiceCode,
+                shipment.PaymentType,
+                shipment.TransferMode,
+                shipment.TotalPackageCount,
+                shipment.TotalPackageWeight,
+                shipment.CreatedAt,
+                shipment.UpdatedAt,
+                items = shipment.orders
+                    .SelectMany(o => o.OrderItems)
+                    .GroupBy(oi => oi.Item.Uid)
+                    .Select(group => new
+                    {
+                        itemId = group.Key,
+                        amount = group.Sum(oi => oi.Amount)
+                    }).ToList()
+            }).ToList();
+            // Retourneer het resultaat als een lijst van dynamische objecten
+            return result.Cast<dynamic>().ToList();
+        }
+
+
+
         // Haal een specifieke zending op, inclusief orders en hun details
         public async Task<object?> GetShipmentByIdWithOrderDetails(int shipmentId)
         {
@@ -117,7 +157,7 @@ namespace CargoHub.Services
                 .GroupBy(oi => oi.Item.Uid) // Groepeer op unieke item-ID
                 .Select(group => new
                 {
-                    uid = group.Key, // Unieke item-ID
+                    itemId = group.Key, // Unieke item-ID
                     amount = group.Sum(oi => oi.Amount) // Tel de hoeveelheden bij elkaar op
                 }).ToList();
 

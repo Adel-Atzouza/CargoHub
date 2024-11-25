@@ -1,6 +1,7 @@
 using CargoHub.Models;
 using CargoHub.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -34,9 +35,11 @@ namespace CargoHub.Controllers
         // GET: api/v1/location
         // Haal een lijst van locaties op, eventueel gefilterd op ID
         [HttpGet]
-        public async Task<ActionResult<List<Location>>> GetLocations([FromQuery] int id)
+        public async Task<ActionResult<List<Location>>> GetLocations([FromQuery] int id, int page = 0)
         {
-            return await _locationService.GetLocations(id); // Retourneer alle locaties
+            var locations = await _locationService.GetAllLocations();
+            var paginatedLocations = locations.Skip(page * 100).Take(100).ToList();
+            return Ok(paginatedLocations);
         }
 
         // GET: api/v1/location/warehouse/{warehouseId}

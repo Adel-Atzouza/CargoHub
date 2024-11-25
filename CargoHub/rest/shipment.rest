@@ -1,5 +1,5 @@
 ### Get a shipment by ID with order details
-GET http://localhost:3000/api/v1/shipment/Orderdetails/1
+GET http://localhost:3000/api/v1/shipment/Orderdetails/2
 Content-Type: application/json
 ApiKey: Admin
 
@@ -42,8 +42,13 @@ ApiKey: Admin
   ]
 }
 
+### Get all shipments with items (paginated)
+GET http://localhost:3000/api/v1/shipment?page=0
+Content-Type: application/json
+ApiKey: Admin
+
 ### Get a shipment by ID with only items
-GET http://localhost:3000/api/v1/shipment/1
+GET http://localhost:3000/api/v1/shipment/2
 Content-Type: application/json
 ApiKey: Admin
 

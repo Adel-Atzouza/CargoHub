@@ -17,17 +17,28 @@ builder.Services.AddTransient<OrderService>();
 builder.Services.AddTransient<LocationService>();
 builder.Services.AddTransient<ShipmentService>();
 
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
 
 var app = builder.Build();
-app.Use(async (context, next) =>
+
+// Configure the HTTP request pipeline.
+if (app.Environment.IsDevelopment())
 {
-    if (!context.Request.Headers.ContainsKey("ApiKey"))
-    {
-        context.Response.StatusCode = 401;
-        return;
-    }
-    await next.Invoke();
-});
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+
+// app.Use(async (context, next) =>
+// {
+//     if (!context.Request.Headers.ContainsKey("ApiKey"))
+//     {
+//         context.Response.StatusCode = 401;
+//         return;
+//     }
+//     await next.Invoke();
+// });
 app.MapControllers();
 app.Urls.Add("http://localhost:3000");
 

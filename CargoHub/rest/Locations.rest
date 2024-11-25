@@ -1,3 +1,6 @@
+<<<<<<< HEAD
+### Create a new location
+=======
 # Get Location by ID
 GET http://localhost:3000/api/v1/location/1
 ApiKey: 
@@ -61,6 +64,7 @@ Accept: application/json
 
 
 ### Add New Location (with all fields)
+>>>>>>> development
 POST http://localhost:3000/api/v1/location
 Content-Type: application/json
 

@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace CargoHub.Models{
 
-public class Order
+public class Order : BaseModel
 {
     public int Id { get; set; }
 
@@ -34,21 +34,23 @@ public class Order
 
     public string? PickingNotes { get; set; }
 
-    [JsonIgnore]
+    
     public int? WarehouseId { get; set; }
     [JsonIgnore]
+    public Warehouse? Warehouse {get; set;}
     public int? ShipTo { get; set; }
     [JsonIgnore]
+    public Client? ShipToClient { get; set; }
     public int? BillTo { get; set; }
     [JsonIgnore]
+    public Client? BillToClient { get; set; }
     public int? ShipmentId { get; set; }
+    [JsonIgnore]
     public Shipment? Shipment { get; set; }  // Navigation property to Shipment
-    public decimal? TotalAmount { get; set; }
-    public decimal? TotalDiscount { get; set; }
-    public decimal? TotalTax { get; set; }
-    public decimal? TotalSurcharge { get; set; }
-    public DateTime CreatedAt { get; set; }
-    public DateTime UpdatedAt { get; set; }
+    public decimal TotalAmount { get; set; }
+    public decimal TotalDiscount { get; set; }
+    public decimal TotalTax { get; set; }
+    public decimal TotalSurcharge { get; set; }
 
     // Avoid serializing the OrderItems navigation property
     [JsonIgnore]

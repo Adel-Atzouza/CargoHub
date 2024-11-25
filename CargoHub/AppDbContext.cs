@@ -38,11 +38,49 @@ namespace CargoHub
             return base.SaveChangesAsync(cancellationToken);
         }
 
+        // Configure model relationships and seed data
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
 
+    // Shipment - Order relationship: one shipment can have multiple orders
+            modelBuilder.Entity<Shipment>()
+                .HasMany(s => s.orders)          // One shipment has many orders
+                .WithOne(o => o.Shipment)       // Each order has one shipment
+                .HasForeignKey(o => o.ShipmentId)  // Foreign key in the Orders table
+                .IsRequired(false);  // ShipmentId in Orders is optional (nullable)
 
-        // protected override void OnModelCreating(ModelBuilder modelBuilder)
-        // {
+            modelBuilder.Entity<Order>()
+                .HasOne(o => o.Shipment)
+                .WithMany(s => s.orders)
+                .HasForeignKey(o => o.ShipmentId)
+                .IsRequired(false);  // Allow nulls for shipment in Orders (since some orders might not have shipments)
 
-        // }
-    }
-}
+            modelBuilder.Entity<Order>()
+                .HasOne(o => o.ShipToClient)
+                .WithMany()
+                .HasForeignKey(o => o.ShipTo);
+
+            modelBuilder.Entity<Order>()
+                .HasOne(o => o.BillToClient)
+                .WithMany()
+                .HasForeignKey(o => o.BillTo);
+                
+            modelBuilder.Entity<OrderItem>()
+                .HasKey(oi => new { oi.OrderId, oi.ItemId });  // Composite key for OrderItem
+
+            modelBuilder.Entity<OrderItem>()
+                .HasOne(oi => oi.Order)
+                .WithMany(o => o.OrderItems)
+                .HasForeignKey(oi => oi.OrderId);
+
+            modelBuilder.Entity<OrderItem>()
+                .HasOne(oi => oi.Item)
+                .WithMany(i => i.OrderItems)
+                .HasForeignKey(oi => oi.ItemId);  // Foreign key relationship using ItemId (int)
+
+        }
+
+        // Constructor accepting DbContextOptions
+        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
+}}

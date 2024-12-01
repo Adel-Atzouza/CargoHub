@@ -19,7 +19,7 @@ Content-Type: application/json
 ApiKey: Admin
 
 {
-    "WarehouseId": null,
+    "WarehouseId": 1,
     "Code": "LOC001",
     "Name": "Main Storage"
 }

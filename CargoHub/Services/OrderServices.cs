@@ -153,59 +153,61 @@ namespace CargoHub.Services
             }
         }
 
-        public async Task<string> UpdateitemsInOrder(int orderid, List<ItemDTO> orderitems )
-        {
-            foreach( var x in orderitems)
-            {
-                if(!await ItemExist(x.ItemId))
-                {
-                    return $"item met id {x.ItemId} is not found";
-                }
-            }
-            var Updateorder = await GetOrderWithItems(orderid);
-            if(Updateorder == null ){
-                return $"order with {orderid} not found";
-            }
+        // public async Task<string> UpdateitemsInOrder(int orderid, List<ItemDTO> orderitems )
+        // {
+        //     foreach( var x in orderitems)
+        //     {
+        //         if(!await ItemExist(x.ItemId))
+        //         {
+        //             return $"item met id {x.ItemId} is not found";
+        //         }
+        //     }
+        //     var Updateorder = await GetOrderWithItems(orderid);
+        //     if(Updateorder == null ){
+        //         return $"order with {orderid} not found";
+        //     }
 
-            var currentitems = Updateorder.Items;
+        //     var currentitems = Updateorder.Items;
 
-            //STAP 1 het updaten van bestaande items in the huidige order
-            foreach (var x in currentitems)
-            {
-                foreach(var y in orderitems)
-                {
+        //     //STAP 1 het updaten van bestaande items in the huidige order
+        //     foreach (var x in currentitems)
+        //     {
+        //         foreach(var y in orderitems)
+        //         {
 
-                    if (x.ItemId == y.ItemId)
-                    {
-                        var inventoryitem = await _context.Inventory.FirstOrDefaultAsync(i => i.ItemId == x.ItemId);//zoek de item op 
-                        if(inventoryitem != null){
-                            inventoryitem.TotalAllocated += y.Amount - x.Amount;
-                        }
-                        x.Amount = y.Amount;
-                        break;
-                    }
-                }
-            }
+        //             if (x.ItemId == y.ItemId)
+        //             {
+        //                 var inventoryitem = await _context.Inventory.FirstOrDefaultAsync(i => i.ItemId == x.ItemId);//zoek de item op 
+        //                 if(inventoryitem != null){
+        //                     inventoryitem.TotalAllocated += y.Amount - x.Amount;
+        //                 }
+        //                 x.Amount = y.Amount;
+        //                 break;
+        //             }
+        //         }
+        //     }
 
-            //STAP 2 het toevoegen van nieuwe items aan de huidige order
-            foreach (var y in orderitems)
-            {
-                var existingItem = currentitems.FirstOrDefault(i => i.ItemId == y.ItemId);
-                if (existingItem != null)
-                {
-                    var inventoryitem = await _context.Items.FirstOrDefaultAsync(i => i.Uid == y.ItemId);//zoek de item op
-                    if(inventoryitem != null){
-                        {
-                            if (inventoryitem.UnitOrderQuantity < y.Amount)
-                            {
-                                return $"Niet genoeg voorraad voor item met Uid: {inventoryitem.Uid}. Beschikbaar: {inventoryitem.UnitOrderQuantity}, gevraagd: {y.Amount}";
-                            }
-                        }
-                    }
-                }
-            }
+        //     //STAP 2 het toevoegen van nieuwe items aan de huidige order
+        //     foreach (var y in orderitems)
+        //     {
+        //         var existingItem = currentitems.FirstOrDefault(i => i.ItemId == y.ItemId);
+        //         if (existingItem != null)
+        //         {
+        //             var inventoryitem = await _context.Items.FirstOrDefaultAsync(i => i.Uid == y.ItemId);//zoek de item op
+        //             if(inventoryitem != null){
+        //                 {
+        //                     if (inventoryitem.UnitOrderQuantity < y.Amount)
+        //                     {
+        //                         return $"Niet genoeg voorraad voor item met Uid: {inventoryitem.Uid}. Beschikbaar: {inventoryitem.UnitOrderQuantity}, gevraagd: {y.Amount}";
+        //                     }
+                            
+        //                 }
 
-        }
+        //             }
+        //         }
+        //     }
+
+        // }
 
         // Check of een item bestaat op basis van het unieke ID
         public async Task<bool> ItemExist(string itemid)

@@ -46,7 +46,7 @@ GET http://localhost:3000/api/v1/orders/client/1
 ApiKey : Admin 
 
 ### Delete an order by ID
-DELETE http://localhost:3000/api/v1/orders/11
+DELETE http://localhost:3000/api/v1/orders/14
 ApiKey : Admin
 Content-Type: application/json
 

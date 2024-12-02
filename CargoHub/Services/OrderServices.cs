@@ -105,29 +105,33 @@ namespace CargoHub.Services
         {
             try
             {
-                // Voeg de order toe aan de database
+                // Voeg de order toe aan de databasecontext (nog niet opgeslagen in de database)
                 _context.Orders.Add(order);
-                await _context.SaveChangesAsync(); // Opslaan zodat het ID wordt gegenereerd
 
-                // Voeg items toe aan de order
+                // Controleer en verwerk de items
                 foreach (var itemDto in itemDTOs)
                 {
                     // Zoek het item op in de database via het unieke ID
                     var item = await _context.Items.FirstOrDefaultAsync(i => i.Uid == itemDto.ItemId);
                     if (item != null)
                     {
+                        // Controleer of er genoeg voorraad is
                         if (item.UnitOrderQuantity < itemDto.Amount)
                         {
-                            throw new Exception($"niet genoeg voorraad voor item met uid: {itemDto.ItemId}. Beschikbaar: {item.UnitOrderQuantity}, gevraagd: {itemDto.Amount}");
+                            throw new Exception($"Niet genoeg voorraad voor item met Uid: {itemDto.ItemId}. Beschikbaar: {item.UnitOrderQuantity}, gevraagd: {itemDto.Amount}");
                         }
+
+                        // Verminder de voorraad (alleen in de context, nog niet opgeslagen)
                         item.UnitOrderQuantity -= itemDto.Amount;
+
+                        // Maak een OrderItem aan en voeg toe aan de context
                         var orderItem = new OrderItem
                         {
-                            OrderId = order.Id, // Koppel aan het gegenereerde order-ID
-                            ItemUid = item.Uid, // Het unieke ID van het item
-                            Amount = itemDto.Amount // Hoeveelheid van het item
+                            Order = order, // Koppel het direct aan de order in de context
+                            ItemUid = item.Uid,
+                            Amount = itemDto.Amount
                         };
-                        _context.OrderItems.Add(orderItem); // Voeg de relatie toe
+                        _context.OrderItems.Add(orderItem);
                     }
                     else
                     {
@@ -135,15 +139,72 @@ namespace CargoHub.Services
                     }
                 }
 
-                await _context.SaveChangesAsync(); // Opslaan in de database
+                // Sla alles in één keer op nadat alle checks geslaagd zijn
+                await _context.SaveChangesAsync();
+
                 return order; // Retourneer de aangemaakte order
             }
             catch (Exception ex)
             {
-                // Log de fout en gooi hem opnieuw voor verder gebruik
                 Console.WriteLine($"Fout bij het aanmaken van een order: {ex.Message}");
+
+                // Gooi de fout opnieuw, zodat deze hogerop kan worden afgehandeld
                 throw;
             }
+        }
+
+        public async Task<string> UpdateitemsInOrder(int orderid, List<ItemDTO> orderitems )
+        {
+            foreach( var x in orderitems)
+            {
+                if(!await ItemExist(x.ItemId))
+                {
+                    return $"item met id {x.ItemId} is not found";
+                }
+            }
+            var Updateorder = await GetOrderWithItems(orderid);
+            if(Updateorder == null ){
+                return $"order with {orderid} not found";
+            }
+
+            var currentitems = Updateorder.Items;
+
+            //STAP 1 het updaten van bestaande items in the huidige order
+            foreach (var x in currentitems)
+            {
+                foreach(var y in orderitems)
+                {
+
+                    if (x.ItemId == y.ItemId)
+                    {
+                        var inventoryitem = await _context.Inventory.FirstOrDefaultAsync(i => i.ItemId == x.ItemId);//zoek de item op 
+                        if(inventoryitem != null){
+                            inventoryitem.TotalAllocated += y.Amount - x.Amount;
+                        }
+                        x.Amount = y.Amount;
+                        break;
+                    }
+                }
+            }
+
+            //STAP 2 het toevoegen van nieuwe items aan de huidige order
+            foreach (var y in orderitems)
+            {
+                var existingItem = currentitems.FirstOrDefault(i => i.ItemId == y.ItemId);
+                if (existingItem != null)
+                {
+                    var inventoryitem = await _context.Items.FirstOrDefaultAsync(i => i.Uid == y.ItemId);//zoek de item op
+                    if(inventoryitem != null){
+                        {
+                            if (inventoryitem.UnitOrderQuantity < y.Amount)
+                            {
+                                return $"Niet genoeg voorraad voor item met Uid: {inventoryitem.Uid}. Beschikbaar: {inventoryitem.UnitOrderQuantity}, gevraagd: {y.Amount}";
+                            }
+                        }
+                    }
+                }
+            }
+
         }
 
         // Check of een item bestaat op basis van het unieke ID
@@ -155,56 +216,24 @@ namespace CargoHub.Services
         // Verwijder een order op basis van ID
         public async Task<bool> DeleteOrder(int id)
         {
-            var order = await _context.Orders.FindAsync(id); // Zoek de order op
+            var order = await _context.Orders
+            .Include(o => o.OrderItems)
+            .ThenInclude(o => o.Item)
+            .FirstOrDefaultAsync(o => o.Id == id);
+
             if (order == null) return false; // Bestaat niet? Geef False terug
 
+            foreach (var orderItem in order.OrderItems)
+            {
+                var item = orderItem.Item;
+                if (item != null)
+                {
+                    item.UnitOrderQuantity += orderItem.Amount;
+                }
+            }
             _context.Orders.Remove(order); // Verwijder de order
             await _context.SaveChangesAsync(); // Opslaan in de database
             return true; // Geef True terug om succes aan te geven
         }
     }
 }
-        // public async Task<string> UpdateitemsInOrder(int orderid, List<ItemDTO> orderitems )
-        // {
-        //     foreach( var x in orderitems)
-        //     {
-        //         if(!await ItemExist(x.ItemId))
-        //         {
-        //             return $"item met id {x.ItemId} is not found";
-        //         }
-        //     }
-        //     var Updateorder = await GetOrderWithItems(orderid);
-        //     if(Updateorder == null ){
-        //         return $"order with {orderid} not found";
-        //     }
-
-        //     var currentitems = Updateorder.Items;
-
-        //     //STAP 1 het updaten van bestaande items in the huidige order
-        //     foreach (var x in currentitems)
-        //     {
-        //         foreach(var y in orderitems)
-        //         {
-
-        //             if (x.ItemId == y.ItemId)
-        //             {
-        //                 var inventoryitem = await _context.Inventory.FirstOrDefaultAsync(i => i.ItemId == x.ItemId);
-        //                 if(inventoryitem != null){
-        //                     inventoryitem.TotalAllocated += y.Amount - x.Amount;
-        //                 }
-        //                 x.Amount = y.Amount;
-        //                 break;
-        //             }
-        //         }
-        //     }
-
-        //     //STAP 2 het toevoegen van nieuwe items aan de huidige order
-        //     foreach (var y in orderitems)
-        //     {
-        //         var existingItem = currentitems.FirstOrDefault(i => i.ItemId == y.ItemId);
-        //         {
-
-        //         }
-        //     }
-
-        // }

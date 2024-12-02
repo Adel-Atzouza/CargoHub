@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace CargoHub.Controllers
 {
-    [Route("api/v1/[controller]")]
+    [Route("api/v1/Shipments")]
     [ApiController]
     public class ShipmentController : ControllerBase
     {

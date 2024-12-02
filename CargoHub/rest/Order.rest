@@ -27,11 +27,11 @@ ApiKey : Admin
   "items": [
     {
       "itemId": "ITEM001",
-      "amount": 3
+      "amount": 6
     },
     {
       "itemId": "ITEM002",
-      "amount": 1
+      "amount": 5
     }
   ]
 }
@@ -46,7 +46,7 @@ GET http://localhost:3000/api/v1/orders/client/1
 ApiKey : Admin 
 
 ### Delete an order by ID
-DELETE http://localhost:3000/api/v1/orders/2
+DELETE http://localhost:3000/api/v1/orders/11
 ApiKey : Admin
 Content-Type: application/json
 

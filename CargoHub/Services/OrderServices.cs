@@ -116,6 +116,11 @@ namespace CargoHub.Services
                     var item = await _context.Items.FirstOrDefaultAsync(i => i.Uid == itemDto.ItemId);
                     if (item != null)
                     {
+                        if (item.UnitOrderQuantity < itemDto.Amount)
+                        {
+                            throw new Exception($"niet genoeg voorraad voor item met uid: {itemDto.ItemId}. Beschikbaar: {item.UnitOrderQuantity}, gevraagd: {itemDto.Amount}");
+                        }
+                        item.UnitOrderQuantity -= itemDto.Amount;
                         var orderItem = new OrderItem
                         {
                             OrderId = order.Id, // Koppel aan het gegenereerde order-ID

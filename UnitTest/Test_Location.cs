@@ -10,174 +10,174 @@ namespace CargoHub.Tests
     [TestClass]
     public class LocationServiceTests
     {
-        private LocationService _locationService;
-        private AppDbContext _dbContext;
+        private LocationService _locationService; // The service under test
+        private AppDbContext _dbContext; // In-memory database context for testing
 
-        [TestInitialize]
+        [TestInitialize] // Setup method that runs before each test
         public void Setup()
         {
-            // Configureer de in-memory database
+            // Configure the in-memory database for testing
             var options = new DbContextOptionsBuilder<AppDbContext>()
-                .UseInMemoryDatabase(databaseName: "TestDatabase")
+                .UseInMemoryDatabase(databaseName: "TestDatabase") // Create an in-memory database
                 .Options;
 
-            _dbContext = new AppDbContext(options);
-            _locationService = new LocationService(_dbContext);
+            _dbContext = new AppDbContext(options); // Initialize the database context
+            _locationService = new LocationService(_dbContext); // Initialize the service with the context
         }
 
         [TestCleanup]
         public void Cleanup()
         {
-            // Reset de database na elke test
+            // Ensure the in-memory database is deleted after each test
             _dbContext.Database.EnsureDeleted();
-            _dbContext.Dispose();
+            _dbContext.Dispose(); // Dispose the database context to release resources
         }
 
         [TestMethod]
         public async Task GetAllLocations_ShouldReturnAllLocations()
         {
-            // Arrange
+            // Arrange: Add sample locations to the in-memory database
             _dbContext.Locations.AddRange(new List<Location>
             {
                 new Location { Name = "Location 1", Code = "LOC001" },
                 new Location { Name = "Location 2", Code = "LOC002" }
             });
-            await _dbContext.SaveChangesAsync();
+            await _dbContext.SaveChangesAsync(); // Save changes to the database
 
-            // Act
+            // Act: Call the service method to get all locations
             var result = await _locationService.GetAllLocations();
 
-            // Assert
-            Assert.AreEqual(2, result.Count);
+            // Assert: Verify that the correct number of locations are returned
+            Assert.AreEqual(2, result.Count); // The result should contain 2 locations
         }
 
         [TestMethod]
         public async Task GetLocation_ShouldReturnCorrectLocation()
         {
-            // Arrange
+            // Arrange: Add a location to the in-memory database
             var location = new Location { Name = "Test Location", Code = "LOC001" };
             _dbContext.Locations.Add(location);
-            await _dbContext.SaveChangesAsync();
+            await _dbContext.SaveChangesAsync(); // Save changes to the database
 
-            // Act
+            // Act: Call the service method to retrieve the location by ID
             var result = await _locationService.GetLocation(location.Id);
 
-            // Assert
-            Assert.IsNotNull(result);
-            Assert.AreEqual("Test Location", result.Name);
-            Assert.AreEqual("LOC001", result.Code);
+            // Assert: Verify that the returned location matches the expected values
+            Assert.IsNotNull(result); // Ensure that the result is not null
+            Assert.AreEqual("Test Location", result.Name); // Check if the name is correct
+            Assert.AreEqual("LOC001", result.Code); // Check if the code is correct
         }
 
         [TestMethod]
         public async Task GetLocation_ShouldReturnNull_WhenLocationDoesNotExist()
         {
-            // Act
+            // Act: Try to retrieve a location with an invalid ID (999)
             var result = await _locationService.GetLocation(999);
 
-            // Assert
+            // Assert: Verify that the result is null as the location does not exist
             Assert.IsNull(result);
         }
 
         [TestMethod]
         public async Task AddLocation_ShouldAddLocationToDatabase()
         {
-            // Arrange
+            // Arrange: Create a new location to be added
             var newLocation = new Location
             {
                 Name = "New Location",
                 Code = "LOC001"
             };
 
-            // Act
+            // Act: Call the service method to add the location
             var result = await _locationService.AddLocation(newLocation);
 
-            // Assert
-            Assert.AreEqual("Locatie succesvol toegevoegd.", result);
+            // Assert: Verify that the location was successfully added
+            Assert.AreEqual("Locatie succesvol toegevoegd.", result); // Check for success message
 
-            var locations = await _dbContext.Locations.ToListAsync();
-            Assert.AreEqual(1, locations.Count);
-            Assert.AreEqual("New Location", locations[0].Name);
+            var locations = await _dbContext.Locations.ToListAsync(); // Retrieve all locations from the database
+            Assert.AreEqual(1, locations.Count); // Verify that the location count is 1
+            Assert.AreEqual("New Location", locations[0].Name); // Verify that the added location has the correct name
         }
 
         [TestMethod]
         public async Task AddLocation_ShouldReturnError_WhenWarehouseIdIsInvalid()
         {
-            // Arrange
+            // Arrange: Create a location with an invalid WarehouseId
             var newLocation = new Location
             {
                 Name = "Invalid Location",
                 Code = "LOC002",
-                WarehouseId = 999 // Ongeldige WarehouseId
+                WarehouseId = 999 // Invalid WarehouseId
             };
 
-            // Act
+            // Act: Call the service method to add the location
             var result = await _locationService.AddLocation(newLocation);
 
-            // Assert
+            // Assert: Verify that the error message is returned due to invalid WarehouseId
             Assert.AreEqual("Ongeldige WarehouseId opgegeven.", result);
 
-            var locations = await _dbContext.Locations.ToListAsync();
-            Assert.AreEqual(0, locations.Count);
+            var locations = await _dbContext.Locations.ToListAsync(); // Retrieve all locations from the database
+            Assert.AreEqual(0, locations.Count); // No locations should be added due to the error
         }
 
         [TestMethod]
         public async Task UpdateLocation_ShouldUpdateExistingLocation()
         {
-            // Arrange
+            // Arrange: Add an initial location to the database
             var location = new Location { Name = "Old Name", Code = "LOC001" };
             _dbContext.Locations.Add(location);
-            await _dbContext.SaveChangesAsync();
+            await _dbContext.SaveChangesAsync(); // Save changes to the database
 
             var updatedLocation = new Location { Name = "New Name", Code = "LOC001" };
 
-            // Act
+            // Act: Call the service method to update the location
             var result = await _locationService.UpdateLocation(location.Id, updatedLocation);
 
-            // Assert
-            Assert.AreEqual("Locatie succesvol bijgewerkt.", result);
+            // Assert: Verify that the location was successfully updated
+            Assert.AreEqual("Locatie succesvol bijgewerkt.", result); // Check for success message
 
-            var updated = await _dbContext.Locations.FindAsync(location.Id);
-            Assert.AreEqual("New Name", updated.Name);
+            var updated = await _dbContext.Locations.FindAsync(location.Id); // Retrieve the updated location
+            Assert.AreEqual("New Name", updated.Name); // Verify that the name is updated
         }
 
         [TestMethod]
         public async Task UpdateLocation_ShouldReturnError_WhenLocationDoesNotExist()
         {
-            // Arrange
+            // Arrange: Create an updated location with a non-existent ID
             var updatedLocation = new Location { Name = "Non-existent Location", Code = "LOC001" };
 
-            // Act
+            // Act: Try to update a location that does not exist
             var result = await _locationService.UpdateLocation(999, updatedLocation);
 
-            // Assert
+            // Assert: Verify that an error message is returned
             Assert.AreEqual("Fout: Locatie niet gevonden.", result);
         }
 
         [TestMethod]
         public async Task RemoveLocation_ShouldDeleteLocation()
         {
-            // Arrange
+            // Arrange: Add a location to be deleted
             var location = new Location { Name = "Location to Delete", Code = "LOC003" };
             _dbContext.Locations.Add(location);
-            await _dbContext.SaveChangesAsync();
+            await _dbContext.SaveChangesAsync(); // Save changes to the database
 
-            // Act
+            // Act: Call the service method to delete the location
             var result = await _locationService.RemoveLocation(location.Id);
 
-            // Assert
-            Assert.IsTrue(result);
+            // Assert: Verify that the location was successfully deleted
+            Assert.IsTrue(result); // The deletion should be successful
 
-            var locations = await _dbContext.Locations.ToListAsync();
-            Assert.AreEqual(0, locations.Count);
+            var locations = await _dbContext.Locations.ToListAsync(); // Retrieve all locations from the database
+            Assert.AreEqual(0, locations.Count); // No locations should be left in the database
         }
 
         [TestMethod]
         public async Task RemoveLocation_ShouldReturnFalse_WhenLocationDoesNotExist()
         {
-            // Act
+            // Act: Try to delete a location with an invalid ID (999)
             var result = await _locationService.RemoveLocation(999);
 
-            // Assert
+            // Assert: Verify that the result is false since the location does not exist
             Assert.IsFalse(result);
         }
     }

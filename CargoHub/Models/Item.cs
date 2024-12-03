@@ -9,6 +9,10 @@ namespace CargoHub.Models
         public string? Uid { get; set; }
         public string? Code { get; set; }
         public string? Description { get; set; }
+<<<<<<<<< Temporary merge branch 1
+
+=========
+>>>>>>>>> Temporary merge branch 2
         [JsonPropertyName("short_description")]
         public string? ShortDescription { get; set; }
         [JsonPropertyName("upc_code")]

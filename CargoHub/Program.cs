@@ -3,8 +3,7 @@ using CargoHub.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
-
-// Register your DbContext with the SQLite connection string
+builder.Services.AddControllers();
 builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlite("Datasource=CargoHub.db"));
 
 builder.Services.AddScoped<ClientService>();
@@ -43,4 +42,5 @@ app.Urls.Add("http://localhost:3000");
 
 // Run the app
 app.Run();
+
 

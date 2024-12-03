@@ -17,6 +17,9 @@ builder.Services.AddTransient<SupplierService>();
 builder.Services.AddTransient<OrderService>();
 builder.Services.AddTransient<LocationService>();
 builder.Services.AddTransient<ShipmentService>();
+builder.Services.AddScoped<ItemsService>();  // This line is necessary
+builder.Services.AddScoped<ItemTypesService>();
+builder.Services.AddControllers();
 
 
 var app = builder.Build();
@@ -34,23 +37,9 @@ app.Urls.Add("http://localhost:3000");
 
 
 // Register your custom ItemsService
-builder.Services.AddScoped<ItemsService>();  // This line is necessary
-builder.Services.AddScoped<ItemTypesService>();
-// Add controllers to the services
-builder.Services.AddControllers();
 
-var app = builder.Build();
-app.Use(async (context, next) =>
-{
-    if (!context.Request.Headers.ContainsKey("ApiKey"))
-    {
-        context.Response.StatusCode = 401;
-        return;
-    }
-    await next.Invoke();
-});
-app.MapControllers();
-app.Urls.Add("http://localhost:3000");
+// Add controllers to the services
+
 
 // Run the app
 app.Run();

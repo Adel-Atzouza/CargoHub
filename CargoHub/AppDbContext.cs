@@ -1,4 +1,4 @@
-using CargoHub.Controllers;
+// using CargoHub.Controllers;
 using CargoHub.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -89,3 +89,4 @@ namespace CargoHub
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
     }
 }
+

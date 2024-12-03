@@ -9,6 +9,7 @@ namespace CargoHub.Models
         public string? Uid { get; set; }
         public string? Code { get; set; }
         public string? Description { get; set; }
+        
         [JsonPropertyName("short_description")]
         public string? ShortDescription { get; set; }
         [JsonPropertyName("upc_code")]

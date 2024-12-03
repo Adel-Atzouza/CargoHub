@@ -17,7 +17,7 @@ def cleanup_test_data(test_name):
                 assert delete_response.status_code in [200, 204], f"Cleanup failed in {test_name}"  # Assert that the delete was successful
 
 
-# Test to get all locations and verify the response
+# Test to get all locations
 def test_get_all_locations():
     response = requests.get(BASE_URL, headers=headers)  # Send GET request to fetch all locations
     assert response.status_code == 200  # Assert that the response status is 200 (OK)
@@ -26,7 +26,7 @@ def test_get_all_locations():
     assert len(locations) > 0  # Assert that the list of locations is not empty
 
 
-# Test to get a location by ID and verify the response
+# Test to get a location by ID
 def test_get_location_by_id():
     location_id = 1  
     response = requests.get(f"{BASE_URL}/{location_id}")  # Send GET request to fetch location by ID
@@ -35,7 +35,7 @@ def test_get_location_by_id():
     assert location["id"] == location_id  # Assert that the location's ID matches the requested ID
 
 
-# Test to add a new location and verify the response
+# Test to add a new location
 def test_add_location():
     new_location = {
         "name": "Test Location",  
@@ -57,7 +57,7 @@ def test_add_location():
         assert response.text == "Locatie succesvol toegevoegd."
 
 
-# Test to update an existing location and verify the response
+# Test to update an existing location
 def test_update_location():
     response = requests.get(BASE_URL, headers=headers)  # Fetch all locations to find one to update
     assert response.status_code == 200, f"Failed to fetch locations: {response.text}"
@@ -96,14 +96,14 @@ def test_update_location():
     cleanup_test_data("test_update_location")
 
 
-# Test to get a location by an invalid ID and verify the response
+# Test to get a location by an invalid ID
 def test_get_location_by_invalid_id():
     invalid_id = 9999  
     response = requests.get(f"{BASE_URL}/{invalid_id}")  # Send GET request to fetch location by invalid ID
     assert response.status_code == 404  # Assert that the response status is 404 (Not Found)
 
 
-# Test to remove a location by an invalid ID and verify the response
+# Test to remove a location by an invalid ID
 def test_remove_location_invalid_id():
     invalid_id = 9999  
     response = requests.delete(f"{BASE_URL}/{invalid_id}")  # Send DELETE request to remove location by invalid ID

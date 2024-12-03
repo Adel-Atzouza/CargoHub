@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
-namespace CargoHub
+using CargoHub.Models;
+namespace CargoHub.Controllers
 {
     [Route("api/v1/[Controller]")]
     public class ItemGroupsController : ControllerBase

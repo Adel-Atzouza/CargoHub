@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
+using CargoHub.Models;
 
-namespace CargoHub
+namespace CargoHub.Controllers
 {
     [Route("api/v1/[Controller]")]
     public class MigrationsController : ControllerBase

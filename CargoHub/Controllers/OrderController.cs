@@ -1,7 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+using CargoHub.Models;
 using CargoHub.Services;
 
 namespace CargoHub.Controllers

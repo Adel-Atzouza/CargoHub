@@ -1,5 +1,5 @@
 using System.Text.Json.Serialization;
-namespace CargoHub
+namespace CargoHub.Models
 {
 
     public class ItemType : BaseModel

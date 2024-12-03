@@ -1,12 +1,17 @@
 using System.Text.Json.Serialization;
 
-namespace CargoHub
+namespace CargoHub.Models
 {
     public class Item : BaseModel
     {
-        [JsonIgnore]
-        public int Id { get; set; }
+        [JsonPropertyName("uid")]
+
         public string Uid { get; set; }
+
+        [JsonPropertyName("code")]
+        public string Code {get;set;}
+        [JsonPropertyName("description")]
+
         public string Description { get; set; }
 
 
@@ -61,7 +66,5 @@ namespace CargoHub
 
         [JsonPropertyName("supplier_part_number")]
         public string? SupplierPartNumber { get; set; }
-        // Navigation property for many-to-many relationship with Order
-        public List<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
     }
 }

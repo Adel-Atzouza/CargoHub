@@ -1,7 +1,7 @@
-using CargoHub;
-using Microsoft.AspNetCore.Mvc;
+using CargoHub.Models;
 using Microsoft.EntityFrameworkCore;
-
+namespace CargoHub.Services
+{
 public class ItemLinesService
 {
     private AppDbContext _context;
@@ -74,4 +74,5 @@ public class ItemLinesService
 
     }
 
+}
 }

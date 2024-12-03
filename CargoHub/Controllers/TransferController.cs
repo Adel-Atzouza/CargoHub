@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-
+using CargoHub.Models;
 namespace CargoHub.Controllers
 {
     [Route("api/v1/transfers")]

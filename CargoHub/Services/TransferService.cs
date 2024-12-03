@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
+using CargoHub.Models;
 
-namespace CargoHub
+namespace CargoHub.Services
 {
     public class TransferService
     {

@@ -1,35 +1,38 @@
 using System.Text.Json.Serialization;
-
-public class Client
+namespace CargoHub.Models
 {
-    [JsonPropertyName("id")]
-    public int Id { get; set; }
-    [JsonPropertyName("name")]
 
-    public string Name { get; set; }
-    [JsonPropertyName("address")]
+    public class Client
+    {
+        [JsonPropertyName("id")]
+        public int Id { get; set; }
+        [JsonPropertyName("name")]
 
-    public string Address { get; set; }
-    [JsonPropertyName("city")]
+        public string Name { get; set; }
+        [JsonPropertyName("address")]
 
-    public string? City { get; set; }
+        public string Address { get; set; }
+        [JsonPropertyName("city")]
 
-    
-    [JsonPropertyName("zip_code")]
-    public string? ZipCode { get; set; }
-    public string? Province { get; set; }
-    public string? Country { get; set; }
+        public string? City { get; set; }
 
 
-    [JsonPropertyName("contact_name")]
-    public string? ContactName { get; set; }
+        [JsonPropertyName("zip_code")]
+        public string? ZipCode { get; set; }
+        public string? Province { get; set; }
+        public string? Country { get; set; }
 
 
-    [JsonPropertyName("contact_phone")]
-    public string? ContactPhone { get; set; }
+        [JsonPropertyName("contact_name")]
+        public string? ContactName { get; set; }
 
 
-    [JsonPropertyName("contact_email")]
+        [JsonPropertyName("contact_phone")]
+        public string? ContactPhone { get; set; }
 
-    public string? ContactEmail { get; set; }
+
+        [JsonPropertyName("contact_email")]
+
+        public string? ContactEmail { get; set; }
+    }
 }

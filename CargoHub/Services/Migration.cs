@@ -1,7 +1,8 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using CargoHub.Models;
 
-namespace CargoHub
+namespace CargoHub.Services
 {
     public class DataMigration
     {

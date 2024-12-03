@@ -1,9 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
+using CargoHub.Models;
 namespace CargoHub.Services
 {
     public class ShipmentService

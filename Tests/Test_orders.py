@@ -1,7 +1,7 @@
 import requests
 import pytest
 
-BASE_URL = "http://localhost:3000/api/v1/orders"  # Pas aan op basis van je API-host en poort
+BASE_URL = "http://localhost:3000/api/v1/orders"
 headers = {'APIKEY': "Admin"}
 
 

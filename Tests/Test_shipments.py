@@ -1,7 +1,7 @@
 import requests
 import pytest
 
-BASE_URL = "http://localhost:3000/api/v1/Shipments"  # Replace with your actual API URL
+BASE_URL = "http://localhost:3000/api/v1/Shipments"  
 headers = {'APIKEY': "Admin"}
 
 def cleanup_test_data(test_name):

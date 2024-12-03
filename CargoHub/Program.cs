@@ -23,13 +23,6 @@ builder.Services.AddScoped<ItemTypesService>();
 // Add controllers to the services
 builder.Services.AddControllers();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
-
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -44,6 +37,13 @@ var app = builder.Build();
 //     }
 //     await next.Invoke();
 // });
+
+// Configure the HTTP request pipeline.
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
 
 app.MapControllers();
 app.Urls.Add("http://localhost:3000");

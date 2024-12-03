@@ -3,6 +3,7 @@ using CargoHub.Services;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace CargoHub.Controllers
@@ -20,17 +21,17 @@ namespace CargoHub.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<object>>> GetAllShipmentsWithItems(int page = 0)
+        public async Task<ActionResult<List<ShipmentDTO>>> GetAllShipmentsWithItems(int page = 0)
         {
             var shipments = await _shipmentService.GetAllShipmentsWithItems();
-            var paginatedshipments = shipments.Skip(page * 100).Take(100).ToList();
-            return Ok(paginatedshipments);
+            var paginatedShipments = shipments.Skip(page * 100).Take(100).ToList();
+            return Ok(paginatedShipments); // Verander de return type naar List<ShipmentDTO>
         }
 
         // GET: api/v1/shipment/Orderdetails/{id}
         // Haal een shipment op met alle orders en hun details
         [HttpGet("Orderdetails/{id}")]
-        public async Task<ActionResult<Shipment>> GetShipmentByIdWithOrders(int id)
+        public async Task<ActionResult<ShipmentDTO>> GetShipmentByIdWithOrders(int id)
         {
             var shipment = await _shipmentService.GetShipmentByIdWithOrderDetails(id);
 
@@ -38,13 +39,13 @@ namespace CargoHub.Controllers
             {
                 return NotFound($"Shipment met ID {id} niet gevonden."); // 404 als de shipment er niet is
             }
-            return Ok(shipment); //succes
+            return Ok(shipment); // Verander de return type naar ShipmentDTO
         }
 
         // GET: api/v1/shipment/{id}
         // Haal alleen de items op voor een specifieke shipment
         [HttpGet("{id}")]
-        public async Task<ActionResult<Shipment>> GetShipmentByIdItems(int id)
+        public async Task<ActionResult<object>> GetShipmentByIdItems(int id)
         {
             var shipment = await _shipmentService.GetShipmentItems(id);
 
@@ -52,7 +53,7 @@ namespace CargoHub.Controllers
             {
                 return NotFound($"Shipment met ID {id} niet gevonden."); // 404 als de shipment er niet is
             }
-            return Ok(shipment); //succes
+            return Ok(shipment); // Hier blijft het object, want je retourneert de items
         }
 
         // POST: api/v1/shipment

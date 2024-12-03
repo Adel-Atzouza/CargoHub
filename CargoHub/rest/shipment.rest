@@ -80,7 +80,7 @@ ApiKey: Admin
 }
 
 ### Get all shipments
-GET http://localhost:3000/api/v1/shipment
+GET http://localhost:3000/api/v1/Shipments
 Content-Type: application/json
 ApiKey: Admin
 

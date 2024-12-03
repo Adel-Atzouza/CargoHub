@@ -15,4 +15,6 @@
 ```bash
 dotnet ef migrations add exam
 dotnet ef database update
+
+asadsadasd
 ```

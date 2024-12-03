@@ -1,0 +1,16 @@
+GET http://localhost:3000/api/v1/ItemGroups?Id=4
+#####
+GET http://localhost:3000/api/v1/ItemGroups?Id=4
+ApiKey: 
+####
+GET http://localhost:3000/api/v1/ItemGroups?Id=4
+ApiKey: "Invalid"
+####
+GET http://localhost:3000/api/v1/Orders?Id=1
+ApiKey: WHM
+####
+GET http://localhost:3000/api/v1/warehouse?Id=1
+ApiKey: FM
+###
+GET http://localhost:3000/api/v1/warehouse?Id=1
+ApiKey: SP

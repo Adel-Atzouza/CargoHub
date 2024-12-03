@@ -1,3 +1,5 @@
+// using CargoHub.Controllers;
+using CargoHub.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Migrations;
 

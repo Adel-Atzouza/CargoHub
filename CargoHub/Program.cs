@@ -17,18 +17,16 @@ builder.Services.AddTransient<OrderService>();
 builder.Services.AddTransient<LocationService>();
 builder.Services.AddTransient<ShipmentService>();
 
+// Register your custom ItemsService
+builder.Services.AddScoped<ItemsService>();  // This line is necessary
+builder.Services.AddScoped<ItemTypesService>();
+// Add controllers to the services
+builder.Services.AddControllers();
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-
 var app = builder.Build();
-
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
 
 // app.Use(async (context, next) =>
 // {
@@ -39,7 +37,18 @@ if (app.Environment.IsDevelopment())
 //     }
 //     await next.Invoke();
 // });
+
+// Configure the HTTP request pipeline.
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+
 app.MapControllers();
 app.Urls.Add("http://localhost:3000");
 
+// Run the app
 app.Run();
+
+

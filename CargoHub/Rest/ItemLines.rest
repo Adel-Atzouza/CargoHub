@@ -1,0 +1,34 @@
+GET http://localhost:3000/api/v1/ItemLines?Id=2
+ApiKey: Admin
+
+####
+GET http://localhost:3000/api/v1/ItemLines/GetMultiple?Ids=1&Ids=2&Ids=3&Ids=7
+ApiKey: Admin
+
+####
+POST http://localhost:3000/api/v1/ItemLines
+ApiKey: Admin
+Content-Type: application/json
+
+
+{
+    "Id": 4,
+    "Name": "No name",
+    "Description": "No Description"
+}
+###
+PUT http://localhost:3000/api/v1/ItemLines?Id=4
+ApiKey: Admin
+Content-Type: application/json
+
+{
+    "Id": 4,
+    "Name": "Desk Lamp",
+    "Description": "Adjustable LED desk lamp with brightness settings."
+}
+
+####
+DELETE http://localhost:3000/api/v1/ItemLines/Delete?Id=3
+ApiKey: Admin
+
+

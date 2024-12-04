@@ -16,6 +16,7 @@ builder.Services.AddTransient<SupplierService>();
 builder.Services.AddTransient<OrderService>();
 builder.Services.AddTransient<LocationService>();
 builder.Services.AddTransient<ShipmentService>();
+builder.Services.AddSingleton<ApiKeyGeneratorService>();
 
 
 var app = builder.Build();

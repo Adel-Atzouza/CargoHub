@@ -1,6 +1,6 @@
 
 ###
-POST http://localhost:3000/api/v1/orders
+POST http://localhost:3000/api/v2/orders
 Content-Type: application/json
 ApiKey : Admin 
 
@@ -37,20 +37,20 @@ ApiKey : Admin
 }
 
 ### Get all orders with items (paginated)
-GET http://localhost:3000/api/v1/orders?page=0
+GET http://localhost:3000/api/v2/orders?page=0
 Content-Type: application/json
 ApiKey: Admin
 
 ###
-GET http://localhost:3000/api/v1/orders/client/1
+GET http://localhost:3000/api/v2/orders/client/1
 ApiKey : Admin 
 
 ### Delete an order by ID
-DELETE http://localhost:3000/api/v1/orders/2
+DELETE http://localhost:3000/api/v2/orders/2
 ApiKey : Admin
 Content-Type: application/json
 
 
 ###
-GET http://localhost:3000/api/v1/orders/3
+GET http://localhost:3000/api/v2/orders/3
 ApiKey : Admin 

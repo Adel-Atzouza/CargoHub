@@ -1,13 +1,15 @@
+using Microsoft.EntityFrameworkCore;
+
 namespace CargoHub.Services
 {
-    public class BaseStorage(AppDbContext appDbContext)
+    public class BaseStorageService(AppDbContext appDbContext)
     {
-        public virtual Task<T?> GetRow<T>(int id)
+        public virtual async Task<T?> GetRow<T>(int id) where T : BaseModel
         {
             return await appDbContext.Set<T>().FirstOrDefaultAsync(_ => _.Id == id);
         }
 
-        public virtual async Task<List<T>> GetAllRows<T>(int pageNumber = 1, int pageSize = 100)
+        public virtual async Task<List<T>> GetAllRows<T>(int pageNumber = 1, int pageSize = 100) where T : BaseModel
         {
             // Test what happens when the page number is out of bounds
             return await appDbContext.Set<T>()
@@ -15,43 +17,50 @@ namespace CargoHub.Services
                          .Take(pageSize)
                          .ToListAsync();
         }
-        public virtual async Task<int> AddRow<T>(T row)
+        public virtual async Task<int?> AddRow<T>(T row) where T : BaseModel
         {
             bool alreadyExists = await appDbContext.Set<T>().ContainsAsync(row);
             if (row == null || alreadyExists) return -1;
 
-            appDbContext.Set<T>().Add(row);
+            row.Id = appDbContext.Set<T>().Any() ? appDbContext.Set<T>().Max(_ => _.Id) + 1 : 1;
+
+            await appDbContext.Set<T>().AddAsync(row);
             await appDbContext.SaveChangesAsync();
 
             var entry = appDbContext.Entry(row);
-            return (int)entry.Property("Id").CurrentValue;
+            return (int?)entry.Property("Id").CurrentValue;
         }
         
-        public virtual async Task<bool> UpdateRow<T>(T row, int id)
+        public virtual async Task<bool> UpdateRow<T>(T row, int id) where T : BaseModel
         {
             string[] excludedProperties = { "CreatedAt" };
 
             var found = await appDbContext.Set<T>().FirstOrDefaultAsync(_ => _.Id == id);
             if (row == null || found == null) return false;
 
+            if (row.Id != id)
+            {
+                return false;
+            }
+
             var entry = appDbContext.Entry(found);
             entry.CurrentValues.SetValues(row);
 
             foreach (var property in excludedProperties)
             {
-                entry.Property(property).IsModified = false;
+            entry.Property(property).IsModified = false;
             }
 
             if (entry.Property("UpdatedAt") != null)
             {
-                entry.Property("UpdatedAt").CurrentValue = DateTime.Now;
+            entry.Property("UpdatedAt").CurrentValue = DateTime.Now;
             }
 
             await appDbContext.SaveChangesAsync();
             return true;
         }
 
-        public virtual async Task<bool> DeleteWarehouse<T>(int id)
+        public virtual async Task<bool> DeleteRow<T>(int id) where T : BaseModel
         {
             var row = await appDbContext.Set<T>().FirstOrDefaultAsync(_ => _.Id == id);
             if (row == null) return false;

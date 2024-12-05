@@ -26,7 +26,7 @@ public class ItemLinesService
         }
         return FoundItemLines;
     }
-    public async Task<ItemLine?> GetItemLine(int Id)
+    public async Task<ItemLine?> GetItemLine(int id)
     {
         ItemLine? ItemLine = await appDbContext.ItemLines.FirstOrDefaultAsync(_ => _.Id == id);
         return ItemLine;

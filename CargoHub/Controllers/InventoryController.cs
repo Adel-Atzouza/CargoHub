@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CargoHub.Controllers
 {
-    [Route("api/v1/inventories")]
+    [Route("api/v2/inventories")]
     [ApiController]
     public class InventoryController : ControllerBase
     {

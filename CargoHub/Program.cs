@@ -6,15 +6,14 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlite("Datasource=CargoHub.db"));
 
+builder.Services.AddScoped<BaseStorageService>();
+
 builder.Services.AddScoped<ClientService>();
 builder.Services.AddScoped<InventoryService>();
 builder.Services.AddScoped<ItemGroupsService>();
 builder.Services.AddScoped<ItemLinesService>();
-builder.Services.AddScoped<WarehouseService>();
-builder.Services.AddScoped<TransferService>();
-builder.Services.AddScoped<SupplierService>();
 builder.Services.AddScoped<OrderService>();
-builder.Services.AddScoped<LocationService>();
+builder.Services.AddScoped<LocationStorageService>();
 builder.Services.AddScoped<ShipmentService>();
 builder.Services.AddScoped<ItemsService>();
 builder.Services.AddScoped<ItemTypesService>();
@@ -36,3 +35,6 @@ app.Urls.Add("http://localhost:3000");
 app.Run();
 
 
+// Todo:
+// - Fix error message in BaseStorageService PUT when ID is changed.
+// - Create class for consistent error messages.

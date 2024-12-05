@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 namespace CargoHub
 {
-    [Route("api/v1/[Controller]")]
+    [Route("api/v2/[Controller]")]
     [AuthorizationFilter]
     public class ItemGroupsController : ControllerBase
     {
@@ -9,16 +9,6 @@ namespace CargoHub
         public ItemGroupsController(ItemGroupsService service)
         {
             Service = service;
-        }
-        // [HttpGet("GetAll")]
-        // public IActionResult GetAll([FromQuery] int part)
-        // {
-        //     return Ok(Service.GetAllItemGroups(part));
-        // }
-        [HttpGet("GetMultiple")]
-        public async Task<IActionResult> GetMultipleItemGroups([FromQuery] int[] Ids)
-        {
-            return Ok(await Service.GetMultipleItemGroups(Ids));
         }
         [HttpGet()]
         public async Task<IActionResult> GetItemGroup([FromQuery] int id)

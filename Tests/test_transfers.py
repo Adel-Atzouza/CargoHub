@@ -1,7 +1,7 @@
 import requests
 import test_helper
 
-url = "http://localhost:3000/api/v1/transfers/"
+url = "http://localhost:3000/api/v2/transfers/"
 headers = {'APIKEY': "Admin"}
 current_id = 0
 

@@ -1,4 +1,4 @@
-@baseUrl = http://localhost:3000/api/v1/transfers
+@baseUrl = http://localhost:3000/api/v2/transfers
 
 ###
 GET {{baseUrl}}/3

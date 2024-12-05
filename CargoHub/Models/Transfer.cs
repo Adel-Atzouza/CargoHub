@@ -6,9 +6,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CargoHub.Models
 {
-    public record Transfer
+    public class Transfer : BaseModel
     {
-        public int Id { get; set; }
         public string? Reference { get; set; }
         [JsonPropertyName("transfer_from")]
         public int? TransferFrom { get; set; }
@@ -16,14 +15,6 @@ namespace CargoHub.Models
         public int? TransferTo { get; set; }
         [JsonPropertyName("transfer_status")]
         public string? TransferStatus { get; set; }
-        
-        // Metadata
-        [JsonPropertyName("created_at")]
-        public DateTime CreatedAt { get; set; }
-
-        [JsonPropertyName("updated_at")]
-        public DateTime UpdatedAt { get; set; }
-
         // Items list for JSON serialization/deserialization
         [NotMapped]
         [JsonPropertyName("items")]

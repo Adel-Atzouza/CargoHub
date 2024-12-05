@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace CargoHub.Controllers
 {
-    [Route("api/v1/[controller]")]
+    [Route("api/v2/[controller]")]
     [ApiController]
     public class OrdersController : ControllerBase
     {
@@ -20,7 +20,7 @@ namespace CargoHub.Controllers
             _orderService = orderService;
         }
 
-        // GET: api/v1/orders
+        // GET: api/v2/orders
         // Haal alle orders op, inclusief hun items
         [HttpGet]
         public async Task<ActionResult<List<OrderWithItemsDTO>>> GetAllOrders([FromQuery] int page = 0)
@@ -32,7 +32,7 @@ namespace CargoHub.Controllers
             // return Ok(orders); //lijst met orders
         }
 
-        // GET: api/v1/orders/{id}
+        // GET: api/v2/orders/{id}
         // Haal een specifieke order op (inclusief items) via het ID
         [HttpGet("{id}")]
         public async Task<ActionResult<OrderWithItemsDTO>> GetOrder(int id)
@@ -45,7 +45,7 @@ namespace CargoHub.Controllers
             return Ok(order); // Alles goed
         }
 
-        // GET: api/v1/orders/client/{clientId}
+        // GET: api/v2/orders/client/{clientId}
         // Haal alle orders van een specifieke klant op via hun ID
         [HttpGet("client/{clientId}")]
         public async Task<ActionResult<List<Order>>> GetOrdersForClient(int clientId)
@@ -60,7 +60,7 @@ namespace CargoHub.Controllers
             return Ok(orders); // Alles gevonden
         }
 
-        // POST: api/v1/orders
+        // POST: api/v2/orders
         // Maak een nieuwe order aan met items
         [HttpPost]
         public async Task<ActionResult<Order>> CreateOrder([FromBody] OrderWithItemsDTO orderDto)
@@ -109,7 +109,7 @@ namespace CargoHub.Controllers
             }
         }
 
-        // DELETE: api/v1/orders/{id}
+        // DELETE: api/v2/orders/{id}
         // Verwijder een order via het ID
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteOrder(int id)

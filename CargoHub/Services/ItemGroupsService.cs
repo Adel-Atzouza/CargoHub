@@ -1,4 +1,5 @@
 using CargoHub;
+using CargoHub.Models;
 using Microsoft.EntityFrameworkCore;
 
 public class ItemGroupsService
@@ -9,7 +10,7 @@ public class ItemGroupsService
         appDbContext = context;
     }
 
-    public async Task<ItemGroup?> GetItemGroup(int Id)
+    public async Task<ItemGroup?> GetItemGroup(int id)
     {
         ItemGroup? ItemGroup = await appDbContext.ItemGroups.FirstOrDefaultAsync(_ => _.Id == id);
         return ItemGroup;

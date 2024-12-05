@@ -1,12 +1,12 @@
-GET http://localhost:3000/api/v1/ItemLines?Id=2
+GET http://localhost:3000/api/v2/ItemLines?Id=2
 ApiKey: Admin
 
 ####
-GET http://localhost:3000/api/v1/ItemLines/GetMultiple?Ids=1&Ids=2&Ids=3&Ids=7
+GET http://localhost:3000/api/v2/ItemLines/GetMultiple?Ids=1&Ids=2&Ids=3&Ids=7
 ApiKey: Admin
 
 ####
-POST http://localhost:3000/api/v1/ItemLines
+POST http://localhost:3000/api/v2/ItemLines
 ApiKey: Admin
 Content-Type: application/json
 
@@ -17,7 +17,7 @@ Content-Type: application/json
     "Description": "No Description"
 }
 ###
-PUT http://localhost:3000/api/v1/ItemLines?Id=4
+PUT http://localhost:3000/api/v2/ItemLines?Id=4
 ApiKey: Admin
 Content-Type: application/json
 
@@ -28,7 +28,7 @@ Content-Type: application/json
 }
 
 ####
-DELETE http://localhost:3000/api/v1/ItemLines/Delete?Id=3
+DELETE http://localhost:3000/api/v2/ItemLines/Delete?Id=3
 ApiKey: Admin
 
 

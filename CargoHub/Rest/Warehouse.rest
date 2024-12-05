@@ -1,7 +1,7 @@
-@baseUrl = http://localhost:3000/api/v1/warehouses
+@baseUrl = http://localhost:3000/api/v2/warehouses
 
 ###
-GET {{baseUrl}}/3
+GET {{baseUrl}}/1
 ApiKey: Admin
 
 ###
@@ -33,12 +33,12 @@ Content-Type: application/json
 
 ###
 
-PUT {{baseUrl}}/3
+PUT {{baseUrl}}/1
 ApiKey: Admin
 Content-Type: application/json
 
 {
-    "id": 3,
+    "id": 2,
     "code": "GIOMNL90",
     "name": "Petten longterm hub",
     "address": "Owenweg 731",

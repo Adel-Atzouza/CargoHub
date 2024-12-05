@@ -14,7 +14,6 @@ namespace CargoHub
         public async Task<Warehouse?> GetWarehouse(int id)
         {
             return await appDbContext.Warehouses
-                // .Include(w => w.Contact) // Include the Contact related to the Warehouse
                 .FirstOrDefaultAsync(w => w.Id == id);
         }
 
@@ -35,7 +34,7 @@ namespace CargoHub
 
         public async Task<int?> PutWarehouse(int id, Warehouse Warehouse)
         {
-            var warehouse = await appDbContext.Warehouses.FindAsync(id);
+            var warehouse = await appDbContext.Warehouses.FirstOrDefaultAsync(_ => _.Id == id);
             if (warehouse == null) return null;
 
             appDbContext.Entry(warehouse).CurrentValues.SetValues(Warehouse);
@@ -47,7 +46,7 @@ namespace CargoHub
 
         public async Task<bool> DeleteWarehouse(int id)
         {
-            var warehouse = await appDbContext.Warehouses.FindAsync(id);
+            var warehouse = await appDbContext.Warehouses.FirstOrDefaultAsync(_ => _.Id == id);
             if (warehouse == null) return false;
             appDbContext.Warehouses.Remove(warehouse);
             int n = await appDbContext.SaveChangesAsync();

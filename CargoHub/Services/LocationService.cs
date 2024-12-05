@@ -9,30 +9,30 @@ namespace CargoHub.Services
 {
     public class LocationService
     {
-        private readonly AppDbContext _context;
+        private readonly AppDbContext appDbContext;
 
         // Constructor: Inject de databasecontext (AppDbContext)
         public LocationService(AppDbContext context)
         {
-            _context = context;
+            appDbContext = context;
         }
 
         public async Task<List<Location>> GetAllLocations()
         {
-            return await _context.Locations
+            return await appDbContext.Locations
                 .ToListAsync();
         }
         // Haal één specifieke locatie op op basis van ID
         public async Task<Location> GetLocation(int id)
         {
-            return await _context.Locations
+            return await appDbContext.Locations
                 .FirstOrDefaultAsync(location => location.Id == id); // Zoek naar de eerste locatie met de juiste ID
         }
 
         // Haal alle locaties op die horen bij een specifieke warehouse
         public async Task<List<Location>> GetLocationWarehouse(int id)
         {
-            return await _context.Locations
+            return await appDbContext.Locations
                 .Where(loc => loc.WarehouseId == id) // Filter: WarehouseId moet overeenkomen
                 .ToListAsync(); // Haal de lijst asynchroon op
         }
@@ -41,7 +41,7 @@ namespace CargoHub.Services
         public async Task<string> AddLocation(Location location)
         {
             // Check of WarehouseId geldig is
-            if (location.WarehouseId != null && !await _context.Warehouses.AnyAsync(w => w.Id == location.WarehouseId))
+            if (location.WarehouseId != null && !await appDbContext.Warehouses.AnyAsync(w => w.Id == location.WarehouseId))
             {
                 return "Ongeldige WarehouseId opgegeven."; // Foutmelding als de WarehouseId niet bestaat
             }
@@ -51,8 +51,8 @@ namespace CargoHub.Services
             location.UpdatedAt = DateTime.UtcNow;
 
             // Voeg de locatie toe aan de database
-            _context.Locations.Add(location);
-            await _context.SaveChangesAsync(); // Sla de wijzigingen op
+            appDbContext.Locations.Add(location);
+            await appDbContext.SaveChangesAsync(); // Sla de wijzigingen op
             return "Locatie succesvol toegevoegd."; // Succesbericht
         }
 
@@ -60,7 +60,7 @@ namespace CargoHub.Services
         public async Task<string> UpdateLocation(int locationId, Location updatedLocation)
         {
             // Zoek de bestaande locatie op
-            var existingLocation = await _context.Locations.FindAsync(locationId);
+            var existingLocation = await appDbContext.Locations.FindAsync(locationId);
             if (existingLocation == null)
             {
                 return "Fout: Locatie niet gevonden."; // Foutmelding als de locatie niet bestaat
@@ -73,7 +73,7 @@ namespace CargoHub.Services
             existingLocation.UpdatedAt = DateTime.UtcNow; // Update de bewerktijd
 
             // Sla de wijzigingen op
-            await _context.SaveChangesAsync();
+            await appDbContext.SaveChangesAsync();
             return "Locatie succesvol bijgewerkt."; // Succesbericht
         }
 
@@ -81,15 +81,15 @@ namespace CargoHub.Services
         public async Task<string> RemoveLocation(int locationId)
         {
             // Zoek de locatie op
-            var location = await _context.Locations.FindAsync(locationId);
+            var location = await appDbContext.Locations.FindAsync(locationId);
             if (location == null)
             {
                 return "Fout: Locatie niet gevonden."; // Foutmelding als de locatie niet bestaat
             }
 
             // Verwijder de locatie uit de database
-            _context.Locations.Remove(location);
-            await _context.SaveChangesAsync(); // Sla de wijzigingen op
+            appDbContext.Locations.Remove(location);
+            await appDbContext.SaveChangesAsync(); // Sla de wijzigingen op
             return "Locatie succesvol verwijderd."; // Succesbericht
         }
     }

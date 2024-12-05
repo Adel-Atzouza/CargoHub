@@ -7,9 +7,9 @@ namespace CargoHub
     public class AuthorizationFilter : Attribute, IAsyncActionFilter
     {
         private readonly List<string> _roles = ["Admin", "FM", "WHM", "SP"];
-        public async Task OnActionExecutionAsync(ActionExecutingContext _context, ActionExecutionDelegate next)
+        public async Task OnActionExecutionAsync(ActionExecutingContext appDbContext, ActionExecutionDelegate next)
         {
-            var context = _context.HttpContext;
+            var context = appDbContext.HttpContext;
             string? ApiKey = context.Request.Headers["ApiKey"].FirstOrDefault();
             string Url = context.Request.Path.ToString();
             if (ApiKey == null)

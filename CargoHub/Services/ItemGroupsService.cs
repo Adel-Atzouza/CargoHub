@@ -3,48 +3,33 @@ using Microsoft.EntityFrameworkCore;
 
 public class ItemGroupsService
 {
-    private AppDbContext _context;
+    private AppDbContext appDbContext;
     public ItemGroupsService(AppDbContext context)
     {
-        _context = context;
+        appDbContext = context;
     }
-    // public IEnumerable<ItemGroup> GetAllItemGroups(int page)
-    // {
-    //     var ItemGroups = _context.ItemGroups.OrderBy(g => g.Id);
-    //     return ItemGroups;
-    // }
-    public async Task<List<object>> GetMultipleItemGroups(int[] GroupsIds)
-    {
-        List<object> FoundItemGroups = new();
-        foreach(int id in GroupsIds)
-        {
-            ItemGroup? FoundItemGroup = await GetItemGroup(id);
-            if (FoundItemGroup == null)
-            {
-                FoundItemGroups.Add($"Item group with id: {id} was not found");
-            }
-            else
-            {
-                FoundItemGroups.Add(FoundItemGroup);
-            }
-        }
-        return FoundItemGroups;
-    }
+
     public async Task<ItemGroup?> GetItemGroup(int Id)
     {
-        ItemGroup? ItemGroup = await _context.ItemGroups.FindAsync(Id);
+        ItemGroup? ItemGroup = await appDbContext.ItemGroups.FirstOrDefaultAsync(_ => _.Id == id);
         return ItemGroup;
     }
+    
+        public async Task<Warehouse?> GetWarehouse(int id)
+        {
+            return await appDbContext.Warehouses
+                .FirstOrDefaultAsync(w => w.Id == id);
+        }
 
     public async Task<bool> AddItemGroup(ItemGroup itemGroup)
     {
-        bool AlreadyExists = await _context.ItemGroups.ContainsAsync(itemGroup);
+        bool AlreadyExists = await appDbContext.ItemGroups.ContainsAsync(itemGroup);
         if (itemGroup == null || AlreadyExists)
         {
             return false;
         }
-        _context.ItemGroups.Add(itemGroup);
-        await _context.SaveChangesAsync();
+        appDbContext.ItemGroups.Add(itemGroup);
+        await appDbContext.SaveChangesAsync();
         return true;
 
 
@@ -53,22 +38,22 @@ public class ItemGroupsService
 
     public async Task<bool> UpdateItemGroup(int id, ItemGroup itemGroup)
     {
-        ItemGroup? Found = await _context.ItemGroups.FindAsync(id);
+        ItemGroup? Found = await appDbContext.ItemGroups.FirstOrDefaultAsync(_ => _.Id == id);
         // if the entity doesn't exist or the item group is not valid, return false
         if (itemGroup == null || Found == null) return false;
         Found.Name = itemGroup.Name;
         Found.Description = itemGroup.Description;
-        _context.ItemGroups.Update(Found);
-        await _context.SaveChangesAsync();
+        appDbContext.ItemGroups.Update(Found);
+        await appDbContext.SaveChangesAsync();
         return true;
     }
 
     public async Task<bool> DeleteItemGroup(int id)
     {
-        ItemGroup? Found = await _context.ItemGroups.FindAsync(id);
+        ItemGroup? Found = await appDbContext.ItemGroups.FirstOrDefaultAsync(_ => _.Id == id);
         if (Found == null) return false;
-        _context.ItemGroups.Remove(Found);
-        _context.SaveChanges();
+        appDbContext.ItemGroups.Remove(Found);
+        appDbContext.SaveChanges();
         return true;
 
     }

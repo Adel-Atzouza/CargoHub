@@ -4,10 +4,10 @@ using Microsoft.EntityFrameworkCore;
 
 public class ItemLinesService
 {
-    private AppDbContext _context;
+    private AppDbContext appDbContext;
     public ItemLinesService(AppDbContext context)
     {
-        _context = context;
+        appDbContext = context;
     }
     public async Task<List<object>> GetMultipleItemLines(int[] LinesIds)
     {
@@ -28,40 +28,40 @@ public class ItemLinesService
     }
     public async Task<ItemLine?> GetItemLine(int Id)
     {
-        ItemLine? ItemLine = await _context.ItemLines.FindAsync(Id);
+        ItemLine? ItemLine = await appDbContext.ItemLines.FirstOrDefaultAsync(_ => _.Id == id);
         return ItemLine;
     }
 
     public async Task<bool> AddItemLine(ItemLine itemLine)
     {
-        bool AlreadyExists = await _context.ItemLines.ContainsAsync(itemLine);
+        bool AlreadyExists = await appDbContext.ItemLines.ContainsAsync(itemLine);
         if (itemLine == null || AlreadyExists)
         {
             return false;
         }
-        _context.ItemLines.Add(itemLine);
-        _context.SaveChanges();
+        appDbContext.ItemLines.Add(itemLine);
+        appDbContext.SaveChanges();
         return true;
 
     }
 
     public async Task<bool> UpdateItemLine(int id, ItemLine itemLine)
     {
-        ItemLine? Found = await _context.ItemLines.FindAsync(id);
+        ItemLine? Found = await appDbContext.ItemLines.FirstOrDefaultAsync(_ => _.Id == id);
         if(itemLine == null || Found == null) return false;
         Found.Name = itemLine.Name;
         Found.Description = itemLine.Description;
-        _context.ItemLines.Update(Found);
-        _context.SaveChanges();
+        appDbContext.ItemLines.Update(Found);
+        appDbContext.SaveChanges();
         return true;
     }
 
     public async Task<bool> DeleteItemLine(int id)
     {
-        ItemLine? Found = await _context.ItemLines.FindAsync(id);
+        ItemLine? Found = await appDbContext.ItemLines.FirstOrDefaultAsync(_ => _.Id == id);
         if(Found == null) return false;
-        _context.ItemLines.Remove(Found);
-        _context.SaveChanges();
+        appDbContext.ItemLines.Remove(Found);
+        appDbContext.SaveChanges();
         return true;
 
     }

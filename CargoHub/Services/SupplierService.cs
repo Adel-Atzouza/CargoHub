@@ -32,7 +32,7 @@ namespace CargoHub
 
         public async Task<int?> PutSupplier(int id, Supplier Supplier)
         {
-            var supplier = await appDbContext.Suppliers.FindAsync(id);
+            var supplier = await appDbContext.Suppliers.FirstOrDefaultAsync(_ => _.Id == id);
             if (supplier == null) return null;
 
             appDbContext.Entry(supplier).CurrentValues.SetValues(Supplier);
@@ -44,7 +44,7 @@ namespace CargoHub
 
         public async Task<bool> DeleteSupplier(int id)
         {
-            var supplier = await appDbContext.Suppliers.FindAsync(id);
+            var supplier = await appDbContext.Suppliers.FirstOrDefaultAsync(_ => _.Id == id);
             if (supplier == null) return false;
             appDbContext.Suppliers.Remove(supplier);
             int n = await appDbContext.SaveChangesAsync();

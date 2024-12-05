@@ -9,19 +9,19 @@ namespace CargoHub.Services
 {
     public class OrderService
     {
-        private readonly AppDbContext _context;
+        private readonly AppDbContext appDbContext;
 
         // Constructor om de database context te injecteren
         public OrderService(AppDbContext context)
         {
-            _context = context;
+            appDbContext = context;
         }
 
         // Haal een specifieke order op met alle items erbij
         public async Task<OrderWithItemsDTO> GetOrderWithItems(int id)
         {
             // Zoek de order op basis van ID
-            var order = await _context.Orders
+            var order = await appDbContext.Orders
                 .Where(o => o.Id == id) // Filter op het ID van de order
                 .Select(o => new OrderWithItemsDTO
                 {
@@ -60,7 +60,7 @@ namespace CargoHub.Services
         public async Task<List<Order>> GetOrdersCLient(int id)
         {
             // Zoek orders waar de klant als ontvanger of betaler wordt genoemd
-            return await _context.Orders
+            return await appDbContext.Orders
                 .Where(c => c.BillTo == id || c.ShipTo == id)
                 .ToListAsync(); // Geef een lijst terug met alle matches
         }
@@ -68,7 +68,7 @@ namespace CargoHub.Services
         // Haal alle orders met hun items erbij
         public async Task<List<OrderWithItemsDTO>> GetAllOrdersWithItems()
         {
-            return await _context.Orders
+            return await appDbContext.Orders
                 .Select(o => new OrderWithItemsDTO
                 {
                     Id = o.Id,
@@ -106,14 +106,14 @@ namespace CargoHub.Services
             try
             {
                 // Voeg de order toe aan de database
-                _context.Orders.Add(order);
-                await _context.SaveChangesAsync(); // Opslaan zodat het ID wordt gegenereerd
+                appDbContext.Orders.Add(order);
+                await appDbContext.SaveChangesAsync(); // Opslaan zodat het ID wordt gegenereerd
 
                 // Voeg items toe aan de order
                 foreach (var itemDto in itemDTOs)
                 {
                     // Zoek het item op in de database via het unieke ID
-                    var item = await _context.Items.FirstOrDefaultAsync(i => i.Uid == itemDto.ItemId);
+                    var item = await appDbContext.Items.FirstOrDefaultAsync(i => i.Uid == itemDto.ItemId);
                     if (item != null)
                     {
                         var orderItem = new OrderItem
@@ -122,7 +122,7 @@ namespace CargoHub.Services
                             ItemUid = item.Uid, // Het unieke ID van het item
                             Amount = itemDto.Amount // Hoeveelheid van het item
                         };
-                        _context.OrderItems.Add(orderItem); // Voeg de relatie toe
+                        appDbContext.OrderItems.Add(orderItem); // Voeg de relatie toe
                     }
                     else
                     {
@@ -130,7 +130,7 @@ namespace CargoHub.Services
                     }
                 }
 
-                await _context.SaveChangesAsync(); // Opslaan in de database
+                await appDbContext.SaveChangesAsync(); // Opslaan in de database
                 return order; // Retourneer de aangemaakte order
             }
             catch (Exception ex)
@@ -144,17 +144,17 @@ namespace CargoHub.Services
         // Check of een item bestaat op basis van het unieke ID
         public async Task<bool> ItemExist(string itemid)
         {
-            return await _context.Items.AnyAsync(i => i.Uid == itemid); // True of False
+            return await appDbContext.Items.AnyAsync(i => i.Uid == itemid); // True of False
         }
 
         // Verwijder een order op basis van ID
         public async Task<bool> DeleteOrder(int id)
         {
-            var order = await _context.Orders.FindAsync(id); // Zoek de order op
+            var order = await appDbContext.Orders.FirstOrDefaultAsync(_ => _.Id == id); // Zoek de order op
             if (order == null) return false; // Bestaat niet? Geef False terug
 
-            _context.Orders.Remove(order); // Verwijder de order
-            await _context.SaveChangesAsync(); // Opslaan in de database
+            appDbContext.Orders.Remove(order); // Verwijder de order
+            await appDbContext.SaveChangesAsync(); // Opslaan in de database
             return true; // Geef True terug om succes aan te geven
         }
     }
@@ -183,7 +183,7 @@ namespace CargoHub.Services
 
         //             if (x.ItemId == y.ItemId)
         //             {
-        //                 var inventoryitem = await _context.Inventory.FirstOrDefaultAsync(i => i.ItemId == x.ItemId);
+        //                 var inventoryitem = await appDbContext.Inventory.FirstOrDefaultAsync(i => i.ItemId == x.ItemId);
         //                 if(inventoryitem != null){
         //                     inventoryitem.TotalAllocated += y.Amount - x.Amount;
         //                 }

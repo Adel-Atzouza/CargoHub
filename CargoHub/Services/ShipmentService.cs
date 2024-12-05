@@ -9,18 +9,18 @@ namespace CargoHub.Services
 {
     public class ShipmentService
     {
-        private readonly AppDbContext _context;
+        private readonly AppDbContext appDbContext;
 
         // Constructor om de databasecontext te injecteren
         public ShipmentService(AppDbContext context)
         {
-            _context = context;
+            appDbContext = context;
         }
 
         public async Task<List<dynamic>> GetAllShipmentsWithItems()
         {
              // Haal alle zendingen op uit de database, inclusief hun gerelateerde orders en items
-            var shipments = await _context.Shipments
+            var shipments = await appDbContext.Shipments
                 .Include(s => s.orders)
                 .ThenInclude(o => o.OrderItems)
                 .ThenInclude(oi => oi.Item)
@@ -61,7 +61,7 @@ namespace CargoHub.Services
         public async Task<object?> GetShipmentByIdWithOrderDetails(int shipmentId)
         {
             // Zoek de zending op in de database, inclusief de gerelateerde orders en items
-            var shipment = await _context.Shipments
+            var shipment = await appDbContext.Shipments
                 .Include(s => s.orders) // Voeg orders toe
                 .ThenInclude(o => o.OrderItems) // Voeg items van de orders toe
                 .ThenInclude(oi => oi.Item) // Voeg details van elk item toe
@@ -111,7 +111,7 @@ namespace CargoHub.Services
         // Ken orders toe aan een specifieke zending
         public async Task<bool> AssignOrdersToShipment(int shipmentId, List<int> orderIds)
         {
-            var shipment = await _context.Shipments
+            var shipment = await appDbContext.Shipments
                 .Include(s => s.orders) // Laad bestaande orders in de zending
                 .FirstOrDefaultAsync(s => s.Id == shipmentId);
 
@@ -120,7 +120,7 @@ namespace CargoHub.Services
                 return false; // Als de zending niet bestaat, stop
             }
 
-            var orders = await _context.Orders
+            var orders = await appDbContext.Orders
                 .Where(o => orderIds.Contains(o.Id)) // Zoek orders op basis van de gegeven IDs
                 .ToListAsync();
 
@@ -134,14 +134,14 @@ namespace CargoHub.Services
                 order.ShipmentId = shipmentId; // Koppel de order aan de zending
             }
 
-            await _context.SaveChangesAsync(); // Sla de wijzigingen op
+            await appDbContext.SaveChangesAsync(); // Sla de wijzigingen op
             return true;
         }
 
         // Haal alleen de items uit een zending (zonder duplicaten en met samengevoegde hoeveelheden)
         public async Task<object?> GetShipmentItems(int shipmentId)
         {
-            var shipment = await _context.Shipments
+            var shipment = await appDbContext.Shipments
                 .Include(s => s.orders)
                 .ThenInclude(o => o.OrderItems)
                 .ThenInclude(oi => oi.Item)
@@ -188,8 +188,8 @@ namespace CargoHub.Services
         {
             try
             {
-                _context.Shipments.Add(shipment); // Voeg de zending toe
-                await _context.SaveChangesAsync(); // Sla de zending op
+                appDbContext.Shipments.Add(shipment); // Voeg de zending toe
+                await appDbContext.SaveChangesAsync(); // Sla de zending op
                 return shipment; // Retourneer de gemaakte zending
             }
             catch (Exception ex)
@@ -202,7 +202,7 @@ namespace CargoHub.Services
         // Update welke orders aan een zending gekoppeld zijn
         public async Task<bool> UpdateOrdersInShipment(int shipmentId, List<int> orderIds)
         {
-            var packedOrders = await _context.Orders
+            var packedOrders = await appDbContext.Orders
                 .Where(o => o.ShipmentId == shipmentId)
                 .ToListAsync();
 
@@ -217,7 +217,7 @@ namespace CargoHub.Services
 
             foreach (var orderId in orderIds)
             {
-                var order = await _context.Orders.FirstOrDefaultAsync(o => o.Id == orderId);
+                var order = await appDbContext.Orders.FirstOrDefaultAsync(o => o.Id == orderId);
                 if (order != null)
                 {
                     order.ShipmentId = shipmentId; // Koppel de order aan de zending
@@ -225,21 +225,21 @@ namespace CargoHub.Services
                 }
             }
 
-            await _context.SaveChangesAsync(); // Sla de wijzigingen op
+            await appDbContext.SaveChangesAsync(); // Sla de wijzigingen op
             return true;
         }
 
         // Verwijder een zending
         public async Task<bool> DeleteShipment(int id)
         {
-            var shipment = await _context.Shipments.FindAsync(id);
+            var shipment = await appDbContext.Shipments.FirstOrDefaultAsync(_ => _.Id == id);
             if (shipment == null)
             {
                 return false; // Zending bestaat niet
             }
 
-            _context.Shipments.Remove(shipment); // Verwijder de zending
-            await _context.SaveChangesAsync(); // Sla de wijzigingen op
+            appDbContext.Shipments.Remove(shipment); // Verwijder de zending
+            await appDbContext.SaveChangesAsync(); // Sla de wijzigingen op
             return true; // Retourneer succes
         }
     }

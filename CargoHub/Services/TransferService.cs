@@ -32,7 +32,7 @@ namespace CargoHub
 
         public async Task<int?> PutTransfer(int id, Transfer Transfer)
         {
-            var transfer = await appDbContext.Transfers.FindAsync(id);
+            var transfer = await appDbContext.Transfers.FirstOrDefaultAsync(_ => _.Id == id);
             if (transfer == null) return null;
 
             appDbContext.Entry(transfer).CurrentValues.SetValues(Transfer);
@@ -45,7 +45,7 @@ namespace CargoHub
 
         public async Task<bool> DeleteTransfer(int id)
         {
-            var transfer = await appDbContext.Transfers.FindAsync(id);
+            var transfer = await appDbContext.Transfers.FirstOrDefaultAsync(_ => _.Id == id);
             if (transfer == null) return false;
             appDbContext.Transfers.Remove(transfer);
             int n = await appDbContext.SaveChangesAsync();

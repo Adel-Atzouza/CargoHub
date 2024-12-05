@@ -9,17 +9,17 @@ namespace CargoHub.Services
 {
     public class InventoryService
     {
-        private readonly AppDbContext _context;
+        private readonly AppDbContext appDbContext;
 
         public InventoryService(AppDbContext context)
         {
-            _context = context;
+            appDbContext = context;
         }
 
         // Get a list of inventories, with an optional filter based on a minimum ID (like in LocationService)
         public async Task<List<Inventory>> GetInventories(int id = 0)
         {
-            return await _context.Inventory
+            return await appDbContext.Inventory
                 .Where(inventory => inventory.Id >= id)
                 .OrderBy(inventory => inventory.Id)
                 .Take(100)
@@ -29,7 +29,7 @@ namespace CargoHub.Services
         // Get a single inventory by ID
         public async Task<Inventory> GetInventory(int id)
         {
-            return await _context.Inventory.FirstOrDefaultAsync(inventory => inventory.Id == id);
+            return await appDbContext.Inventory.FirstOrDefaultAsync(inventory => inventory.Id == id);
         }
 
         // Add a new inventory
@@ -37,37 +37,37 @@ namespace CargoHub.Services
         {
             inventory.CreatedAt = DateTime.UtcNow;
             inventory.UpdatedAt = DateTime.UtcNow;
-            _context.Inventory.Add(inventory);
-            await _context.SaveChangesAsync();
+            appDbContext.Inventory.Add(inventory);
+            await appDbContext.SaveChangesAsync();
             return "Inventory added successfully.";
         }
 
         // Update an existing inventory by ID
         public async Task<string> UpdateInventory(int id, Inventory updatedInventory)
         {
-            var existingInventory = await _context.Inventory.FindAsync(id);
+            var existingInventory = await appDbContext.Inventory.FirstOrDefaultAsync(_ => _.Id == id);
             if (existingInventory == null)
             {
                 return "Error: Inventory not found.";
             }
 
             updatedInventory.UpdatedAt = DateTime.UtcNow;
-            _context.Entry(existingInventory).CurrentValues.SetValues(updatedInventory);
-            await _context.SaveChangesAsync();
+            appDbContext.Entry(existingInventory).CurrentValues.SetValues(updatedInventory);
+            await appDbContext.SaveChangesAsync();
             return "Inventory updated successfully.";
         }
 
         // Delete an inventory by ID
         public async Task<string> DeleteInventory(int id)
         {
-            var inventory = await _context.Inventory.FindAsync(id);
+            var inventory = await appDbContext.Inventory.FirstOrDefaultAsync(_ => _.Id == id);
             if (inventory == null)
             {
                 return "Error: Inventory not found.";
             }
 
-            _context.Inventory.Remove(inventory);
-            await _context.SaveChangesAsync();
+            appDbContext.Inventory.Remove(inventory);
+            await appDbContext.SaveChangesAsync();
             return "Inventory deleted successfully.";
         }
     }

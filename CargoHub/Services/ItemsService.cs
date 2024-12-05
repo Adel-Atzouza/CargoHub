@@ -9,31 +9,31 @@ namespace CargoHub.Services
 {
     public class ItemsService
     {
-        private readonly AppDbContext _context;
+        private readonly AppDbContext appDbContext;
 
         public ItemsService(AppDbContext context)
         {
-            _context = context;
+            appDbContext = context;
         }
 
         public async Task<List<Item>> GetAllItems()
         {
-            return await _context.Items.ToListAsync();
+            return await appDbContext.Items.ToListAsync();
         }
 
         public async Task<Item> GetItem(string uid)
         {
-            return await _context.Items.FirstOrDefaultAsync(item => item.Uid == uid);
+            return await appDbContext.Items.FirstOrDefaultAsync(item => item.Uid == uid);
         }
 
 
         public async Task<Item> PostItems(Item newItem)
         {
             // Add the new item to the DbContext
-            _context.Items.Add(newItem);
+            appDbContext.Items.Add(newItem);
 
             // Save changes to the database (persist the item)
-            await _context.SaveChangesAsync();
+            await appDbContext.SaveChangesAsync();
 
             // Return the created item (you can also modify this to return only the ID or other fields if needed)
             return newItem;
@@ -41,21 +41,21 @@ namespace CargoHub.Services
 
         public async Task<bool> DeleteItemsByUid(string uid)
         {
-            var item = await _context.Items.FirstOrDefaultAsync(_ => _.Uid == uid);
+            var item = await appDbContext.Items.FirstOrDefaultAsync(_ => _.Uid == uid);
             if (item == null)
             {
                 return false;
             }
 
-            _context.Items.Remove(item);
-            await _context.SaveChangesAsync();
+            appDbContext.Items.Remove(item);
+            await appDbContext.SaveChangesAsync();
             return true;
         }
 
         public async Task<string> UpdateItem(string uid, Item updatedItem)
         {
             // Find the existing item by UID
-            var existingItem = await _context.Items.FirstOrDefaultAsync(_ => _.Uid == uid);
+            var existingItem = await appDbContext.Items.FirstOrDefaultAsync(_ => _.Uid == uid);
             if (existingItem == null)
             {
                 return "Error: Item not found.";
@@ -83,7 +83,7 @@ namespace CargoHub.Services
             existingItem.UpdatedAt = DateTime.UtcNow;
 
             // Save the changes
-            await _context.SaveChangesAsync();
+            await appDbContext.SaveChangesAsync();
             return "Item updated.";
         }
     }

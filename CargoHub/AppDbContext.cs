@@ -1,7 +1,6 @@
-// using CargoHub.Controllers;
 using CargoHub.Models;
+
 using Microsoft.EntityFrameworkCore;
-using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -9,7 +8,6 @@ namespace CargoHub
 {
     public class AppDbContext : DbContext
     {
-        // DbSet properties for all models
         public DbSet<Warehouse> Warehouses { get; set; }
         public DbSet<Transfer> Transfers { get; set; }
         public DbSet<Supplier> Suppliers { get; set; }
@@ -42,7 +40,6 @@ namespace CargoHub
             return base.SaveChangesAsync(cancellationToken);
         }
 
-        // Configure model relationships and seed data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -85,7 +82,6 @@ namespace CargoHub
 
         }
 
-        // Constructor accepting DbContextOptions
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
     }
 }

@@ -1,6 +1,6 @@
-namespace CargoHub
+namespace CargoHub.Models
 {
-    public class ItemLine: BaseModel
+    public class ItemLine : BaseModel
     {
         public int Id { get; set; }
         public string? Name { get; set; }

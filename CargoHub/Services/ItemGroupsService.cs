@@ -43,24 +43,17 @@ namespace CargoHub.Services
             return ItemGroup;
         }
 
-        public async Task<bool> AddItemGroup(ItemGroup itemGroup)
+    public async Task<bool> AddItemGroup(ItemGroup itemGroup)
+    {
+        bool AlreadyExists = await _context.ItemGroups.ContainsAsync(itemGroup);
+        if (itemGroup == null || AlreadyExists)
         {
-            bool AlreadyExists = await _context.ItemGroups.ContainsAsync(itemGroup);
-            var Properties = itemGroup.GetType().GetProperties();
-            foreach (var property in Properties)
-            {
-                var value = property.GetValue(itemGroup, null);
-                if (value == null) return false;
-
-            }
-            if (itemGroup == null || AlreadyExists)
-            {
-                return false;
-            }
-            _context.ItemGroups.Add(itemGroup);
-            int result = await _context.SaveChangesAsync();
-            return result > 0 ? true : false;
+            return false;
         }
+        _context.ItemGroups.Add(itemGroup);
+        int result = await _context.SaveChangesAsync();
+        return result > 0 ? true : false;
+    }
 
 
 

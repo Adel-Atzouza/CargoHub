@@ -16,7 +16,7 @@ namespace CargoHub.Controllers
         // {
         //     return Ok(Service.GetAllItemGroups(part));
         // }
-        [HttpGet("GetMultiple")] //oprtional
+        [HttpGet("GetMultiple")]
         public async Task<IActionResult> GetMultipleItemGroups([FromQuery] int[] Ids)
         {
             return Ok(await Service.GetMultipleItemGroups(Ids));
@@ -31,7 +31,6 @@ namespace CargoHub.Controllers
         [HttpPost()]
         public async Task<IActionResult> PostItemGroup([FromBody] ItemGroup itemGroup)
         {
-
             bool response = await Service.AddItemGroup(itemGroup);
             return response ? Ok($"The item groups {itemGroup} has been added")
                             : BadRequest("The item group that you're trying to add is not valid or already exists");

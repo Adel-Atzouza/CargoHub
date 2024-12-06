@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using CargoHub.Models;
 using Microsoft.EntityFrameworkCore;
+using CargoHub.Services;
 
 namespace CargoHub.Controllers
 {
@@ -12,12 +13,12 @@ namespace CargoHub.Controllers
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetWarehouse(int id)
-        {               
+        {
             var warehouse = await storage.GetWarehouse((int)id);
-            
+
             if (warehouse == null)
                 return NotFound("Warehouse doesn't exist with id: " + id);
-            
+
             return Ok(warehouse);
         }
 
@@ -33,7 +34,7 @@ namespace CargoHub.Controllers
         public async Task<IActionResult> PostWarehouse([FromBody] Warehouse warehouse)
         {
             if (warehouse == null)
-            return BadRequest("Warehouse cannot be null");
+                return BadRequest("Warehouse cannot be null");
 
             var createdWarehouseId = await storage.PostWarehouse(warehouse);
             return CreatedAtAction(nameof(GetWarehouse), new { id = createdWarehouseId }, createdWarehouseId);

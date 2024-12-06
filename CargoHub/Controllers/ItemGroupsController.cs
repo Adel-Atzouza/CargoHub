@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using CargoHub.Models;
+using CargoHub.Services;
 namespace CargoHub.Controllers
 {
     [Route("api/v1/[Controller]")]
@@ -30,7 +31,7 @@ namespace CargoHub.Controllers
         [HttpPost()]
         public async Task<IActionResult> PostItemGroup([FromBody] ItemGroup itemGroup)
         {
-            
+
             bool response = await Service.AddItemGroup(itemGroup);
             return response ? Ok($"The item groups {itemGroup} has been added")
                             : BadRequest("The item group that you're trying to add is not valid or already exists");

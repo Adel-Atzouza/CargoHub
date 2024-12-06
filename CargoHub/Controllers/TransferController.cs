@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using CargoHub.Services;
 using CargoHub.Models;
 namespace CargoHub.Controllers
 {

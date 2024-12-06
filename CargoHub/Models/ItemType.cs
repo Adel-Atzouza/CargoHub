@@ -3,7 +3,6 @@ namespace CargoHub.Models
 {
 
     public class ItemType : BaseModel
-    public class ItemType : BaseModel
     {
         [JsonPropertyName("id")]
 

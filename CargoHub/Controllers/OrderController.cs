@@ -1,4 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
+<<<<<<< HEAD
+=======
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+>>>>>>> parent of e48f20e (Data Migrations van json naar sqlite)
 using CargoHub.Models;
 using CargoHub.Services;
 

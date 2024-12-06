@@ -1,3 +1,4 @@
+using CargoHub.Models;
 using Microsoft.EntityFrameworkCore;
 using CargoHub.Models;
 

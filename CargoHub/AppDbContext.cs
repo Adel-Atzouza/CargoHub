@@ -1,4 +1,7 @@
+<<<<<<< HEAD
 // using CargoHub.Controllers;
+=======
+>>>>>>> parent of e48f20e (Data Migrations van json naar sqlite)
 using CargoHub.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Migrations;
@@ -13,13 +16,11 @@ namespace CargoHub
         public DbSet<Supplier> Suppliers { get; set; }
         public DbSet<ItemLine> ItemLines { get; set; }
         public DbSet<ItemGroup> ItemGroups { get; set; }
-        public DbSet<ItemType> ItemTypes { get; set; }
-
         public DbSet<Order> Orders { get; set; }
         public DbSet<Shipment> Shipments { get; set; }
         public DbSet<Item> Items { get; set; }
 
-        public DbSet<OrderItem> OrderItems { get; set; }
+        // public DbSet<Order> Orders { get; set; }
 
         
 

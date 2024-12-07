@@ -19,12 +19,12 @@ namespace CargoHub.Models
         [JsonPropertyName("commodity_code")]
         public string? CommodityCode { get; set; }
         [JsonPropertyName("item_line")]
-        public int ItemLine { get; set; }
-        [JsonPropertyName("item_group")]
-        public int ItemGroup { get; set; }
-        [JsonPropertyName("item_type")]
-        public int ItemType { get; set; }
-        [JsonPropertyName("unit_purchase_quantity")]
+        public int ItemLineId { get; set; }
+        public ItemLine ItemLine { get; set; }
+        public int ItemGroupId { get; set; }
+        public ItemGroup ItemGroup { get; set; }
+        public int ItemTypeId { get; set; }
+        public ItemType ItemType { get; set; }
         public int UnitPurchaseQuantity { get; set; }
         [JsonPropertyName("unit_order_quantity")]
         public int UnitOrderQuantity { get; set; }
@@ -37,6 +37,6 @@ namespace CargoHub.Models
         [JsonPropertyName("supplier_part_number")]
         public string? SupplierPartNumber { get; set; }
         // Navigation property for many-to-many relationship with Order
-        public List<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
+
     }
 }

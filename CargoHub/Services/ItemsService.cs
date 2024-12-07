@@ -23,7 +23,11 @@ namespace CargoHub.Services
 
         public async Task<Item> GetItem(string uid)
         {
-            return await _context.Items.FirstOrDefaultAsync(item => item.Uid == uid);
+            return await _context.Items
+                .Include(i => i.ItemLine)
+                .Include(i => i.ItemGroup)
+                .Include(i => i.ItemType)
+                .FirstOrDefaultAsync(i => i.Uid == uid);
         }
 
 

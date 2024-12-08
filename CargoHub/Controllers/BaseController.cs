@@ -33,13 +33,13 @@ namespace CargoHub.Controllers
             return CreatedAtAction(nameof(GetRow), new { id = rowId }, rowId);
         }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutRow(int id, [FromBody] T row)
+        [HttpPut]
+        public virtual async Task<IActionResult> PutRow([FromQuery] int id, [FromBody] T row)
         {
             if (row == null)
                 return BadRequest("Warehouse cannot be null");
 
-            var updatedRow = await storage.UpdateRow(row, id);
+            var updatedRow = await storage.UpdateRow(id, row);
             if (!updatedRow)
                 return NotFound("Warehouse doesn't exist with id: " + id);
 
@@ -47,7 +47,7 @@ namespace CargoHub.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteRow(int id)
+        public virtual async Task<IActionResult> DeleteRow(int id)
         {
             var row = await storage.DeleteRow<T>(id);
             if (!row)

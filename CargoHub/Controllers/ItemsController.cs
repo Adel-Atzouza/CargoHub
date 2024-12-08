@@ -1,90 +1,61 @@
 using CargoHub.Models;
 using CargoHub.Services;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace CargoHub.Controllers
 {
-    [Route("[controller]")]
-    [ApiController]
-    public class ItemsController : ControllerBase
+    [Route("api/v2/[Controller]")]    
+    public abstract class ItemsController(ItemStorageService storage) : Controller
     {
-        private readonly ItemsService _itemsService;
-
-        public ItemsController(ItemsService itemsService)
-        {
-            _itemsService = itemsService;
+        [HttpGet("{id}")]
+        public virtual async Task<IActionResult> GetRow(int id)
+        {               
+            var row = await storage.GetRow<Item>(id);
+            
+            if (row == null)
+                return NotFound("Warehouse doesn't exist with id: " + id);
+            
+            return Ok(row);
         }
 
-        // [HttpGet]
-        // public async Task<IActionResult> GetItems(string uid)
-        // {
-        //     // Fetch items from the service
-        //     var items = await _itemsService.GetItems(uid);
-
-        //     // If no items are found, return NotFound (404)
-        //     if (items == null)
-        //     {
-        //         return NotFound("No items found matching the provided UID.");
-        //     }
-
-        //     // Return the list of items with a 200 OK response
-        //     return Ok(items);
-        // }
-
-        [HttpGet]
-        public async Task<IActionResult> GetAllItems()
+        [HttpGet()]
+        public virtual async Task<IActionResult> GetAllRows([FromQuery] int page = 1, [FromQuery] int pageSize = 100)
         {
-            // Fetch all items from the service
-            var items = await _itemsService.GetAllItems();
-
-            // If no items are found, return NotFound (404)
-            if (items == null || items.Count == 0)
-            {
-                return NotFound("No items found.");
-            }
-
-            // Return the list of items with a 200 OK response
-            return Ok(items);
+            var row = await storage.GetAllRows<Item>(page, pageSize);
+            return Ok(row);
         }
 
-
-        [HttpGet("{uid}")]
-        public async Task<IActionResult> GetItemByUid(string uid)
+        [HttpPost()]
+        public virtual async Task<IActionResult> PostRow([FromBody] Item row)
         {
-            // Fetch the item from the service
-            var item = await _itemsService.GetItem(uid);
+            if (row == null)
+                return BadRequest("Warehouse cannot be null");
 
-            // If no item is found, return a 404 Not Found response
-            if (item == null)
-            {
-                return NotFound("No item found with the provided UID.");
-            }
-
-            // If the item is found, return it with a 200 OK response
-            return Ok(item);  // Ok() will wrap the item in an HTTP 200 response
+            var rowId = await storage.AddRowUid(row);
+            return CreatedAtAction(nameof(GetRow), new { id = rowId }, rowId);
         }
 
-        [HttpPost]
-        public async Task<IActionResult> PostItems([FromBody] Item newItem)
+        [HttpPut]
+        public virtual async Task<IActionResult> PutRow([FromQuery] int id, [FromBody] Item row)
         {
-            var createdItem = await _itemsService.PostItems(newItem);
-            return CreatedAtAction(nameof(GetItemByUid), new { uid = createdItem.Uid }, createdItem);
+            if (row == null)
+                return BadRequest("Warehouse cannot be null");
+
+            var updatedRow = await storage.UpdateRow(id, row);
+            if (!updatedRow)
+                return NotFound("Warehouse doesn't exist with id: " + id);
+
+            return Ok(updatedRow);
         }
 
-        [HttpDelete("{uid}")]
-        public async Task<IActionResult> DeleteItemsByUid(string uid)
+        [HttpDelete("{id}")]
+        public virtual async Task<IActionResult> DeleteRow(int id)
         {
-            var result = await _itemsService.DeleteItemsByUid(uid);
-            return Ok(result);
-        }
+            var row = await storage.DeleteRow<Item>(id);
+            if (!row)
+                return NotFound("Warehouse doesn't exist with id: " + id);
 
-
-        [HttpPut("{uid}")]
-        public async Task<IActionResult> UpdateItem(string uid, [FromBody] Item updatedItem)
-        {
-            string result = await _itemsService.UpdateItem(uid, updatedItem);
-            return Ok(result);
+            return Ok(await storage.DeleteRow<Item>(id));
         }
     }
 }

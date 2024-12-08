@@ -1,4 +1,4 @@
-namespace CargoHub
+namespace CargoHub.Models
 {
     public class ItemGroup : BaseModel
     {

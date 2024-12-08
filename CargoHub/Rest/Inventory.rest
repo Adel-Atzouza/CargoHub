@@ -49,7 +49,7 @@ Content-Type: application/json
 DELETE {{baseUrl}}/1
 
 ###
-GET {{baseUrl}}/10
+GET {{baseUrl}}/2
 
 ###
 GET {{baseUrl}}

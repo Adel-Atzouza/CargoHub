@@ -1,9 +1,6 @@
 using CargoHub.Models;
 using CargoHub.Services;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace CargoHub.Controllers
 {

@@ -1,7 +1,7 @@
 @baseUrl = http://localhost:3000/api/warehouse
 
 ###
-GET {{baseUrl}}?id=d3b831cf-2d2a-4846-9d38-5bc87a2caa86
+GET http://localhost:3000/Items/1
 
 ###
 
@@ -9,7 +9,8 @@ POST http://localhost:3000/Items
 Content-Type: application/json
 
 {
-  "uid": "P000011",
+  "id":10,
+  "uid": "P000034",
   "code": "ABC123",
   "description": "Sample item",
   "short_description": "Sample short description",

@@ -7,16 +7,12 @@ builder.Services.AddControllers();
 builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlite("Datasource=CargoHub.db"));
 
 builder.Services.AddScoped<BaseStorageService>();
-
-builder.Services.AddScoped<ClientService>();
-builder.Services.AddScoped<InventoryService>();
-builder.Services.AddScoped<ItemGroupsService>();
-builder.Services.AddScoped<ItemLinesService>();
-builder.Services.AddScoped<OrderService>();
 builder.Services.AddScoped<LocationStorageService>();
+builder.Services.AddScoped<ItemStorageService>();
+
+builder.Services.AddScoped<OrderService>();
 builder.Services.AddScoped<ShipmentService>();
-builder.Services.AddScoped<ItemsService>();
-builder.Services.AddScoped<ItemTypesService>();
+builder.Services.AddScoped<ItemStorageService>();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

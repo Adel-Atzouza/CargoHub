@@ -1,4 +1,4 @@
-GET http://localhost:3000/api/v2/ItemGroups?Id=4
+GET http://localhost:3000/api/v2/ItemGroups?Id=1
 ApiKey: Admin
 ####
 GET http://localhost:3000/api/v2/ItemGroups/GetMultiple?Ids=1&Ids=2&Ids=3&Ids=4
@@ -14,18 +14,17 @@ Content-Type: application/json
     "Description" : "No Description"
 }
 ###
-PUT http://localhost:3000/api/v2/ItemGroups?Id=4
-ApiKey: Admin
+PUT http://localhost:3000/api/v2/itemgroups/1
 Content-Type: application/json
 
 {
-    "Id" : 4,
+    "Id" : 1,
     "Name" : "Groceries",
     "Description" : "Everyday food and household supplies."
 }
 
 ####
-DELETE http://localhost:3000/api/v2/ItemGroups/Delete?Id=4
+DELETE http://localhost:3000/api/v2/ItemGroups/Delete?Id=3
 ApiKey: Admin
 
 

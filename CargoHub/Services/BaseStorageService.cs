@@ -4,6 +4,8 @@ namespace CargoHub.Services
 {
     public class BaseStorageService(AppDbContext appDbContext)
     {
+        protected readonly AppDbContext appDbContext = appDbContext;
+
         public virtual async Task<T?> GetRow<T>(int id) where T : BaseModel
         {
             return await appDbContext.Set<T>().FirstOrDefaultAsync(_ => _.Id == id);
@@ -11,18 +13,16 @@ namespace CargoHub.Services
 
         public virtual async Task<List<T>> GetAllRows<T>(int pageNumber = 1, int pageSize = 100) where T : BaseModel
         {
-            // Test what happens when the page number is out of bounds
             return await appDbContext.Set<T>()
                          .Skip((pageNumber - 1) * pageSize)
                          .Take(pageSize)
                          .ToListAsync();
         }
+
         public virtual async Task<int?> AddRow<T>(T row) where T : BaseModel
         {
             bool alreadyExists = await appDbContext.Set<T>().ContainsAsync(row);
-            if (row == null || alreadyExists) return -1;
-
-            row.Id = appDbContext.Set<T>().Any() ? appDbContext.Set<T>().Max(_ => _.Id) + 1 : 1;
+            if (row == null || alreadyExists) return null;
 
             await appDbContext.Set<T>().AddAsync(row);
             await appDbContext.SaveChangesAsync();
@@ -31,10 +31,11 @@ namespace CargoHub.Services
             return (int?)entry.Property("Id").CurrentValue;
         }
         
-        public virtual async Task<bool> UpdateRow<T>(T row, int id) where T : BaseModel
+        public virtual async Task<bool> UpdateRow<T>(int id, T row, string[]? excludedProperties = null) where T : BaseModel
         {
-            string[] excludedProperties = { "CreatedAt" };
-
+            excludedProperties ??= [];
+            excludedProperties = [.. excludedProperties, "Id", "CreatedAt"];
+            
             var found = await appDbContext.Set<T>().FirstOrDefaultAsync(_ => _.Id == id);
             if (row == null || found == null) return false;
 
@@ -48,13 +49,10 @@ namespace CargoHub.Services
 
             foreach (var property in excludedProperties)
             {
-            entry.Property(property).IsModified = false;
+                entry.Property(property).IsModified = false;
             }
 
-            if (entry.Property("UpdatedAt") != null)
-            {
             entry.Property("UpdatedAt").CurrentValue = DateTime.Now;
-            }
 
             await appDbContext.SaveChangesAsync();
             return true;

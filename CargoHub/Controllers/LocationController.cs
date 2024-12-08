@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace CargoHub.Controllers
 {
-    [Route("api/v1/[controller]")]
+    [Route("api/v1/Locations")]
     [ApiController]
     public class LocationController : ControllerBase
     {
@@ -78,7 +78,12 @@ namespace CargoHub.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult<string>> RemoveLocation(int id)
         {
+            
             var result = await _locationService.RemoveLocation(id);
+            if (!result)
+            {
+                return NotFound("Location does not exist");
+            }
             return Ok(result); // 200 met een succesbericht
         }
     }

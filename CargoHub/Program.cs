@@ -10,12 +10,14 @@ builder.Services.AddScoped<ClientService>();
 builder.Services.AddScoped<InventoryService>();
 builder.Services.AddScoped<ItemGroupsService>();
 builder.Services.AddScoped<ItemLinesService>();
-builder.Services.AddTransient<WarehouseService>();
-builder.Services.AddTransient<TransferService>();
-builder.Services.AddTransient<SupplierService>();
-builder.Services.AddTransient<OrderService>();
-builder.Services.AddTransient<LocationService>();
-builder.Services.AddTransient<ShipmentService>();
+builder.Services.AddScoped<WarehouseService>();
+builder.Services.AddScoped<TransferService>();
+builder.Services.AddScoped<SupplierService>();
+builder.Services.AddScoped<OrderService>();
+builder.Services.AddScoped<LocationService>();
+builder.Services.AddScoped<ShipmentService>();
+builder.Services.AddScoped<MigrationsService>();
+
 
 // Register your custom ItemsService
 builder.Services.AddScoped<ItemsService>();  // This line is necessary

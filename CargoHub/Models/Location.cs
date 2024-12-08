@@ -10,9 +10,9 @@ namespace CargoHub.Models
         // Foreign Key for Warehouse (nullable)
         public int? WarehouseId { get; set; }
         [JsonIgnore]
-        public Warehouse? Warehouse { get; set; } // Use correct capitalization for the navigation property
+        public Warehouse? Warehouse { get; set; } // Navigation property with correct capitalization
 
-        public string Code { get; set; }
-        public string Name { get; set; }
+        public string? Code { get; set; } // Nullable based on provided JSON
+        public string? Name { get; set; } // Nullable based on provided JSON
     }
 }

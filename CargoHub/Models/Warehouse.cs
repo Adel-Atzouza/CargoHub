@@ -48,7 +48,7 @@ namespace CargoHub.Models
             }
         }
 
-                // Metadata
+        // Metadata
         [JsonPropertyName("created_at")]
         public DateTime CreatedAt { get; set; }
 

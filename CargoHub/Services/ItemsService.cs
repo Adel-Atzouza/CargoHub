@@ -33,13 +33,14 @@ namespace CargoHub.Services
 
         public async Task<Item> PostItems(Item newItem)
         {
-            // Add the new item to the DbContext
+            var existingItem = await GetItem(newItem.Uid);
+            if (existingItem != null)
+            {
+                throw new InvalidOperationException("An item with the same UID already exists.");
+            }
+
             _context.Items.Add(newItem);
-
-            // Save changes to the database (persist the item)
             await _context.SaveChangesAsync();
-
-            // Return the created item (you can also modify this to return only the ID or other fields if needed)
             return newItem;
         }
 

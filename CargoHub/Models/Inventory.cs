@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace CargoHub.Models
+﻿namespace CargoHub.Models
 {
-    public class Inventory
+    public class Inventory : BaseModel
     {
         public int Id { get; set; }
         public string ItemId { get; set; }
@@ -15,7 +12,5 @@ namespace CargoHub.Models
         public int TotalOrdered { get; set; }
         public int TotalAllocated { get; set; }
         public int TotalAvailable { get; set; }
-        public DateTime CreatedAt { get; set; }
-        public DateTime UpdatedAt { get; set; }
     }
 }

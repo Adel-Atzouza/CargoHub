@@ -12,7 +12,6 @@ builder.Services.AddScoped<ItemGroupsService>();
 builder.Services.AddScoped<ItemLinesService>();
 builder.Services.AddScoped<WarehouseService>();
 builder.Services.AddScoped<TransferService>();
-builder.Services.AddScoped<SupplierService>();
 builder.Services.AddScoped<OrderService>();
 builder.Services.AddScoped<LocationService>();
 builder.Services.AddScoped<ShipmentService>();

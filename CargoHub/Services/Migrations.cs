@@ -39,27 +39,40 @@ namespace CargoHub.Services
             return FilesNames;
         }
 
-        public void TransferData<T>(string DataFile) where T : BaseModel
+        private void TransferData<T>(string DataFile) where T : BaseModel
         {
             var options = new JsonSerializerOptions();
             options.Converters.Add(new CustomDateTimeConverter());
             try
             {
                 List<T>? Models = JsonSerializer.Deserialize<List<T>>(File.ReadAllText(DataFile), options);
-                foreach (var model in Models)
+                if (Models[0].Id == 0)
                 {
-                    Console.WriteLine($"===={model.Id}====");
+                    Models.ForEach(m => m.Id += 1);
                 }
+                _context.AddRange(Models);
+                int RowsChanged = _context.SaveChanges();
+                Console.WriteLine(RowsChanged);
 
             }
-            catch (Exception ex)
+            catch (JsonException ex)
             {
                 Console.WriteLine($"Error deserializing : {ex.Message}");
             }
-
-
+            catch (Exception ex)
+            {
+                Console.WriteLine($"{ex.Message}");
+                if (ex.InnerException != null)
+                { Console.WriteLine($"Inner Exception: {ex.InnerException.Message}"); }
+            }
 
         }
+
+        private void LogTransfer(bool Success, string File, int RowsChanged = 0)
+        {
+            throw new NotImplementedException();
+        }
+
 
 
     }

@@ -109,6 +109,36 @@ namespace CargoHub.Controllers
             }
         }
 
+        // PUT: api/v1/orders/{id}/items
+        // Werk de items in een bestaande order bij
+        [HttpPut("{id}/items")]
+        public async Task<IActionResult> UpdateItemsInOrder(int id, [FromBody] List<ItemDTO> orderItems)
+        {
+            if (orderItems == null || orderItems.Count == 0)
+            {
+                return BadRequest("De lijst met items mag niet leeg zijn.");
+            }
+
+            try
+            {
+                // Laat de service de items in de order bijwerken
+                var result = await _orderService.UpdateItemsInOrder(id, orderItems);
+
+                if (result.StartsWith("Item met ID") || result.StartsWith("Order met ID") || result.StartsWith("Niet genoeg voorraad"))
+                {
+                    return BadRequest(result); // Fouten zoals ontbrekende items, orders of voorraadtekort
+                }
+
+                return Ok($"Order met ID {id} is succesvol bijgewerkt.");
+            }
+            catch (Exception ex)
+            {
+                // Als er een onverwachte fout optreedt
+                return StatusCode(500, $"Interne serverfout: {ex.Message}");
+            }
+        }
+
+
         // DELETE: api/v1/orders/{id}
         // Verwijder een order via het ID
         [HttpDelete("{id}")]

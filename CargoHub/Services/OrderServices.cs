@@ -49,20 +49,56 @@ namespace CargoHub.Services
         {
             try
             {
-                // Voeg de nieuwe order toe aan de databasecontext
+                // Voeg de nieuwe order toe aan de context maar sla deze nog niet op
                 _context.Orders.Add(order);
 
-                // Sla de order op zodat een ID wordt gegenereerd
-                await _context.SaveChangesAsync();
-
-                // Voeg elk item toe aan de order
+                // Controleer of alle items geldig zijn en voldoende voorraad hebben
                 foreach (var itemDto in itemDTOs)
                 {
-                    await AddOrderItem(order.Id, itemDto);
+                    // Controleer of het item bestaat
+                    var item = await _context.Items.FirstOrDefaultAsync(i => i.Uid == itemDto.ItemId);
+                    if (item == null)
+                    {
+                        throw new Exception($"Item met Uid {itemDto.ItemId} bestaat niet.");
+                    }
+
+                    // Controleer of het item in de voorraad aanwezig is
+                    var itemInventory = await _context.Inventory.FirstOrDefaultAsync(i => i.ItemId == itemDto.ItemId);
+                    if (itemInventory == null)
+                    {
+                        throw new Exception($"Geen inventaris gevonden voor item met Uid {itemDto.ItemId}.");
+                    }
+
+                    // Controleer of er voldoende voorraad beschikbaar is
+                    if (itemInventory.TotalAvailable < itemDto.Amount)
+                    {
+                        throw new Exception($"Niet genoeg voorraad voor item met Uid {itemDto.ItemId}. Beschikbaar: {itemInventory.TotalAvailable}, gevraagd: {itemDto.Amount}");
+                    }
                 }
 
-                // Sla alle wijzigingen op in de database
+                // Alle items zijn geldig, voeg nu de order-items toe
+                foreach (var itemDto in itemDTOs)
+                {
+                    var itemInventory = await _context.Inventory.FirstOrDefaultAsync(i => i.ItemId == itemDto.ItemId);
+
+                    // Verminder de beschikbare voorraad
+                    itemInventory.TotalAvailable -= itemDto.Amount;
+
+                    // Maak een nieuw OrderItem aan
+                    var orderItem = new OrderItem
+                    {
+                        OrderId = order.Id, // Order-ID wordt gegenereerd na SaveChanges
+                        ItemUid = itemDto.ItemId,
+                        Amount = itemDto.Amount
+                    };
+
+                    // Voeg het item toe aan de context
+                    _context.OrderItems.Add(orderItem);
+                }
+
+                // Sla nu zowel de order als de items op in de database
                 await _context.SaveChangesAsync();
+
                 return order;
             }
             catch (Exception ex)
@@ -71,6 +107,7 @@ namespace CargoHub.Services
                 throw;
             }
         }
+
 
         // Update een bestaande order en de gekoppelde items
         public async Task<string> UpdateOrder(int orderId, OrderWithItemsDTO updatedOrderDto)
@@ -265,32 +302,6 @@ namespace CargoHub.Services
             existingOrder.TotalDiscount = updatedOrderDto.TotalDiscount;
             existingOrder.TotalTax = updatedOrderDto.TotalTax;
             existingOrder.TotalSurcharge = updatedOrderDto.TotalSurcharge;
-        }
-
-        // Voeg een item toe aan een order
-        private async Task AddOrderItem(int orderId, ItemDTO itemDto)
-        {
-            var item = await _context.Inventory.FirstOrDefaultAsync(i => i.ItemId == itemDto.ItemId);
-            if (item == null)
-            {
-                throw new Exception($"Item met Uid {itemDto.ItemId} bestaat niet.");
-            }
-
-            if (item.TotalAvailable < itemDto.Amount)
-            {
-                throw new Exception($"Niet genoeg voorraad voor item met Uid: {itemDto.ItemId}. Beschikbaar: {item.TotalAvailable}, gevraagd: {itemDto.Amount}");
-            }
-
-            item.TotalAvailable -= itemDto.Amount;
-
-            var orderItem = new OrderItem
-            {
-                OrderId = orderId,
-                ItemUid = item.ItemId,
-                Amount = itemDto.Amount
-            };
-
-            _context.OrderItems.Add(orderItem);
         }
     }
 }

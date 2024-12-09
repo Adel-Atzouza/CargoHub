@@ -179,7 +179,9 @@ namespace CargoHub.Services
         public async Task<string> UpdateShipmentFields(int shipmentId, ShipmentDTO updatedShipmentDto)
         {
             // Stap 1: Haal de bestaande zending op uit de database
-            var existingShipment = await _context.Shipments.FirstOrDefaultAsync(s => s.Id == shipmentId);
+            var existingShipment = await _context.Shipments
+                .Include(s => s.orders) // Haal de gekoppelde orders op
+                .FirstOrDefaultAsync(s => s.Id == shipmentId);
 
             if (existingShipment == null)
             {
@@ -192,9 +194,28 @@ namespace CargoHub.Services
                 !existingShipment.ShipmentStatus.Equals("transit", StringComparison.OrdinalIgnoreCase))
             {
                 existingShipment.ShipmentDate = DateTime.UtcNow; // Stel de ShipmentDate in op het huidige moment
+
+                // Update de status van gekoppelde orders naar "shipped"
+                foreach (var order in existingShipment.orders)
+                {
+                    order.OrderStatus = "shipped";
+                }
             }
 
-            // Stap 3: Update alleen de overige eigenschappen van de zending
+            // Stap 3: Check of de status verandert naar "delivered"
+            if (!string.IsNullOrEmpty(updatedShipmentDto.ShipmentStatus) &&
+                updatedShipmentDto.ShipmentStatus.Equals("delivered", StringComparison.OrdinalIgnoreCase) &&
+                !existingShipment.ShipmentStatus.Equals("delivered", StringComparison.OrdinalIgnoreCase))
+            {
+                // Update de status van gekoppelde orders naar "delivered" en stel de DeliveryDate in
+                foreach (var order in existingShipment.orders)
+                {
+                    order.OrderStatus = "delivered";
+                    order.OrderDate = DateTime.UtcNow; // Stel de DeliveryDate in op het huidige moment
+                }
+            }
+
+            // Stap 4: Update alleen de overige eigenschappen van de zending
             existingShipment.ShipmentType = updatedShipmentDto.ShipmentType;
             existingShipment.ShipmentStatus = updatedShipmentDto.ShipmentStatus;
             existingShipment.Notes = updatedShipmentDto.Notes;
@@ -207,13 +228,12 @@ namespace CargoHub.Services
             existingShipment.TotalPackageWeight = updatedShipmentDto.TotalPackageWeight;
             existingShipment.UpdatedAt = DateTime.UtcNow;
 
-            // Stap 4: Sla de wijzigingen op
+            // Stap 5: Sla de wijzigingen op
             _context.Shipments.Update(existingShipment);
             await _context.SaveChangesAsync();
 
             return $"Shipment met ID {shipmentId} is succesvol bijgewerkt.";
         }
-
 
         // Ken orders toe aan een specifieke zending
         public async Task<bool> AssignOrdersToShipment(int shipmentId, List<int> orderIds)

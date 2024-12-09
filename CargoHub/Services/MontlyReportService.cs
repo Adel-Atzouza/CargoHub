@@ -23,18 +23,31 @@ namespace CargoHub.Services
                 .Where(o => o.CreatedAt.Year == year && o.CreatedAt.Month == month)
                 .ToListAsync();
 
+            Console.WriteLine($"Filtered Orders: {orders.Count}");
+
             // Shipments verzonden in de opgegeven maand
             var shipments = await _context.Shipments
                 .Where(s => s.ShipmentDate.Year == year && s.ShipmentDate.Month == month)
                 .ToListAsync();
 
+            Console.WriteLine($"Filtered Shipments: {shipments.Count}");
+
             // Analyseer orderverwerking
             var totalOrders = orders.Count;
             var totalShipments = shipments.Count;
             var totalOrderAmount = orders.Sum(o => o.TotalAmount);
-            var averageOrderProcessingTime = orders
-                .Where(o => o.RequestDate > o.CreatedAt)
-                .Select(o => (o.RequestDate - o.CreatedAt).TotalDays)
+
+            // Gemiddelde tijd tussen aanmaak en afleveren van orders
+            var averageOrderDeliveryTime = orders
+                .Where(o => o.OrderDate.HasValue && o.OrderDate > o.CreatedAt)
+                .Select(o => (o.OrderDate.Value - o.CreatedAt).TotalDays)
+                .DefaultIfEmpty(0)
+                .Average();
+
+            // Gemiddelde tijd tussen aanmaak en transit van shipments
+            var averageShipmentTransitTime = shipments
+                .Where(s => s.ShipmentDate > s.CreatedAt)
+                .Select(s => (s.ShipmentDate - s.CreatedAt).TotalDays)
                 .DefaultIfEmpty(0)
                 .Average();
 
@@ -44,8 +57,9 @@ namespace CargoHub.Services
                 Month = month,
                 TotalOrders = totalOrders,
                 TotalOrderAmount = totalOrderAmount,
-                AverageOrderProcessingTime = averageOrderProcessingTime,
+                AverageOrderProcessingTime = averageOrderDeliveryTime,
                 TotalShipments = totalShipments,
+                AverageShipmentTransitProcessingTime = averageShipmentTransitTime,
                 ShipmentDetails = shipments.Select(s => new ShipmentSummaryDTO
                 {
                     ShipmentId = s.Id,

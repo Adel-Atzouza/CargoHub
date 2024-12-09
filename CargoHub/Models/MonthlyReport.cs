@@ -10,6 +10,7 @@ namespace CargoHub.Models
         public int TotalOrders { get; set; }
         public decimal TotalOrderAmount { get; set; }
         public double AverageOrderProcessingTime { get; set; }
+        public double AverageShipmentTransitProcessingTime {get; set;}
         public int TotalShipments { get; set; }
         public List<ShipmentSummaryDTO> ShipmentDetails { get; set; }
     }

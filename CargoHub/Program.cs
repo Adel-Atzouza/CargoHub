@@ -17,6 +17,7 @@ builder.Services.AddTransient<OrderService>();
 builder.Services.AddTransient<LocationService>();
 builder.Services.AddTransient<ShipmentService>();
 builder.Services.AddSingleton<ApiKeyGeneratorService>();
+builder.Services.AddTransient<ReportService>();
 
 // Register your custom ItemsService
 builder.Services.AddScoped<ItemsService>();  // This line is necessary

@@ -78,19 +78,19 @@ namespace CargoHub.Services
         }
 
         // Verwijder een locatie op basis van ID
-        public async Task<string> RemoveLocation(int locationId)
+        public async Task<bool> RemoveLocation(int locationId)
         {
             // Zoek de locatie op
             var location = await _context.Locations.FindAsync(locationId);
             if (location == null)
             {
-                return "Fout: Locatie niet gevonden."; // Foutmelding als de locatie niet bestaat
+                return false;
             }
 
             // Verwijder de locatie uit de database
             _context.Locations.Remove(location);
             await _context.SaveChangesAsync(); // Sla de wijzigingen op
-            return "Locatie succesvol verwijderd."; // Succesbericht
+            return true ; // Succesbericht
         }
     }
 }

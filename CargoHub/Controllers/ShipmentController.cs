@@ -122,6 +122,32 @@ namespace CargoHub.Controllers
             }
         }
 
+        [HttpPut("{shipmentId}")]
+        public async Task<IActionResult> UpdateShipmentFields(int shipmentId, [FromBody] ShipmentDTO updatedShipmentDto)
+        {
+            if (updatedShipmentDto == null)
+            {
+                return BadRequest("Shipment data mag niet null zijn.");
+            }
+
+            try
+            {
+                var result = await _shipmentService.UpdateShipmentFields(shipmentId, updatedShipmentDto);
+
+                if (result.Contains("niet gevonden"))
+                {
+                    return NotFound(result); // Retourneer een 404 als de zending niet bestaat
+                }
+
+                return Ok(result); // Retourneer een 200 met het succesbericht
+            }
+            catch (Exception ex)
+            {
+                // Log de fout indien nodig
+                return StatusCode(StatusCodes.Status500InternalServerError, $"Er is een fout opgetreden: {ex.Message}");
+            }
+        }
+       
         // DELETE: api/v1/shipment/{id}
         // Verwijder een shipment via het ID
         [HttpDelete("{id}")]

@@ -15,8 +15,6 @@ public class Order : BaseModel
     public string? Notes { get; set; }
     public string? ShippingNotes { get; set; }
     public string? PickingNotes { get; set; }
-
-
     public int? WarehouseId { get; set; }
     [JsonIgnore]
     public Warehouse? Warehouse {get; set;}

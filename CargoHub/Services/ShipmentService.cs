@@ -175,6 +175,46 @@ namespace CargoHub.Services
             }
         }
 
+
+        public async Task<string> UpdateShipmentFields(int shipmentId, ShipmentDTO updatedShipmentDto)
+        {
+            // Stap 1: Haal de bestaande zending op uit de database
+            var existingShipment = await _context.Shipments.FirstOrDefaultAsync(s => s.Id == shipmentId);
+
+            if (existingShipment == null)
+            {
+                return $"Shipment met ID {shipmentId} is niet gevonden.";
+            }
+
+            // Stap 2: Check of de status verandert naar "transit"
+            if (!string.IsNullOrEmpty(updatedShipmentDto.ShipmentStatus) &&
+                updatedShipmentDto.ShipmentStatus.Equals("transit", StringComparison.OrdinalIgnoreCase) &&
+                !existingShipment.ShipmentStatus.Equals("transit", StringComparison.OrdinalIgnoreCase))
+            {
+                existingShipment.ShipmentDate = DateTime.UtcNow; // Stel de ShipmentDate in op het huidige moment
+            }
+
+            // Stap 3: Update alleen de overige eigenschappen van de zending
+            existingShipment.ShipmentType = updatedShipmentDto.ShipmentType;
+            existingShipment.ShipmentStatus = updatedShipmentDto.ShipmentStatus;
+            existingShipment.Notes = updatedShipmentDto.Notes;
+            existingShipment.CarrierCode = updatedShipmentDto.CarrierCode;
+            existingShipment.CarrierDescription = updatedShipmentDto.CarrierDescription;
+            existingShipment.ServiceCode = updatedShipmentDto.ServiceCode;
+            existingShipment.PaymentType = updatedShipmentDto.PaymentType;
+            existingShipment.TransferMode = updatedShipmentDto.TransferMode;
+            existingShipment.TotalPackageCount = updatedShipmentDto.TotalPackageCount;
+            existingShipment.TotalPackageWeight = updatedShipmentDto.TotalPackageWeight;
+            existingShipment.UpdatedAt = DateTime.UtcNow;
+
+            // Stap 4: Sla de wijzigingen op
+            _context.Shipments.Update(existingShipment);
+            await _context.SaveChangesAsync();
+
+            return $"Shipment met ID {shipmentId} is succesvol bijgewerkt.";
+        }
+
+
         // Ken orders toe aan een specifieke zending
         public async Task<bool> AssignOrdersToShipment(int shipmentId, List<int> orderIds)
         {

@@ -104,13 +104,13 @@ namespace CargoHub.Services
             // Controleer of elk opgegeven item bestaat
             foreach (var item in orderItems)
             {
-                if (!await ItemExist(item.ItemId))
+                if (!await ItemExist(item.ItemId)) // Controleer of het item bestaat in de database
                 {
                     return $"Item met ID {item.ItemId} is niet gevonden.";
                 }
             }
 
-            // Haal de bestaande order inclusief items op
+            // Haal de bestaande order inclusief de gekoppelde items op
             var updateOrder = await _context.Orders
                 .Include(o => o.OrderItems)
                 .FirstOrDefaultAsync(o => o.Id == orderId);
@@ -120,44 +120,48 @@ namespace CargoHub.Services
                 return $"Order met ID {orderId} is niet gevonden.";
             }
 
-            // Update bestaande items of verwijder ze indien niet meer nodig
-            foreach (var currentItem in updateOrder.OrderItems.ToList())
+            // Update bestaande items of verwijder ze indien ze niet meer in de order voorkomen
+            foreach (var currentItem in updateOrder.OrderItems.ToList()) // Doorloop alle huidige items in de order
             {
-                var matchingItem = orderItems.FirstOrDefault(i => i.ItemId == currentItem.ItemUid);
+                var matchingItem = orderItems.FirstOrDefault(i => i.ItemId == currentItem.ItemUid); // Zoek het overeenkomende item in de nieuwe lijst
                 if (matchingItem != null)
                 {
+                    // Update voorraad voor het item als het nog bestaat
                     var inventoryItem = await _context.Inventory.FirstOrDefaultAsync(i => i.ItemId == currentItem.ItemUid);
                     if (inventoryItem != null)
                     {
-                        inventoryItem.TotalAllocated += matchingItem.Amount - currentItem.Amount;
+                        inventoryItem.TotalAllocated += matchingItem.Amount - currentItem.Amount; // Pas de allocatie aan op basis van de hoeveelheidwijziging
                     }
-                    currentItem.Amount = matchingItem.Amount;
+                    currentItem.Amount = matchingItem.Amount; // Update de hoeveelheid van het item in de order
                 }
                 else
                 {
+                    // Verwijder het item als het niet meer nodig is
                     var inventoryItem = await _context.Inventory.FirstOrDefaultAsync(i => i.ItemId == currentItem.ItemUid);
                     if (inventoryItem != null)
                     {
-                        inventoryItem.TotalAllocated -= currentItem.Amount;
+                        inventoryItem.TotalAllocated -= currentItem.Amount; // Verminder de allocatie in de voorraad
                     }
-                    _context.OrderItems.Remove(currentItem);
+                    _context.OrderItems.Remove(currentItem); // Verwijder het item uit de order
                 }
             }
 
             // Voeg nieuwe items toe aan de order
             foreach (var newItem in orderItems)
             {
-                var existingItem = updateOrder.OrderItems.FirstOrDefault(i => i.ItemUid == newItem.ItemId);
-                if (existingItem == null)
+                var existingItem = updateOrder.OrderItems.FirstOrDefault(i => i.ItemUid == newItem.ItemId); // Controleer of het item al in de order zit
+                if (existingItem == null) // Als het item nog niet bestaat
                 {
-                    var inventoryItem = await _context.Inventory.FirstOrDefaultAsync(i => i.ItemId == newItem.ItemId);
+                    var inventoryItem = await _context.Inventory.FirstOrDefaultAsync(i => i.ItemId == newItem.ItemId); // Haal het item op uit de voorraad
                     if (inventoryItem != null)
                     {
+                        // Controleer of er voldoende voorraad beschikbaar is
                         if (inventoryItem.TotalAvailable < newItem.Amount)
                         {
                             return $"Niet genoeg voorraad voor item met ID {newItem.ItemId}. Beschikbaar: {inventoryItem.TotalAvailable}, gevraagd: {newItem.Amount}";
                         }
 
+                        // Maak een nieuw orderitem aan en voeg het toe
                         var orderItem = new OrderItem
                         {
                             ItemUid = newItem.ItemId,
@@ -165,15 +169,16 @@ namespace CargoHub.Services
                             OrderId = orderId
                         };
 
-                        _context.OrderItems.Add(orderItem);
-                        inventoryItem.TotalAllocated += newItem.Amount;
+                        _context.OrderItems.Add(orderItem); // Voeg het nieuwe item toe aan de order
+                        inventoryItem.TotalAllocated += newItem.Amount; // Verhoog de allocatie in de voorraad
                     }
                 }
             }
 
-            await _context.SaveChangesAsync();
-            return $"Order met ID {orderId} is succesvol bijgewerkt.";
+            await _context.SaveChangesAsync(); // Sla alle wijzigingen op in de database
+            return $"Order met ID {orderId} is succesvol bijgewerkt."; // Retourneer een succesbericht
         }
+
 
         // Controleer of een item bestaat
         public async Task<bool> ItemExist(string itemId)
@@ -265,23 +270,23 @@ namespace CargoHub.Services
         // Voeg een item toe aan een order
         private async Task AddOrderItem(int orderId, ItemDTO itemDto)
         {
-            var item = await _context.Items.FirstOrDefaultAsync(i => i.Uid == itemDto.ItemId);
+            var item = await _context.Inventory.FirstOrDefaultAsync(i => i.ItemId == itemDto.ItemId);
             if (item == null)
             {
                 throw new Exception($"Item met Uid {itemDto.ItemId} bestaat niet.");
             }
 
-            if (item.UnitOrderQuantity < itemDto.Amount)
+            if (item.TotalAvailable < itemDto.Amount)
             {
-                throw new Exception($"Niet genoeg voorraad voor item met Uid: {itemDto.ItemId}. Beschikbaar: {item.UnitOrderQuantity}, gevraagd: {itemDto.Amount}");
+                throw new Exception($"Niet genoeg voorraad voor item met Uid: {itemDto.ItemId}. Beschikbaar: {item.TotalAvailable}, gevraagd: {itemDto.Amount}");
             }
 
-            item.UnitOrderQuantity -= itemDto.Amount;
+            item.TotalAvailable -= itemDto.Amount;
 
             var orderItem = new OrderItem
             {
                 OrderId = orderId,
-                ItemUid = item.Uid,
+                ItemUid = item.ItemId,
                 Amount = itemDto.Amount
             };
 

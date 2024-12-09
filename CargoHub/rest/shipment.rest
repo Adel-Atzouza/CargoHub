@@ -1,5 +1,5 @@
 ### Get a shipment by ID with order details
-GET http://localhost:3000/api/v1/shipment/Orderdetails/2
+GET http://localhost:3000/api/v1/Shipments/Orderdetails/5
 Content-Type: application/json
 ApiKey: Admin
 

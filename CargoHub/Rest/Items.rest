@@ -1,0 +1,61 @@
+@baseUrl = http://localhost:3000/api/warehouse
+
+###
+GET {{baseUrl}}?id=d3b831cf-2d2a-4846-9d38-5bc87a2caa86
+
+###
+
+POST http://localhost:3000/Items
+Content-Type: application/json
+
+{
+  "uid": "P000011",
+  "code": "ABC123",
+  "description": "Sample item",
+  "short_description": "Sample short description",
+  "upc_code": "123456789",
+  "model_number": "XYZ123",
+  "commodity_code": "A123",
+  "item_line": 10,  
+  "item_group": 1,  
+  "item_type": 2, 
+  "unit_purchase_quantity": 10,
+  "unit_order_quantity": 5,
+  "pack_order_quantity": 5,
+  "supplier_id": 1,
+  "supplier_code": "SUP123",
+  "supplier_part_number": "PART123",
+  "created_at": "2024-01-01T00:00:00",
+  "updated_at": "2024-01-01T00:00:00"
+}
+
+###
+
+GET  http://localhost:3000/Items/P000001
+Content-Type: application/json
+
+{
+  "uid": "P000011",
+  "code": "ABC123",
+  "description": "Sample item",
+  "short_description": "Sample short description",
+  "upc_code": "123456789",
+  "model_number": "XYZ123",
+  "commodity_code": "A123",
+  "item_line": 10,  
+  "item_group": 1,  
+  "item_type": 2, 
+  "unit_purchase_quantity": 10,
+  "unit_order_quantity": 5,
+  "pack_order_quantity": 5,
+  "supplier_id": 1,
+  "supplier_code": "SUP123",
+  "supplier_part_number": "PART123",
+  "created_at": "2024-01-01T00:00:00",
+  "updated_at": "2024-01-01T00:00:00"
+}
+
+###
+
+PUT http://localhost:3000/items/P000001
+Content-Type: application/json

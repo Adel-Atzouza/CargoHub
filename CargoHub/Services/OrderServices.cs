@@ -11,16 +11,18 @@ namespace CargoHub.Services
     {
         private readonly AppDbContext _context;
 
+        // Constructor om de database context te injecteren
         public OrderService(AppDbContext context)
         {
             _context = context;
         }
 
-        // Method to get a specific order with items by order ID
+        // Haal een specifieke order op met alle items erbij
         public async Task<OrderWithItemsDTO> GetOrderWithItems(int id)
         {
+            // Zoek de order op basis van ID
             var order = await _context.Orders
-                .Where(o => o.Id == id)
+                .Where(o => o.Id == id) // Filter op het ID van de order
                 .Select(o => new OrderWithItemsDTO
                 {
                     Id = o.Id,
@@ -28,7 +30,7 @@ namespace CargoHub.Services
                     OrderDate = o.OrderDate,
                     RequestDate = o.RequestDate,
                     Reference = o.Reference,
-                    ReferenceExtra = o.ExtraReference,
+                    ReferenceExtra = o.ExtrReference,
                     OrderStatus = o.OrderStatus,
                     Notes = o.Notes,
                     ShippingNotes = o.ShippingNotes,
@@ -45,16 +47,25 @@ namespace CargoHub.Services
                     UpdatedAt = o.UpdatedAt,
                     Items = o.OrderItems.Select(oi => new ItemDTO
                     {
-                        ItemId = oi.Item.Uid,
-                        Amount = oi.Amount
+                        ItemId = oi.Item.Uid, // Het unieke ID van het item
+                        Amount = oi.Amount // Hoeveelheid van het item
                     }).ToList()
                 })
-                .FirstOrDefaultAsync();
+                .FirstOrDefaultAsync(); // Pak de eerste die voldoet, of null als er niks is
 
-            return order;
+            return order; // Retourneer de order met details
         }
 
-        // Method to get all orders with items
+        // Haal alle orders op voor een specifieke klant
+        public async Task<List<Order>> GetOrdersCLient(int id)
+        {
+            // Zoek orders waar de klant als ontvanger of betaler wordt genoemd
+            return await _context.Orders
+                .Where(c => c.BillTo == id || c.ShipTo == id)
+                .ToListAsync(); // Geef een lijst terug met alle matches
+        }
+
+        // Haal alle orders met hun items erbij
         public async Task<List<OrderWithItemsDTO>> GetAllOrdersWithItems()
         {
             return await _context.Orders
@@ -65,7 +76,7 @@ namespace CargoHub.Services
                     OrderDate = o.OrderDate,
                     RequestDate = o.RequestDate,
                     Reference = o.Reference,
-                    ReferenceExtra = o.ExtraReference,
+                    ReferenceExtra = o.ExtrReference,
                     OrderStatus = o.OrderStatus,
                     Notes = o.Notes,
                     ShippingNotes = o.ShippingNotes,
@@ -82,100 +93,113 @@ namespace CargoHub.Services
                     UpdatedAt = o.UpdatedAt,
                     Items = o.OrderItems.Select(oi => new ItemDTO
                     {
-                        ItemId = oi.Item.Uid,
-                        Amount = oi.Amount
+                        ItemId = oi.Item.Uid, // Het unieke ID van het item
+                        Amount = oi.Amount // Hoeveelheid van het item
                     }).ToList()
                 })
-                .ToListAsync();
+                .ToListAsync(); // Retourneer een lijst met alle orders en items
         }
 
-        // Method to create a new order with items
+        // Maak een nieuwe order aan met items
         public async Task<Order> CreateOrder(Order order, List<ItemDTO> itemDTOs)
         {
-            // Add the order first to generate the ID
-            _context.Orders.Add(order);
-            await _context.SaveChangesAsync(); // Save to get the order's Id
-
-            // Attach items to the order
-            foreach (var itemDto in itemDTOs)
+            try
             {
-                var item = await _context.Items.FirstOrDefaultAsync(i => i.Uid == itemDto.ItemId);
-                if (item != null)
-                {
-                    var orderItem = new OrderItem
-                    {
-                        OrderId = order.Id, // Set the OrderId correctly here
-                        ItemId = item.Id,
-                        Amount = itemDto.Amount
-                    };
-                    _context.OrderItems.Add(orderItem); // Add the orderItem to the context
-                }
-            }
+                // Voeg de order toe aan de database
+                _context.Orders.Add(order);
+                await _context.SaveChangesAsync(); // Opslaan zodat het ID wordt gegenereerd
 
-            await _context.SaveChangesAsync(); // Save changes after adding items
-            return order;
+                // Voeg items toe aan de order
+                foreach (var itemDto in itemDTOs)
+                {
+                    // Zoek het item op in de database via het unieke ID
+                    var item = await _context.Items.FirstOrDefaultAsync(i => i.Uid == itemDto.ItemId);
+                    if (item != null)
+                    {
+                        var orderItem = new OrderItem
+                        {
+                            OrderId = order.Id, // Koppel aan het gegenereerde order-ID
+                            ItemUid = item.Uid, // Het unieke ID van het item
+                            Amount = itemDto.Amount // Hoeveelheid van het item
+                        };
+                        _context.OrderItems.Add(orderItem); // Voeg de relatie toe
+                    }
+                    else
+                    {
+                        throw new Exception($"Item met Uid {itemDto.ItemId} bestaat niet.");
+                    }
+                }
+
+                await _context.SaveChangesAsync(); // Opslaan in de database
+                return order; // Retourneer de aangemaakte order
+            }
+            catch (Exception ex)
+            {
+                // Log de fout en gooi hem opnieuw voor verder gebruik
+                Console.WriteLine($"Fout bij het aanmaken van een order: {ex.Message}");
+                throw;
+            }
         }
 
-
-        // Method to update an existing order
-        public async Task<Order> UpdateOrder(int id, Order updatedOrder, List<ItemDTO> updatedItemDTOs)
+        // Check of een item bestaat op basis van het unieke ID
+        public async Task<bool> ItemExist(string itemid)
         {
-            var order = await _context.Orders
-                .Include(o => o.OrderItems)
-                .FirstOrDefaultAsync(o => o.Id == id);
-
-            if (order == null) return null;
-
-            // Update the order properties
-            order.SourceId = updatedOrder.SourceId;
-            order.OrderDate = updatedOrder.OrderDate;
-            order.RequestDate = updatedOrder.RequestDate;
-            order.Reference = updatedOrder.Reference;
-            order.ExtraReference = updatedOrder.ExtraReference;
-            order.OrderStatus = updatedOrder.OrderStatus;
-            order.Notes = updatedOrder.Notes;
-            order.ShippingNotes = updatedOrder.ShippingNotes;
-            order.PickingNotes = updatedOrder.PickingNotes;
-            order.WarehouseId = updatedOrder.WarehouseId;
-            order.ShipTo = updatedOrder.ShipTo;
-            order.BillTo = updatedOrder.BillTo;
-            order.ShipmentId = updatedOrder.ShipmentId;
-            order.TotalAmount = updatedOrder.TotalAmount;
-            order.TotalDiscount = updatedOrder.TotalDiscount;
-            order.TotalTax = updatedOrder.TotalTax;
-            order.TotalSurcharge = updatedOrder.TotalSurcharge;
-            order.UpdatedAt = DateTime.UtcNow;
-
-            // Update order items
-            _context.OrderItems.RemoveRange(order.OrderItems); // Remove old items
-            foreach (var itemDto in updatedItemDTOs)
-            {
-                var item = await _context.Items.FirstOrDefaultAsync(i => i.Uid == itemDto.ItemId);
-                if (item != null)
-                {
-                    var orderItem = new OrderItem
-                    {
-                        OrderId = id,
-                        ItemId = item.Id,
-                        Amount = itemDto.Amount
-                    };
-                    _context.OrderItems.Add(orderItem); // Add new items
-                }
-            }
-
-            await _context.SaveChangesAsync();
-            return order;
+            return await _context.Items.AnyAsync(i => i.Uid == itemid); // True of False
         }
 
-        // Method to delete an order by ID
+        // Verwijder een order op basis van ID
         public async Task<bool> DeleteOrder(int id)
         {
-            var order = await _context.Orders.FindAsync(id);
-            if (order == null) return false;
+            var order = await _context.Orders.FindAsync(id); // Zoek de order op
+            if (order == null) return false; // Bestaat niet? Geef False terug
 
-            _context.Orders.Remove(order);
-            await _context.SaveChangesAsync();
-            return true;
+            _context.Orders.Remove(order); // Verwijder de order
+            await _context.SaveChangesAsync(); // Opslaan in de database
+            return true; // Geef True terug om succes aan te geven
         }
     }
 }
+        // public async Task<string> UpdateitemsInOrder(int orderid, List<ItemDTO> orderitems )
+        // {
+        //     foreach( var x in orderitems)
+        //     {
+        //         if(!await ItemExist(x.ItemId))
+        //         {
+        //             return $"item met id {x.ItemId} is not found";
+        //         }
+        //     }
+        //     var Updateorder = await GetOrderWithItems(orderid);
+        //     if(Updateorder == null ){
+        //         return $"order with {orderid} not found";
+        //     }
+
+        //     var currentitems = Updateorder.Items;
+
+        //     //STAP 1 het updaten van bestaande items in the huidige order
+        //     foreach (var x in currentitems)
+        //     {
+        //         foreach(var y in orderitems)
+        //         {
+
+        //             if (x.ItemId == y.ItemId)
+        //             {
+        //                 var inventoryitem = await _context.Inventory.FirstOrDefaultAsync(i => i.ItemId == x.ItemId);
+        //                 if(inventoryitem != null){
+        //                     inventoryitem.TotalAllocated += y.Amount - x.Amount;
+        //                 }
+        //                 x.Amount = y.Amount;
+        //                 break;
+        //             }
+        //         }
+        //     }
+
+        //     //STAP 2 het toevoegen van nieuwe items aan de huidige order
+        //     foreach (var y in orderitems)
+        //     {
+        //         var existingItem = currentitems.FirstOrDefault(i => i.ItemId == y.ItemId);
+        //         {
+
+        //         }
+        //     }
+
+        // }

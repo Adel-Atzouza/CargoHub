@@ -1,17 +1,18 @@
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
+namespace CargoHub.Models
+{
+    public class Location : BaseModel
+    {
+        public int Id { get; set; }
 
-namespace CargoHub.Models{
+        // Foreign Key for Warehouse (nullable)
+        public int? WarehouseId { get; set; }
+        [JsonIgnore]
+        public Warehouse? Warehouse { get; set; } // Use correct capitalization for the navigation property
 
-public class Location{
-    public int Id {get; set;}
-    [JsonIgnore]
-    public int WarehouseId { get; set; }
-    public string Code { get; set; }
-    public string Name { get; set; }
-    public DateTime CreatedAt { get; set; }
-    public DateTime UpdatedAt { get; set; }
-
-}
+        public string Code { get; set; }
+        public string Name { get; set; }
+    }
 }

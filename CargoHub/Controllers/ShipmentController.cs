@@ -7,58 +7,132 @@ using System.Threading.Tasks;
 
 namespace CargoHub.Controllers
 {
-[Route("api/v1/[controller]")]
-[ApiController]
-public class ShipmentController : ControllerBase
-{
-    private readonly ShipmentService _shipmentService;
-
-    public ShipmentController(ShipmentService shipmentService)
+    [Route("api/v1/[controller]")]
+    [ApiController]
+    public class ShipmentController : ControllerBase
     {
-        _shipmentService = shipmentService;
-    }
+        private readonly ShipmentService _shipmentService;
 
-    [HttpGet("{id}")]
-    public async Task<ActionResult<Shipment>> GetShipmentById(int id)
-    {
-        var shipment = await _shipmentService.GetShipmentID(id);
-        if (shipment == null) return NotFound("Shipment not found.");
-        return Ok(shipment);
-    }
+        // Constructor: Inject de service die alle shipment-logica regelt
+        public ShipmentController(ShipmentService shipmentService)
+        {
+            _shipmentService = shipmentService;
+        }
 
-    [HttpGet]
-    public async Task<ActionResult<List<Shipment>>> GetShipments()
-    {
-        return await _shipmentService.GetShipmentswithdetails();
-    }
+        [HttpGet]
+        public async Task<ActionResult<List<object>>> GetAllShipmentsWithItems(int page = 0)
+        {
+            var shipments = await _shipmentService.GetAllShipmentsWithItems();
+            var paginatedshipments = shipments.Skip(page * 100).Take(100).ToList();
+            return Ok(paginatedshipments);
+        }
 
-    [HttpPost]
-    public async Task<ActionResult<string>> AddShipment([FromBody] ShipmentRequest shipmentRequest)
-    {
-        var result = await _shipmentService.AddShipment(shipmentRequest);
-        return Ok(result);
-    }
+        // GET: api/v1/shipment/Orderdetails/{id}
+        // Haal een shipment op met alle orders en hun details
+        [HttpGet("Orderdetails/{id}")]
+        public async Task<ActionResult<Shipment>> GetShipmentByIdWithOrders(int id)
+        {
+            var shipment = await _shipmentService.GetShipmentByIdWithOrderDetails(id);
 
-    [HttpPut("{id}")]
-    public async Task<ActionResult<string>> UpdateShipment(int id, [FromBody] ShipmentRequest shipmentRequest)
-    {
-        var result = await _shipmentService.UpdateShipment(id, shipmentRequest);
-        return Ok(result);
-    }
+            if (shipment == null)
+            {
+                return NotFound($"Shipment met ID {id} niet gevonden."); // 404 als de shipment er niet is
+            }
+            return Ok(shipment); //succes
+        }
 
-    [HttpDelete("{id}")]
-    public async Task<ActionResult<string>> RemoveShipment(int id)
-    {
-        var result = await _shipmentService.RemoveShipment(id);
-        return Ok(result);
-    }
+        // GET: api/v1/shipment/{id}
+        // Haal alleen de items op voor een specifieke shipment
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Shipment>> GetShipmentByIdItems(int id)
+        {
+            var shipment = await _shipmentService.GetShipmentItems(id);
 
-    [HttpGet("date-range")]
-    public async Task<ActionResult<List<Shipment>>> GetShipmentsByShipmentDateRange([FromQuery] DateTime startDate, [FromQuery] DateTime endDate)
-    {
-        var shipments = await _shipmentService.GetShipmentsByShipmentDateRange(startDate, endDate);
-        return Ok(shipments);
-    }
-}
+            if (shipment == null)
+            {
+                return NotFound($"Shipment met ID {id} niet gevonden."); // 404 als de shipment er niet is
+            }
+            return Ok(shipment); //succes
+        }
 
+        // POST: api/v1/shipment
+        // Maak een nieuwe shipment aan
+        [HttpPost]
+        public async Task<IActionResult> CreateShipment([FromBody] Shipment shipment)
+        {
+            if (shipment == null)
+            {
+                return BadRequest("Shipmentgegevens zijn verplicht."); // 400 als er geen data is
+            }
+            var createdShipment = await _shipmentService.CreateShipment(shipment);
+            return CreatedAtAction(nameof(GetShipmentByIdWithOrders), new { id = createdShipment.Id }, createdShipment); // 201 met de aangemaakte shipment
+        }
+
+        // PUT: api/v1/shipment/{shipmentId}/assign-orders
+        // Wijs een lijst van orders toe aan een shipment
+        [HttpPut("{shipmentId}/assign-orders")]
+        public async Task<IActionResult> AssignOrdersToShipment(int shipmentId, [FromBody] List<int> orderIds)
+        {
+            if (orderIds == null || !orderIds.Any())
+            {
+                return BadRequest("Order-IDs zijn verplicht."); // 400 als er geen order-IDs zijn
+            }
+
+            try
+            {
+                var result = await _shipmentService.AssignOrdersToShipment(shipmentId, orderIds);
+
+                if (!result)
+                {
+                    return NotFound($"Shipment met ID {shipmentId} niet gevonden of één of meer orders bestaan niet."); // 404 als de shipment of orders niet bestaan
+                }
+
+                return Ok($"Orders succesvol toegewezen aan shipment {shipmentId}."); // Alles gelukt
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Interne serverfout: {ex.Message}"); // 500 als er iets misgaat
+            }
+        }
+
+        // PUT: api/v1/shipment/{shipmentId}/orders
+        // Werk de lijst van orders in een shipment bij
+        [HttpPut("{shipmentId}/orders")]
+        public async Task<IActionResult> UpdateOrdersInShipment(int shipmentId, [FromBody] List<int> orderIds)
+        {
+            if (orderIds == null || !orderIds.Any())
+            {
+                return BadRequest("Order-IDs zijn verplicht."); // 400 als er geen order-IDs zijn
+            }
+
+            try
+            {
+                var result = await _shipmentService.UpdateOrdersInShipment(shipmentId, orderIds);
+                if (!result)
+                {
+                    return NotFound($"Shipment met ID {shipmentId} niet gevonden."); // 404 als de shipment er niet is
+                }
+
+                return Ok(); // succes
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Interne serverfout: {ex.Message}"); // 500 bij fouten
+            }
+        }
+
+        // DELETE: api/v1/shipment/{id}
+        // Verwijder een shipment via het ID
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteShipment(int id)
+        {
+            var shipment = await _shipmentService.DeleteShipment(id);
+
+            if (!shipment)
+            {
+                return NotFound($"Shipment met ID {id} bestaat niet."); // 404 als de shipment niet bestaat
+            }
+            return Ok($"Shipment met ID {id} succesvol verwijderd."); // Alles gelukt
+        }
+    }
 }

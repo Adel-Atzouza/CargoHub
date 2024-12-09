@@ -25,7 +25,6 @@ namespace CargoHub
         public DbSet<Client> Clients { get; set; }
         public DbSet<APIKey> APIKeys { get; set; }
 
-
         // Override SaveChangesAsync to handle timestamps
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {

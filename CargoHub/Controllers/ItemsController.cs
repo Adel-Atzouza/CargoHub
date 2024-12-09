@@ -37,14 +37,11 @@ namespace CargoHub.Controllers
         {
             // Fetch all items from the service
             var items = await _itemsService.GetAllItems();
-
-            // If no items are found, return NotFound (404)
             if (items == null || items.Count == 0)
             {
                 return NotFound("No items found.");
             }
 
-            // Return the list of items with a 200 OK response
             return Ok(items);
         }
 
@@ -54,15 +51,12 @@ namespace CargoHub.Controllers
         {
             // Fetch the item from the service
             var item = await _itemsService.GetItem(uid);
-
-            // If no item is found, return a 404 Not Found response
             if (item == null)
             {
                 return NotFound("No item found with the provided UID.");
             }
 
-            // If the item is found, return it with a 200 OK response
-            return Ok(item);  // Ok() will wrap the item in an HTTP 200 response
+            return Ok(item);
         }
 
         [HttpPost]

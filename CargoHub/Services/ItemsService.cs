@@ -24,12 +24,15 @@ namespace CargoHub.Services
         public async Task<Item> GetItem(string uid)
         {
             return await _context.Items
-                .Include(i => i.ItemLine)
-                .Include(i => i.ItemGroup)
-                .Include(i => i.ItemType)
+                .Include(i => i.ItemType)  // Include the ItemType data
                 .FirstOrDefaultAsync(i => i.Uid == uid);
         }
 
+
+        // public async Task<Item> GetItem(string uid)
+        // {
+        //     return await _context.Items.FirstOrDefaultAsync(item => item.Uid == uid);
+        // }
 
         public async Task<Item> PostItems(Item newItem)
         {

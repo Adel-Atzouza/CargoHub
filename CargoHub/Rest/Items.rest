@@ -9,7 +9,7 @@ POST http://localhost:3000/Items
 Content-Type: application/json
 
 {
-  "uid": "P000011",
+  "uid": "P000001",
   "code": "ABC123",
   "description": "Sample item",
   "short_description": "Sample short description",

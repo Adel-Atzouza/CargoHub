@@ -1,3 +1,4 @@
+// using CargoHub.Controllers;
 using CargoHub.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -17,6 +18,7 @@ namespace CargoHub
         public DbSet<Order> Orders { get; set; }
         public DbSet<Shipment> Shipments { get; set; }
         public DbSet<Location> Locations { get; set; }
+        public DbSet<ItemType> ItemTypes { get; set; }
         public DbSet<Item> Items { get; set; }
         public DbSet<OrderItem> OrderItems { get; set; }
         public DbSet<Inventory> Inventory { get; set; }
@@ -86,4 +88,6 @@ namespace CargoHub
 
         // Constructor accepting DbContextOptions
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
-}}
+    }
+}
+

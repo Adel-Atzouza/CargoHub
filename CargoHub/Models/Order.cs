@@ -7,7 +7,7 @@ public class Order : BaseModel
 {
     public int Id { get; set; }
     public int SourceId { get; set; }
-    public DateTime OrderDate { get; set; }
+    public DateTime?  OrderDate { get; set; }
     public DateTime RequestDate { get; set; }
     public string? Reference { get; set; }
     public string? ExtrReference { get; set; }
@@ -15,8 +15,6 @@ public class Order : BaseModel
     public string? Notes { get; set; }
     public string? ShippingNotes { get; set; }
     public string? PickingNotes { get; set; }
-
-
     public int? WarehouseId { get; set; }
     [JsonIgnore]
     public Warehouse? Warehouse {get; set;}
@@ -44,7 +42,7 @@ public class OrderWithItemsDTO
 {
     public int Id { get; set; }
     public int SourceId { get; set; }
-    public DateTime OrderDate { get; set; }
+    public DateTime? OrderDate { get; set; }
     public DateTime RequestDate { get; set; }
     public string Reference { get; set; }
     public string? ReferenceExtra { get; set; }

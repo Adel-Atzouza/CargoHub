@@ -10,7 +10,7 @@ public class Shipment : BaseModel{
 
     public int Id {get; set;}
     public int SourceId {get; set;}
-    public DateTime Orderdate {get; set;}
+    public DateTime? Orderdate {get; set;}
     public DateTime RequestDate { get; set; }
     public DateTime ShipmentDate { get; set; }
     public string? ShipmentType { get; set; }
@@ -50,7 +50,7 @@ public class Shipment : BaseModel{
     public class OrderDTO
     {
         public int Id { get; set; }
-        public DateTime OrderDate { get; set; }
+        public DateTime? OrderDate { get; set; }
         public DateTime RequestDate { get; set; }
         public string Reference { get; set; }
         public string OrderStatus { get; set; }

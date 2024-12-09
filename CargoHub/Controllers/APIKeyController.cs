@@ -30,7 +30,7 @@ namespace CargoHub.Controllers
 
 
             var apiKeys = await query
-                .Where(k => !k.IsKeyDisabled)
+                .Where(k => k.IsActive)
                 .Take(100)
                 .ToListAsync();
 
@@ -45,7 +45,7 @@ namespace CargoHub.Controllers
             IQueryable<APIKey> query = _dbContext.APIKeys;
 
             var apiKeyRecord = await query
-                .Where(k => k.Id == id && !k.IsKeyDisabled)
+                .Where(k => k.Id == id && k.IsActive)
                 .FirstOrDefaultAsync();
 
             if (apiKeyRecord == null)
@@ -65,7 +65,7 @@ namespace CargoHub.Controllers
         [HttpPost("generate-key")]
         public async Task<IActionResult> GenerateApiKey([FromBody] APIKeyDTO request)
         {
-            if (request == null || !Enum.IsDefined(typeof(UserRole), request.Role))
+            if (request == null || !Enum.IsDefined(typeof(RolesEnum.Roles), request.Role))
             {
                 return BadRequest("Invalid or missing role specified.");
             }
@@ -74,12 +74,12 @@ namespace CargoHub.Controllers
 
             var apiKeyModel = new APIKey
             {
-                ApiKey = HashKey(rawApiKey),
-                Role = request.Role,
+                HashedApiKey = HashKey(rawApiKey),
+                UserRole = request.Role,
                 CreationDate = DateTime.UtcNow,
-                ExpiracyDate = DateTime.UtcNow.AddYears(1),
-                KeyLastUsed = DateTime.MinValue,
-                IsKeyDisabled = false
+                ExpiryDate = DateTime.UtcNow.AddYears(1),
+                LastUsed = DateTime.MinValue,
+                IsActive = true
             };
 
             _dbContext.APIKeys.Add(apiKeyModel);

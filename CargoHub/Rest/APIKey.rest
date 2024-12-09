@@ -4,7 +4,7 @@
 GET {{baseUrl}}
 
 ###
-GET {{baseUrl}}/1
+GET {{baseUrl}}/12
 
 ###
 POST {{baseUrl}}/generate-key

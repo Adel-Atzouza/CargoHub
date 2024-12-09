@@ -11,6 +11,8 @@ namespace CargoHub.Models
         //Hashed API key, we don't want the real key unprotected in the database, due to potential hacker attacks
         public string HashedApiKey { get; set; }
 
+        public DateTime CreationDate { get; set; }
+
         //We don't want typos, we want specific roles, therefor we use an enum.
         public RolesEnum.Roles UserRole { get; set; }
 
@@ -27,11 +29,6 @@ namespace CargoHub.Models
 
     public class APIKeyDTO : BaseModel
     {
-        public UserRole Role { get; set; }
-    }
-
-    public class APIKeyDTO : BaseModel
-    {
-        public UserRole Role { get; set; }
+        public RolesEnum.Roles Role { get; set; }
     }
 }

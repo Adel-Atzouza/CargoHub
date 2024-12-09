@@ -104,9 +104,9 @@ namespace CargoHub.Tests
 
 
         [TestMethod]
-        public async Task UpdateItemsInOrder_ShouldUpdateExistingItems()
+        public async Task UpdateOrder_ShouldUpdateOrderFieldsAndItems()
         {
-            // Arrange: Voeg een order met items en voorraad toe
+            // Arrange: Voeg een bestaande order met items en voorraad toe
             var order = new Order
             {
                 Reference = "Test Order",
@@ -123,97 +123,83 @@ namespace CargoHub.Tests
             _dbContext.Items.AddRange(new List<Item>
             {
                 new Item { Uid = "ITEM001", Description = "Test Item 1" },
-                new Item { Uid = "ITEM002", Description = "Test Item 2" }
+                new Item { Uid = "ITEM002", Description = "Test Item 2" },
+                new Item { Uid = "ITEM003", Description = "Test Item 3" }
             });
 
             _dbContext.Inventory.AddRange(new List<Inventory>
             {
                 new Inventory { ItemId = "ITEM001", TotalAllocated = 2, TotalAvailable = 8, Description = "Inventory for ITEM001", ItemReference = "REF001" },
-                new Inventory { ItemId = "ITEM002", TotalAllocated = 1, TotalAvailable = 4, Description = "Inventory for ITEM002", ItemReference = "REF002" }
+                new Inventory { ItemId = "ITEM002", TotalAllocated = 1, TotalAvailable = 4, Description = "Inventory for ITEM002", ItemReference = "REF002" },
+                new Inventory { ItemId = "ITEM003", TotalAllocated = 0, TotalAvailable = 10, Description = "Inventory for ITEM003", ItemReference = "REF003" }
             });
 
             await _dbContext.SaveChangesAsync();
 
-            var updatedItems = new List<ItemDTO>
+            var updatedOrderDto = new OrderWithItemsDTO
             {
-                new ItemDTO { ItemId = "ITEM001", Amount = 5 },
-                new ItemDTO { ItemId = "ITEM002", Amount = 3 }
+                SourceId = 2,
+                OrderDate = DateTime.UtcNow,
+                RequestDate = DateTime.UtcNow.AddDays(1),
+                Reference = "Updated Test Order",
+                ReferenceExtra = "Extra Reference",
+                OrderStatus = "Updated",
+                Notes = "Updated Notes",
+                ShippingNotes = "Updated Shipping Notes",
+                PickingNotes = "Updated Picking Notes",
+                WarehouseId = null,
+                ShipTo = null,
+                BillTo = null,
+                ShipmentId = null,
+                TotalAmount = 250.0m,
+                TotalDiscount = 20.0m,
+                TotalTax = 10.0m,
+                TotalSurcharge = 5.0m,
+                Items = new List<ItemDTO>
+                {
+                    new ItemDTO { ItemId = "ITEM001", Amount = 5 },
+                    new ItemDTO { ItemId = "ITEM002", Amount = 3 },
+                    new ItemDTO { ItemId = "ITEM003", Amount = 4 } // Nieuw item toevoegen
+                }
             };
 
-            // Act: Roep de methode aan
-            var result = await _orderService.UpdateItemsInOrder(order.Id, updatedItems);
+            // Act: Roep de UpdateOrder-methode aan
+            var result = await _orderService.UpdateOrder(order.Id, updatedOrderDto);
 
             // Assert: Controleer of de return message correct is
             Assert.AreEqual($"Order met ID {order.Id} is succesvol bijgewerkt.", result);
 
-            // Controleer dat de hoeveelheden correct zijn bijgewerkt
+            // Controleer dat de ordervelden zijn bijgewerkt
             var updatedOrder = await _dbContext.Orders.Include(o => o.OrderItems).FirstOrDefaultAsync(o => o.Id == order.Id);
             Assert.IsNotNull(updatedOrder);
-            Assert.AreEqual(2, updatedOrder.OrderItems.Count);
+            Assert.AreEqual(2, updatedOrder.SourceId);
+            Assert.AreEqual("Updated Test Order", updatedOrder.Reference);
+            Assert.AreEqual("Extra Reference", updatedOrder.ExtrReference);
+            Assert.AreEqual("Updated", updatedOrder.OrderStatus);
+            Assert.AreEqual("Updated Notes", updatedOrder.Notes);
+            Assert.AreEqual("Updated Shipping Notes", updatedOrder.ShippingNotes);
+            Assert.AreEqual("Updated Picking Notes", updatedOrder.PickingNotes);
+            Assert.AreEqual(250.0m, updatedOrder.TotalAmount);
+            Assert.AreEqual(20.0m, updatedOrder.TotalDiscount);
+            Assert.AreEqual(10.0m, updatedOrder.TotalTax);
+            Assert.AreEqual(5.0m, updatedOrder.TotalSurcharge);
+
+            // Controleer dat de items correct zijn bijgewerkt
+            Assert.AreEqual(3, updatedOrder.OrderItems.Count);
             Assert.AreEqual(5, updatedOrder.OrderItems.First(i => i.ItemUid == "ITEM001").Amount);
             Assert.AreEqual(3, updatedOrder.OrderItems.First(i => i.ItemUid == "ITEM002").Amount);
+            Assert.AreEqual(4, updatedOrder.OrderItems.First(i => i.ItemUid == "ITEM003").Amount);
 
             // Controleer dat de voorraad correct is aangepast
             var inventoryItem1 = await _dbContext.Inventory.FirstOrDefaultAsync(i => i.ItemId == "ITEM001");
             var inventoryItem2 = await _dbContext.Inventory.FirstOrDefaultAsync(i => i.ItemId == "ITEM002");
+            var inventoryItem3 = await _dbContext.Inventory.FirstOrDefaultAsync(i => i.ItemId == "ITEM003");
 
             Assert.AreEqual(5, inventoryItem1.TotalAllocated);
             Assert.AreEqual(3, inventoryItem2.TotalAllocated);
+            Assert.AreEqual(4, inventoryItem3.TotalAllocated);
         }
 
-
-        [TestMethod]
-        public async Task UpdateItemsInOrder_ShouldAddNewItems()
-        {
-            // Arrange: Voeg een order toe zonder bepaalde items
-            var order = new Order
-            {
-                Reference = "Test Order",
-                TotalAmount = 200.0m,
-                OrderItems = new List<OrderItem>
-                {
-                    new OrderItem { ItemUid = "ITEM001", Amount = 2 }
-                }
-            };
-
-            _dbContext.Orders.Add(order);
-
-            _dbContext.Items.Add(new Item { Uid = "ITEM003", Description = "Test Item 3" });
-
-            _dbContext.Inventory.Add(new Inventory
-            {
-                ItemId = "ITEM003",
-                TotalAllocated = 0,
-                TotalAvailable = 10,
-                Locations = new List<int>(),
-                Description = "Inventory for ITEM003",
-                ItemReference = "REF003"
-            });
-
-            await _dbContext.SaveChangesAsync();
-
-            var updatedItems = new List<ItemDTO>
-            {
-                new ItemDTO { ItemId = "ITEM003", Amount = 5 }
-            };
-
-            // Act: Roep de methode aan
-            var result = await _orderService.UpdateItemsInOrder(order.Id, updatedItems);
-
-            // Assert
-            Assert.AreEqual($"Order met ID {order.Id} is succesvol bijgewerkt.", result);
-
-            // Controleer of het nieuwe item is toegevoegd
-            var updatedOrder = await _dbContext.Orders.Include(o => o.OrderItems).FirstOrDefaultAsync(o => o.Id == order.Id);
-            Assert.IsNotNull(updatedOrder);
-            Assert.AreEqual(2, updatedOrder.OrderItems.Count);
-            Assert.IsTrue(updatedOrder.OrderItems.Any(i => i.ItemUid == "ITEM003"));
-            Assert.AreEqual(5, updatedOrder.OrderItems.First(i => i.ItemUid == "ITEM003").Amount);
-
-            // Controleer dat de voorraad correct is aangepast
-            var inventoryItem = await _dbContext.Inventory.FirstOrDefaultAsync(i => i.ItemId == "ITEM003");
-            Assert.AreEqual(5, inventoryItem.TotalAllocated);
-        }
 
 
 

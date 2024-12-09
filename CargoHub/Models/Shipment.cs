@@ -27,7 +27,7 @@ public class Shipment : BaseModel{
 
 }
 
-    public class ShipmentDTO
+public class ShipmentDTO
     {
         public int Id { get; set; }
         public DateTime ShipmentDate { get; set; }

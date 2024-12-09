@@ -50,7 +50,7 @@ namespace CargoHub.Controllers
         [HttpGet("client/{clientId}")]
         public async Task<ActionResult<List<Order>>> GetOrdersForClient(int clientId)
         {
-            var orders = await _orderService.GetOrdersCLient(clientId);
+            var orders = await _orderService.GetOrdersForClient(clientId);
 
             if (orders == null || orders.Count == 0)
             {
@@ -137,6 +137,25 @@ namespace CargoHub.Controllers
                 return StatusCode(500, $"Interne serverfout: {ex.Message}");
             }
         }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateOrder(int id, [FromBody] OrderWithItemsDTO updatedOrderDto)
+        {
+            if (updatedOrderDto == null)
+            {
+                return BadRequest("De ordergegevens zijn verplicht.");
+            }
+
+            var result = await _orderService.UpdateOrder(id, updatedOrderDto);
+
+            if (result.StartsWith("Order met ID"))
+            {
+                return Ok(result);
+            }
+
+            return BadRequest(result);
+        }
+
 
 
         // DELETE: api/v1/orders/{id}

@@ -208,6 +208,8 @@ namespace CargoHub.Services
             return true;
         }
 
+
+
         // Update welke orders aan een zending gekoppeld zijn
         public async Task<bool> UpdateOrdersInShipment(int shipmentId, List<int> orderIds)
         {
@@ -248,6 +250,12 @@ namespace CargoHub.Services
                 return false; // Zending bestaat niet
             }
 
+            var ordersid = await _context.Orders.Where(o => o.ShipmentId == id).ToListAsync();
+            foreach(var order in ordersid)
+            {
+                order.ShipmentId = null; // Haal de koppeling met de zending weg
+                order.OrderStatus = "Scheduled"; // Update de status
+            }
             _context.Shipments.Remove(shipment); // Verwijder de zending
             await _context.SaveChangesAsync(); // Sla de wijzigingen op
             return true; // Retourneer succes

@@ -48,7 +48,7 @@ Content-Type: application/json
 ApiKey: Admin
 
 ### Get a shipment by ID with only items
-GET http://localhost:3000/api/v1/Shipments/4
+GET http://localhost:3000/api/v1/Shipments/5
 Content-Type: application/json
 ApiKey: Admin
 

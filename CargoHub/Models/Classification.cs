@@ -1,6 +1,6 @@
 namespace CargoHub.Models
 {
-    public class HazardClassification
+    public class Classification
     {
         public int Id { get; set; }
         public string Name { get; set; }

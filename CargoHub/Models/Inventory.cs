@@ -6,8 +6,6 @@ namespace CargoHub.Models
 {
     public class Inventory : BaseModel
     {
-        [JsonPropertyName("id")]
-        public int Id { get; set; }
 
         [JsonPropertyName("item_id")]
         public string? ItemId { get; set; }

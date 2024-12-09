@@ -6,9 +6,13 @@ namespace CargoHub.Models
     public class Item : BaseModel
     {
         [Key]
+        [JsonPropertyName("uid")]
+
         public string? Uid { get; set; }
+        [JsonPropertyName("code")]
 
         public string? Code { get; set; }
+        [JsonPropertyName("description")]
         public string? Description { get; set; }
 
         [JsonPropertyName("short_description")]

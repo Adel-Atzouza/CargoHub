@@ -5,9 +5,6 @@ namespace CargoHub.Models
 {
     public class Client : BaseModel
     {
-        [JsonPropertyName("id")]
-        public int? Id { get; set; }
-
         [JsonPropertyName("name")]
         public string? Name { get; set; }
 

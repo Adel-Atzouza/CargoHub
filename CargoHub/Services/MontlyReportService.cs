@@ -27,7 +27,7 @@ namespace CargoHub.Services
 
             // Shipments verzonden in de opgegeven maand
             var shipments = await _context.Shipments
-                .Where(s => s.ShipmentDate.Year == year && s.ShipmentDate.Month == month)
+                .Where(s => s.CreatedAt.Year == year && s.CreatedAt.Month == month)
                 .ToListAsync();
 
             Console.WriteLine($"Filtered Shipments: {shipments.Count}");

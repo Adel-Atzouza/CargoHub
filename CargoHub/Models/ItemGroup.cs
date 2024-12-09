@@ -1,11 +1,14 @@
+using System.Text.Json.Serialization;
+
 namespace CargoHub.Models
 {
     public class ItemGroup : BaseModel
     {
-        public int Id { get; set; }
+        [JsonPropertyName("name")]
         public string? Name { get; set; }
-        public string? Description { get; set; }
 
-        // public ICollection<ItemLine> ItemLines { get; set; } = new List<ItemLine>();
+        [JsonPropertyName("description")]
+
+        public string? Description { get; set; }
     }
 }

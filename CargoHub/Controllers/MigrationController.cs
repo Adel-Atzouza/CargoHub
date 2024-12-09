@@ -16,7 +16,7 @@ namespace CargoHub.Controllers
         [HttpPost()]
         public async Task<IActionResult> Migrate([FromQuery] string FolderName)
         {
-            var files = MigrationService.ReadData(FolderName);
+            var files = MigrationService.ReadDataFolder(FolderName);
             return Ok(files);
         }
     }

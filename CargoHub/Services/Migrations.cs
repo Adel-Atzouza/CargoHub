@@ -1,5 +1,8 @@
 using CargoHub.Models;
-using System.IO;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using System.Text.Json;
+
 
 namespace CargoHub.Services
 {
@@ -11,18 +14,53 @@ namespace CargoHub.Services
             _context = context;
         }
 
-        public List<string> ReadData(string Folder)
+        public List<string> ReadDataFolder(string Folder)
         {
             string Path = $"../{Folder}";
             var files = Directory.GetFiles(Path);
-            List<string> FileName = new();
+            List<string> FilesNames = new();
 
             foreach (var file in files)
             {
-                FileName.Add(System.IO.Path.GetFileName(file));
+                if (file.Contains("item_groups"))
+                {
+                    try
+                    {
+                        TransferData<ItemGroup>(file);
+
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine(ex.Message);
+                    }
+
+                }
+            }
+            return FilesNames;
+        }
+
+        public void TransferData<T>(string DataFile) where T : BaseModel
+        {
+            var options = new JsonSerializerOptions();
+            options.Converters.Add(new CustomDateTimeConverter());
+            try
+            {
+                List<T>? Models = JsonSerializer.Deserialize<List<T>>(File.ReadAllText(DataFile), options);
+                foreach (var model in Models)
+                {
+                    Console.WriteLine($"===={model.Id}====");
+                }
 
             }
-            return FileName;
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error deserializing : {ex.Message}");
+            }
+
+
+
         }
+
+
     }
 }

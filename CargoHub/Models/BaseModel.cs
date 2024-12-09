@@ -4,6 +4,8 @@ namespace CargoHub.Models
 {
     public class BaseModel
     {
+        [JsonPropertyName("id")]
+        public int Id { get; set; }
         [JsonPropertyName("created_at")]
         public DateTime CreatedAt { get; set; }
 

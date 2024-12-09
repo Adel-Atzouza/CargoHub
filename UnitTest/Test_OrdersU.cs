@@ -11,15 +11,14 @@ namespace CargoHub.Tests
     [TestClass]
     public class OrderServiceTests
     {
-        private OrderService _orderService; // Service under test
-        private AppDbContext _dbContext; // In-memory database context for testing
+        private OrderService _orderService;
+        private AppDbContext _dbContext;
 
-        [TestInitialize] // This method runs before each test
+        [TestInitialize]
         public void Setup()
         {
-            // Configure an in-memory database for testing purposes
             var options = new DbContextOptionsBuilder<AppDbContext>()
-                .UseInMemoryDatabase(databaseName: "TestDatabase") // Create a new in-memory database for each test
+                .UseInMemoryDatabase(databaseName: "TestDatabase")
                 .Options;
 
             _dbContext = new AppDbContext(options); // Initialize the database context
@@ -29,9 +28,8 @@ namespace CargoHub.Tests
         [TestCleanup]
         public void Cleanup()
         {
-            // Reset the in-memory database after each test to prevent data leakage
             _dbContext.Database.EnsureDeleted();
-            _dbContext.Dispose(); // Dispose of the context to release resources
+            _dbContext.Dispose();
         }
 
         [TestMethod]

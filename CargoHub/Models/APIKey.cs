@@ -12,8 +12,14 @@ namespace CargoHub.Models
         public int Id { get; set; }
         public string ApiKey { get; set; }
         public UserRole Role { get; set; }
+        public DateTime CreationDate { get; set; }
         public DateTime ExpiracyDate { get; set; }
         public DateTime KeyLastUsed { get; set; }
         public bool IsKeyDisabled { get; set; }
+    }
+
+    public class APIKeyDTO : BaseModel
+    {
+        public UserRole Role { get; set; }
     }
 }

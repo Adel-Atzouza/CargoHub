@@ -39,7 +39,7 @@ namespace CargoHub.Tests
             // Arrange: Voeg eerst de items toe aan de database
             _dbContext.Items.Add(new Item { Uid = "ITEM001", Description = "Test Item 1", UnitOrderQuantity = 100 });
             _dbContext.Items.Add(new Item { Uid = "ITEM002", Description = "Test Item 2", UnitOrderQuantity = 100 });
-            await _dbContext.SaveChangesAsync(); // Zorg ervoor dat de items eerst worden opgeslagen
+            await _dbContext.SaveChangesAsync();
 
             // Voeg een zending met orders en orderitems toe
             _dbContext.Shipments.Add(new Shipment
@@ -61,12 +61,12 @@ namespace CargoHub.Tests
                     }
                 }
             });
-            await _dbContext.SaveChangesAsync(); // Sla de zending met gekoppelde data op
+            await _dbContext.SaveChangesAsync();
 
-            // Act: Roep de methode aan
+            // Act:
             var result = await _shipmentService.GetAllShipmentsWithItems();
 
-            // Assert: Controleer of de data correct is geretourneerd
+            // Assert
             Assert.IsNotNull(result);
             Assert.AreEqual(1, result.Count); // Controleer dat er één zending is
             Assert.AreEqual("Standard", result[0].ShipmentType); // Controleer het type
@@ -163,7 +163,7 @@ namespace CargoHub.Tests
         [TestMethod]
         public async Task DeleteShipment_ShouldRemoveShipmentAndUnlinkOrders()
         {
-            // Arrange: Voeg een zending met gekoppelde orders toe
+            // Arrange
             var shipment = new Shipment
             {
                 ShipmentDate = DateTime.UtcNow,
@@ -179,10 +179,10 @@ namespace CargoHub.Tests
             _dbContext.Shipments.Add(shipment);
             await _dbContext.SaveChangesAsync();
 
-            // Act: Verwijder de zending
+            // Act
             var result = await _shipmentService.DeleteShipment(shipment.Id);
 
-            // Assert: Controleer of de zending is verwijderd
+            // Assert
             Assert.IsTrue(result);
             Assert.AreEqual(0, _dbContext.Shipments.Count());
 

@@ -10,33 +10,32 @@ namespace CargoHub.Tests
     [TestClass]
     public class LocationServiceTests
     {
-        private LocationService _locationService; // The service under test
-        private AppDbContext _dbContext; // In-memory database context for testing
+        private LocationService _locationService; 
+        private AppDbContext _dbContext;
 
         [TestInitialize] // Setup method that runs before each test
         public void Setup()
         {
-            // Configure the in-memory database for testing
+
             var options = new DbContextOptionsBuilder<AppDbContext>()
                 .UseInMemoryDatabase(databaseName: "TestDatabase") // Create an in-memory database
                 .Options;
 
-            _dbContext = new AppDbContext(options); // Initialize the database context
-            _locationService = new LocationService(_dbContext); // Initialize the service with the context
+            _dbContext = new AppDbContext(options);
+            _locationService = new LocationService(_dbContext);
         }
 
         [TestCleanup]
         public void Cleanup()
         {
-            // Ensure the in-memory database is deleted after each test
             _dbContext.Database.EnsureDeleted();
-            _dbContext.Dispose(); // Dispose the database context to release resources
+            _dbContext.Dispose();
         }
 
         [TestMethod]
         public async Task GetAllLocations_ShouldReturnAllLocations()
         {
-            // Arrange: Add sample locations to the in-memory database
+            // Arrange
             _dbContext.Locations.AddRange(new List<Location>
             {
                 new Location { Name = "Location 1", Code = "LOC001" },
@@ -44,25 +43,25 @@ namespace CargoHub.Tests
             });
             await _dbContext.SaveChangesAsync(); // Save changes to the database
 
-            // Act: Call the service method to get all locations
+            // Act
             var result = await _locationService.GetAllLocations();
 
-            // Assert: Verify that the correct number of locations are returned
+            // Assert
             Assert.AreEqual(2, result.Count); // The result should contain 2 locations
         }
 
         [TestMethod]
         public async Task GetLocation_ShouldReturnCorrectLocation()
         {
-            // Arrange: Add a location to the in-memory database
+            // Arrange
             var location = new Location { Name = "Test Location", Code = "LOC001" };
             _dbContext.Locations.Add(location);
             await _dbContext.SaveChangesAsync(); // Save changes to the database
 
-            // Act: Call the service method to retrieve the location by ID
+            // Act
             var result = await _locationService.GetLocation(location.Id);
 
-            // Assert: Verify that the returned location matches the expected values
+            // Assert
             Assert.IsNotNull(result); // Ensure that the result is not null
             Assert.AreEqual("Test Location", result.Name); // Check if the name is correct
             Assert.AreEqual("LOC001", result.Code); // Check if the code is correct
@@ -71,27 +70,27 @@ namespace CargoHub.Tests
         [TestMethod]
         public async Task GetLocation_ShouldReturnNull_WhenLocationDoesNotExist()
         {
-            // Act: Try to retrieve a location with an invalid ID (999)
+            // Act
             var result = await _locationService.GetLocation(999);
 
-            // Assert: Verify that the result is null as the location does not exist
+            // Assert
             Assert.IsNull(result);
         }
 
         [TestMethod]
         public async Task AddLocation_ShouldAddLocationToDatabase()
         {
-            // Arrange: Create a new location to be added
+            // Arrange
             var newLocation = new Location
             {
                 Name = "New Location",
                 Code = "LOC001"
             };
 
-            // Act: Call the service method to add the location
+            // Act
             var result = await _locationService.AddLocation(newLocation);
 
-            // Assert: Verify that the location was successfully added
+            // Assert
             Assert.AreEqual("Locatie succesvol toegevoegd.", result); // Check for success message
 
             var locations = await _dbContext.Locations.ToListAsync(); // Retrieve all locations from the database
@@ -102,18 +101,18 @@ namespace CargoHub.Tests
         [TestMethod]
         public async Task AddLocation_ShouldReturnError_WhenWarehouseIdIsInvalid()
         {
-            // Arrange: Create a location with an invalid WarehouseId
+            // Arrange
             var newLocation = new Location
             {
                 Name = "Invalid Location",
                 Code = "LOC002",
-                WarehouseId = 999 // Invalid WarehouseId
+                WarehouseId = 999
             };
 
-            // Act: Call the service method to add the location
+            // Act
             var result = await _locationService.AddLocation(newLocation);
 
-            // Assert: Verify that the error message is returned due to invalid WarehouseId
+            // Assert
             Assert.AreEqual("Ongeldige WarehouseId opgegeven.", result);
 
             var locations = await _dbContext.Locations.ToListAsync(); // Retrieve all locations from the database
@@ -123,17 +122,17 @@ namespace CargoHub.Tests
         [TestMethod]
         public async Task UpdateLocation_ShouldUpdateExistingLocation()
         {
-            // Arrange: Add an initial location to the database
+            // Arrange
             var location = new Location { Name = "Old Name", Code = "LOC001" };
             _dbContext.Locations.Add(location);
             await _dbContext.SaveChangesAsync(); // Save changes to the database
 
             var updatedLocation = new Location { Name = "New Name", Code = "LOC001" };
 
-            // Act: Call the service method to update the location
+            // Act
             var result = await _locationService.UpdateLocation(location.Id, updatedLocation);
 
-            // Assert: Verify that the location was successfully updated
+            // Assert
             Assert.AreEqual("Locatie succesvol bijgewerkt.", result); // Check for success message
 
             var updated = await _dbContext.Locations.FindAsync(location.Id); // Retrieve the updated location
@@ -143,28 +142,28 @@ namespace CargoHub.Tests
         [TestMethod]
         public async Task UpdateLocation_ShouldReturnError_WhenLocationDoesNotExist()
         {
-            // Arrange: Create an updated location with a non-existent ID
+            // Arrange
             var updatedLocation = new Location { Name = "Non-existent Location", Code = "LOC001" };
 
-            // Act: Try to update a location that does not exist
+            // Act
             var result = await _locationService.UpdateLocation(999, updatedLocation);
 
-            // Assert: Verify that an error message is returned
+            // Assert
             Assert.AreEqual("Fout: Locatie niet gevonden.", result);
         }
 
         [TestMethod]
         public async Task RemoveLocation_ShouldDeleteLocation()
         {
-            // Arrange: Add a location to be deleted
+            // Arrange
             var location = new Location { Name = "Location to Delete", Code = "LOC003" };
             _dbContext.Locations.Add(location);
             await _dbContext.SaveChangesAsync(); // Save changes to the database
 
-            // Act: Call the service method to delete the location
+            // Act
             var result = await _locationService.RemoveLocation(location.Id);
 
-            // Assert: Verify that the location was successfully deleted
+            // Assert
             Assert.IsTrue(result); // The deletion should be successful
 
             var locations = await _dbContext.Locations.ToListAsync(); // Retrieve all locations from the database
@@ -174,10 +173,10 @@ namespace CargoHub.Tests
         [TestMethod]
         public async Task RemoveLocation_ShouldReturnFalse_WhenLocationDoesNotExist()
         {
-            // Act: Try to delete a location with an invalid ID (999)
+            // Act
             var result = await _locationService.RemoveLocation(999);
 
-            // Assert: Verify that the result is false since the location does not exist
+            // Assert
             Assert.IsFalse(result);
         }
     }

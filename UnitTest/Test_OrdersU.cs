@@ -21,8 +21,8 @@ namespace CargoHub.Tests
                 .UseInMemoryDatabase(databaseName: "TestDatabase")
                 .Options;
 
-            _dbContext = new AppDbContext(options); // Initialize the database context
-            _orderService = new OrderService(_dbContext); // Initialize the service with the context
+            _dbContext = new AppDbContext(options);
+            _orderService = new OrderService(_dbContext); 
         }
 
         [TestCleanup]
@@ -35,21 +35,20 @@ namespace CargoHub.Tests
         [TestMethod]
         public async Task CreateOrder_ShouldAddOrderToDatabase()
         {
-            // Arrange: Set up a new order to be created
+            // Arrange
             var newOrder = new Order
             {
                 Reference = "Test Order",
-                TotalAmount = 100.0m // Set total amount for the order
+                TotalAmount = 100.0m 
             };
 
-            // Act: Call the service to create the order with no items
+            // Act
             var result = await _orderService.CreateOrder(newOrder, new List<ItemDTO>());
 
-            // Assert: Verify that the order is created successfully
+            // Assert
             Assert.IsNotNull(result); // Ensure the result is not null
             Assert.AreEqual("Test Order", result.Reference); // Check that the order reference matches
 
-            // Verify that the order has been added to the database
             var ordersInDb = await _dbContext.Orders.ToListAsync();
             Assert.AreEqual(1, ordersInDb.Count); // Ensure there is exactly one order in the database
         }
@@ -57,13 +56,13 @@ namespace CargoHub.Tests
         [TestMethod]
         public async Task GetOrderWithItems_ShouldReturnCorrectOrder()
         {
-            // Arrange: Add items to the database
+            // Arrange
             _dbContext.Items.AddRange(new List<Item>
             {
                 new Item { Uid = "ITEM001", Code = "Code1", Description = "Item 1" },
                 new Item { Uid = "ITEM002", Code = "Code2", Description = "Item 2" }
             });
-            await _dbContext.SaveChangesAsync(); // Save items to the database
+            await _dbContext.SaveChangesAsync();
 
             // Add a new order with items to the database
             var newOrder = new Order
@@ -77,14 +76,14 @@ namespace CargoHub.Tests
                 }
             };
             _dbContext.Orders.Add(newOrder);
-            await _dbContext.SaveChangesAsync(); // Save the order to the database
+            await _dbContext.SaveChangesAsync();
 
             var orderId = newOrder.Id; // Get the ID of the newly created order
 
-            // Act: Retrieve the order with its items from the service
+            // Act
             var result = await _orderService.GetOrderWithItems(orderId);
 
-            // Assert: Verify that the returned order contains the correct data
+            // Assert
             Assert.IsNotNull(result); // Ensure the result is not null
             Assert.AreEqual("Test Order", result.Reference); // Verify the reference matches
             Assert.AreEqual(2, result.Items.Count); // Verify that the order contains 2 items
@@ -93,10 +92,10 @@ namespace CargoHub.Tests
         [TestMethod]
         public async Task GetOrderWithItems_ShouldReturnNull_WhenOrderDoesNotExist()
         {
-            // Act: Attempt to retrieve an order with an ID that doesn't exist
-            var result = await _orderService.GetOrderWithItems(999); // Use a non-existent ID
+            // Act
+            var result = await _orderService.GetOrderWithItems(999);
 
-            // Assert: Verify that the result is null, as the order doesn't exist
+            // Assert
             Assert.IsNull(result);
         }
 
@@ -104,7 +103,7 @@ namespace CargoHub.Tests
         [TestMethod]
         public async Task UpdateOrder_ShouldUpdateOrderFieldsAndItems()
         {
-            // Arrange: Voeg een bestaande order met items en voorraad toe
+            // Arrange
             var order = new Order
             {
                 Reference = "Test Order",
@@ -157,14 +156,14 @@ namespace CargoHub.Tests
                 {
                     new ItemDTO { ItemId = "ITEM001", Amount = 5 },
                     new ItemDTO { ItemId = "ITEM002", Amount = 3 },
-                    new ItemDTO { ItemId = "ITEM003", Amount = 4 } // Nieuw item toevoegen
+                    new ItemDTO { ItemId = "ITEM003", Amount = 4 }
                 }
             };
 
-            // Act: Roep de UpdateOrder-methode aan
+            // Act
             var result = await _orderService.UpdateOrder(order.Id, updatedOrderDto);
 
-            // Assert: Controleer of de return message correct is
+            // Assert
             Assert.AreEqual($"Order met ID {order.Id} is succesvol bijgewerkt.", result);
 
             // Controleer dat de ordervelden zijn bijgewerkt
@@ -204,25 +203,24 @@ namespace CargoHub.Tests
         [TestMethod]
         public async Task DeleteOrder_ShouldRemoveOrder_WhenOrderExists()
         {
-            // Arrange: Add an order to the database that will be deleted
+            // Arrange
             var newOrder = new Order
             {
                 Reference = "Order to Delete",
-                TotalAmount = 200.0m // Set the total amount for the order
+                TotalAmount = 200.0m 
             };
 
             _dbContext.Orders.Add(newOrder);
-            await _dbContext.SaveChangesAsync(); // Save the order to the database
+            await _dbContext.SaveChangesAsync();
 
-            var orderId = newOrder.Id; // Get the ID of the order to be deleted
+            var orderId = newOrder.Id; 
 
-            // Act: Call the service to delete the order
+            // Act
             var result = await _orderService.DeleteOrder(orderId);
 
-            // Assert: Verify that the order was deleted
+            // Assert
             Assert.IsTrue(result); // The deletion should be successful
 
-            // Verify that the order has been removed from the database
             var orderInDb = await _dbContext.Orders.FindAsync(orderId);
             Assert.IsNull(orderInDb); // The order should no longer be in the database
         }
@@ -230,10 +228,10 @@ namespace CargoHub.Tests
         [TestMethod]
         public async Task DeleteOrder_ShouldReturnFalse_WhenOrderDoesNotExist()
         {
-            // Act: Attempt to delete an order with a non-existent ID
-            var result = await _orderService.DeleteOrder(999); // Use a non-existent ID
+            // Act
+            var result = await _orderService.DeleteOrder(999);
 
-            // Assert: Verify that the deletion fails and returns false
+            // Assert
             Assert.IsFalse(result);
         }
     }

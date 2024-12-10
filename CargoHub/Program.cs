@@ -7,6 +7,7 @@ builder.Services.AddControllers();
 builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlite("Datasource=CargoHub.db"));
 
 builder.Services.AddScoped<ClientService>();
+builder.Services.AddScoped<MigrationsService>();
 builder.Services.AddScoped<InventoryService>();
 builder.Services.AddScoped<ItemGroupsService>();
 builder.Services.AddScoped<ItemLinesService>();

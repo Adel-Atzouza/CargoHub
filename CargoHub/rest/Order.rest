@@ -1,11 +1,12 @@
-### Create a new order
+
+###
 POST http://localhost:3000/api/v1/orders
 Content-Type: application/json
-ApiKey: Admin
+ApiKey : Admin 
 
 {
   "sourceId": 1,
-  "orderDate": null,
+  "orderDate": "2024-11-18T13:39:16.5035533Z",
   "requestDate": "2024-11-19T13:39:16.5035533Z",
   "reference": "ORD123",
   "referenceExtra": "Urgent Delivery",
@@ -26,11 +27,11 @@ ApiKey: Admin
   "items": [
     {
       "itemId": "ITEM001",
-      "amount": 6
+      "amount": 3
     },
     {
       "itemId": "ITEM002",
-      "amount": 5
+      "amount": 1
     }
   ]
 }
@@ -40,33 +41,16 @@ GET http://localhost:3000/api/v1/orders?page=0
 Content-Type: application/json
 ApiKey: Admin
 
-### Get all orders for a specific client
+###
 GET http://localhost:3000/api/v1/orders/client/1
-Content-Type: application/json
-ApiKey: Admin
-
-### Get a specific order by ID
-GET http://localhost:3000/api/v1/orders/3
-Content-Type: application/json
-ApiKey: Admin
-
-### Update items in an existing order
-PUT http://localhost:3000/api/v1/orders/14/items
-Content-Type: application/json
-ApiKey: Admin
-
-[
-  {
-    "itemId": "ITEM001",
-    "amount": 10
-  },
-  {
-    "itemId": "ITEM003",
-    "amount": 4
-  }
-]
+ApiKey : Admin 
 
 ### Delete an order by ID
-DELETE http://localhost:3000/api/v1/orders/18
+DELETE http://localhost:3000/api/v1/orders/2
+ApiKey : Admin
 Content-Type: application/json
-ApiKey: Admin
+
+
+###
+GET http://localhost:3000/api/v1/orders/3
+ApiKey : Admin 

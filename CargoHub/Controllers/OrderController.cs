@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace CargoHub.Controllers
 {
-    [Route("api/v1/[controller]")]
+    [Route("api/v1/orders")]
     [ApiController]
     public class OrdersController : ControllerBase
     {
@@ -50,7 +50,7 @@ namespace CargoHub.Controllers
         [HttpGet("client/{clientId}")]
         public async Task<ActionResult<List<Order>>> GetOrdersForClient(int clientId)
         {
-            var orders = await _orderService.GetOrdersCLient(clientId);
+            var orders = await _orderService.GetOrdersForClient(clientId);
 
             if (orders == null || orders.Count == 0)
             {
@@ -108,6 +108,55 @@ namespace CargoHub.Controllers
                 return StatusCode(500, $"Interne serverfout: {ex.Message}");
             }
         }
+
+        // PUT: api/v1/orders/{id}/items
+        // Werk de items in een bestaande order bij
+        [HttpPut("{id}/items")]
+        public async Task<IActionResult> UpdateItemsInOrder(int id, [FromBody] List<ItemDTO> orderItems)
+        {
+            if (orderItems == null || orderItems.Count == 0)
+            {
+                return BadRequest("De lijst met items mag niet leeg zijn.");
+            }
+
+            try
+            {
+                // Laat de service de items in de order bijwerken
+                var result = await _orderService.UpdateItemsInOrder(id, orderItems);
+
+                if (result.StartsWith("Item met ID") || result.StartsWith("Order met ID") || result.StartsWith("Niet genoeg voorraad"))
+                {
+                    return BadRequest(result); // Fouten zoals ontbrekende items, orders of voorraadtekort
+                }
+
+                return Ok($"Order met ID {id} is succesvol bijgewerkt.");
+            }
+            catch (Exception ex)
+            {
+                // Als er een onverwachte fout optreedt
+                return StatusCode(500, $"Interne serverfout: {ex.Message}");
+            }
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateOrder(int id, [FromBody] OrderWithItemsDTO updatedOrderDto)
+        {
+            if (updatedOrderDto == null)
+            {
+                return BadRequest("De ordergegevens zijn verplicht.");
+            }
+
+            var result = await _orderService.UpdateOrder(id, updatedOrderDto);
+
+            if (result.StartsWith("Order met ID"))
+            {
+                return Ok(result);
+            }
+
+            return BadRequest(result);
+        }
+
+
 
         // DELETE: api/v1/orders/{id}
         // Verwijder een order via het ID

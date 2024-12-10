@@ -207,15 +207,19 @@ namespace CargoHub.Services
                 updatedShipmentDto.ShipmentStatus.Equals("delivered", StringComparison.OrdinalIgnoreCase) &&
                 !existingShipment.ShipmentStatus.Equals("delivered", StringComparison.OrdinalIgnoreCase))
             {
-                // Update de status van gekoppelde orders naar "delivered" en stel de DeliveryDate in
-                foreach (var order in existingShipment.orders)
-                {
-                    order.OrderStatus = "delivered";
-                    order.OrderDate = DateTime.UtcNow; // Stel de DeliveryDate in op het huidige moment
-                }
+                existingShipment.Orderdate = DateTime.UtcNow;
             }
 
-            // Stap 4: Update alleen de overige eigenschappen van de zending
+            // Stap 4: Check of de status verandert naar "pending" terwijl het op "transit" of "delivered" staat
+            if (!string.IsNullOrEmpty(updatedShipmentDto.ShipmentStatus) &&
+                updatedShipmentDto.ShipmentStatus.Equals("pending", StringComparison.OrdinalIgnoreCase) &&
+                (existingShipment.ShipmentStatus.Equals("transit", StringComparison.OrdinalIgnoreCase) ||
+                existingShipment.ShipmentStatus.Equals("delivered", StringComparison.OrdinalIgnoreCase)))
+            {
+                throw new InvalidOperationException("Cannot change shipment status to pending from transit or delivered.");
+            }
+
+            // Update de overige velden van de zending
             existingShipment.ShipmentType = updatedShipmentDto.ShipmentType;
             existingShipment.ShipmentStatus = updatedShipmentDto.ShipmentStatus;
             existingShipment.Notes = updatedShipmentDto.Notes;
@@ -228,10 +232,8 @@ namespace CargoHub.Services
             existingShipment.TotalPackageWeight = updatedShipmentDto.TotalPackageWeight;
             existingShipment.UpdatedAt = DateTime.UtcNow;
 
-            // Stap 5: Sla de wijzigingen op
             _context.Shipments.Update(existingShipment);
-            await _context.SaveChangesAsync();
-
+            await _context.SaveChangesAsync(); // Sla de wijzigingen op
             return $"Shipment met ID {shipmentId} is succesvol bijgewerkt.";
         }
 

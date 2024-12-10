@@ -227,5 +227,85 @@ namespace CargoHub.Tests
             var updatedOrders = await _dbContext.Orders.Where(o => o.ShipmentId == shipment.Id).ToListAsync();
             Assert.AreEqual(2, updatedOrders.Count);
         }
+
+        [TestMethod]
+        public async Task UpdateShipmentFields_ShouldThrowError_WhenChangingStatusToPendingFromTransitOrDelivered()
+        {
+            // Arrange
+            var shipment = new Shipment
+            {
+                Id = 1,
+                ShipmentStatus = "transit",
+                orders = new List<Order>
+                {
+                    new Order { Id = 1, OrderStatus = "processing" }
+                }
+            };
+            _dbContext.Shipments.Add(shipment);
+            await _dbContext.SaveChangesAsync();
+        
+            var updatedShipmentDto = new ShipmentDTO
+            {
+                ShipmentStatus = "pending"
+            };
+        
+            // Act & Assert
+            var exception = await Assert.ThrowsExceptionAsync<InvalidOperationException>(async () =>
+            {
+                await _shipmentService.UpdateShipmentFields(shipment.Id, updatedShipmentDto);
+            });
+        
+            Assert.AreEqual("Cannot change shipment status to pending from transit or delivered.", exception.Message);
+        }
+        
+        [TestMethod]
+        public async Task UpdateShipmentFields_ShouldUpdateShipment_WhenValidDataProvided()
+        {
+            // Arrange
+            var shipment = new Shipment
+            {
+                Id = 1,
+                ShipmentStatus = "pending",
+                orders = new List<Order>
+                {
+                    new Order { Id = 1, OrderStatus = "processing" }
+                }
+            };
+            _dbContext.Shipments.Add(shipment);
+            await _dbContext.SaveChangesAsync();
+        
+            var updatedShipmentDto = new ShipmentDTO
+            {
+                ShipmentStatus = "transit",
+                ShipmentType = "Express",
+                Notes = "Updated notes",
+                CarrierCode = "C123",
+                CarrierDescription = "Updated Carrier",
+                ServiceCode = "S123",
+                PaymentType = "Prepaid",
+                TransferMode = "Air",
+                TotalPackageCount = 10,
+                TotalPackageWeight = 100
+            };
+        
+            // Act
+            var result = await _shipmentService.UpdateShipmentFields(shipment.Id, updatedShipmentDto);
+        
+            // Assert
+            Assert.AreEqual($"Shipment met ID {shipment.Id} is succesvol bijgewerkt.", result);
+        
+            var updatedShipment = await _dbContext.Shipments.FindAsync(shipment.Id);
+            Assert.AreEqual("transit", updatedShipment.ShipmentStatus);
+            Assert.AreEqual("Express", updatedShipment.ShipmentType);
+            Assert.AreEqual("Updated notes", updatedShipment.Notes);
+            Assert.AreEqual("C123", updatedShipment.CarrierCode);
+            Assert.AreEqual("Updated Carrier", updatedShipment.CarrierDescription);
+            Assert.AreEqual("S123", updatedShipment.ServiceCode);
+            Assert.AreEqual("Prepaid", updatedShipment.PaymentType);
+            Assert.AreEqual("Air", updatedShipment.TransferMode);
+            Assert.AreEqual(10, updatedShipment.TotalPackageCount);
+            Assert.AreEqual(100, updatedShipment.TotalPackageWeight);
+            Assert.AreEqual("shipped", updatedShipment.orders.First().OrderStatus);
+        }
     }
 }

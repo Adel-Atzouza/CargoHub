@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
-namespace CargoHub
+using CargoHub.Services;
+using CargoHub.Models;
+namespace CargoHub.Controllers
 {
     [Route("api/v1/[Controller]")]
     [AuthorizationFilter]

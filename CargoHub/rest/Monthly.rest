@@ -1,0 +1,4 @@
+### Generate Monthly Report
+GET http://localhost:3000/api/v1/reports/monthly?year=2024&month=12
+Content-Type: application/json
+ApiKey: Admin

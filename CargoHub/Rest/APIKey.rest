@@ -1,0 +1,17 @@
+@baseUrl = http://localhost:3000/api/v1/APIKey
+
+###
+GET {{baseUrl}}
+
+###
+GET {{baseUrl}}/12
+
+###
+POST {{baseUrl}}/generate-key
+Content-Type: application/json
+
+{
+    "role": 1
+}
+
+

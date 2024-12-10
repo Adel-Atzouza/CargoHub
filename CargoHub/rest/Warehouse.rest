@@ -2,15 +2,15 @@
 
 ###
 GET {{baseUrl}}/3
-ApiKey: Admin
+ 
 
 ###
 GET {{baseUrl}}
-ApiKey: Admin
+ 
 
 ###
 POST {{baseUrl}}
-ApiKey: Admin
+ 
 Content-Type: application/json
 
 {
@@ -34,7 +34,7 @@ Content-Type: application/json
 ###
 
 PUT {{baseUrl}}/3
-ApiKey: Admin
+ 
 Content-Type: application/json
 
 {
@@ -58,4 +58,4 @@ Content-Type: application/json
 ###
 
 DELETE {{baseUrl}}/2
-ApiKey: Admin
+ 

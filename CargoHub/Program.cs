@@ -31,15 +31,6 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// app.Use(async (context, next) =>
-// {
-//     if (!context.Request.Headers.ContainsKey("ApiKey"))
-//     {
-//         context.Response.StatusCode = 401;
-//         return;
-//     }
-//     await next.Invoke();
-// });
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

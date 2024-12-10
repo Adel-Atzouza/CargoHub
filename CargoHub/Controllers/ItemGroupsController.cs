@@ -4,7 +4,6 @@ using CargoHub.Models;
 namespace CargoHub.Controllers
 {
     [Route("api/v1/[Controller]")]
-    [AuthorizationFilter]
     public class ItemGroupsController : ControllerBase
     {
         ItemGroupsService Service;
@@ -32,9 +31,21 @@ namespace CargoHub.Controllers
         public async Task<IActionResult> PostItemGroup([FromBody] ItemGroup itemGroup)
         {
             bool response = await Service.AddItemGroup(itemGroup);
-            return response ? Ok($"The item groups with id {itemGroup.Id} has been added")
-                            : BadRequest("The item group that you're trying to add already exists");
+            if (response)
+            {
+                string locationUri = $"/api/itemgroups/{itemGroup.Id}";
+                var createdResponse = new
+                {
+                    Message = $"The item group with id {itemGroup.Id} has been added",
+                    ItemGroup = itemGroup
+                };
+
+                return Created(locationUri, createdResponse);
+            }
+
+            return BadRequest("The item group that you're trying to add already exists");
         }
+
         [HttpPut()]
         public async Task<IActionResult> PutItemGroup([FromQuery] int id, [FromBody] ItemGroup Group)
         {

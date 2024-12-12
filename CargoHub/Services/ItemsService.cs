@@ -16,36 +16,41 @@ namespace CargoHub.Services
             _context = context;
         }
 
-        public async Task<List<Item>> GetAllItems()
+        public async Task<List<ItemDto>> GetAllItems()
         {
-            return await _context.Items.ToListAsync();
+            var items = await _context.Items.ToListAsync();
+            return items.Select(MapToDto).ToList();
         }
 
-        public async Task<Item> GetItem(string uid)
+        public async Task<ItemDto?> GetItem(string uid)
         {
-            return await _context.Items
-                .Include(i => i.ItemType)  // Include the ItemType data
-                .FirstOrDefaultAsync(i => i.Uid == uid);
+            var item = await _context.Items.FirstOrDefaultAsync(i => i.Uid == uid);
+            return item == null ? null : MapToDto(item);
         }
-
-
-        // public async Task<Item> GetItem(string uid)
-        // {
-        //     return await _context.Items.FirstOrDefaultAsync(item => item.Uid == uid);
-        // }
 
         public async Task<Item> PostItems(Item newItem)
         {
+            // Validate the foreign key references
+            bool isValid = await ValidateItemType(newItem.ItemType, newItem.ItemGroup, newItem.ItemLine);
+            if (!isValid)
+            {
+                throw new InvalidOperationException("Invalid ItemType, ItemGroup, or ItemLine provided.");
+            }
+
+            // Check for duplicate UID
             var existingItem = await GetItem(newItem.Uid);
             if (existingItem != null)
             {
                 throw new InvalidOperationException("An item with the same UID already exists.");
             }
 
+            // Add the new item to the database
             _context.Items.Add(newItem);
             await _context.SaveChangesAsync();
+
             return newItem;
         }
+
 
         public async Task<bool> DeleteItemsByUid(string uid)
         {
@@ -93,6 +98,40 @@ namespace CargoHub.Services
             // Save the changes
             await _context.SaveChangesAsync();
             return "Item updated.";
+        }
+
+        public async Task<bool> ValidateItemType(int itemTypeId, int itemGroupId, int itemLineId)
+        {
+            bool isItemTypeValid = await _context.ItemTypes.AnyAsync(it => it.Id == itemTypeId);
+            bool isItemGroupValid = await _context.ItemGroups.AnyAsync(ig => ig.Id == itemGroupId);
+            bool isItemLineValid = await _context.ItemLines.AnyAsync(il => il.Id == itemLineId);
+
+            // Return true only if all validations pass
+            return isItemTypeValid && isItemGroupValid && isItemLineValid;
+        }
+
+
+        private ItemDto MapToDto(Item item)
+        {
+            return new ItemDto
+            {
+                Uid = item.Uid,
+                Code = item.Code,
+                Description = item.Description,
+                ShortDescription = item.ShortDescription,
+                UpcCode = item.UpcCode,
+                ModelNumber = item.ModelNumber,
+                CommodityCode = item.CommodityCode,
+                ItemLine = item.ItemLine,
+                ItemGroup = item.ItemGroup,
+                ItemType = item.ItemType,
+                UnitPurchaseQuantity = item.UnitPurchaseQuantity,
+                UnitOrderQuantity = item.UnitOrderQuantity,
+                PackOrderQuantity = item.PackOrderQuantity,
+                SupplierId = item.SupplierId,
+                SupplierCode = item.SupplierCode,
+                SupplierPartNumber = item.SupplierPartNumber
+            };
         }
     }
 }

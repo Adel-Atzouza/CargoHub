@@ -9,15 +9,15 @@ POST http://localhost:3000/Items
 Content-Type: application/json
 
 {
-  "uid": "P000001",
+  "uid": "P000005",
   "code": "ABC123",
   "description": "Sample item",
   "short_description": "Sample short description",
   "upc_code": "123456789",
   "model_number": "XYZ123",
   "commodity_code": "A123",
-  "item_line": 10,  
-  "item_group": 1,  
+  "item_line": 2,  
+  "item_group": 2,  
   "item_type": 2, 
   "unit_purchase_quantity": 10,
   "unit_order_quantity": 5,

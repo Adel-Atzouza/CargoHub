@@ -59,6 +59,13 @@ namespace CargoHub.Controllers
             return Ok(item);
         }
 
+        // [HttpPost]
+        // public async Task<IActionResult> PostItems([FromBody] Item newItem)
+        // {
+        //     var createdItem = await _itemsService.PostItems(newItem);
+        //     return CreatedAtAction(nameof(GetItemByUid), new { uid = createdItem.Uid }, createdItem);
+        // }
+
         [HttpPost]
         public async Task<IActionResult> PostItems([FromBody] Item newItem)
         {

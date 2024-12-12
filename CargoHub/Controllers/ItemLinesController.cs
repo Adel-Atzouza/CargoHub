@@ -1,7 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 namespace CargoHub
 {
-    [Route("api/v1/[Controller]")]
+    [Route("[controller]")]
+    [ApiController]
     public class ItemLinesController : ControllerBase
     {
         ItemLinesService Service;

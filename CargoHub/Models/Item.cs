@@ -22,8 +22,10 @@ namespace CargoHub.Models
         public int ItemLine { get; set; }
         [JsonPropertyName("item_group")]
         public int ItemGroup { get; set; }
+        // Foreign key for ItemType
         [JsonPropertyName("item_type")]
         public int ItemType { get; set; }
+        // Optional navigation property for ItemType
         [JsonPropertyName("unit_purchase_quantity")]
         public int UnitPurchaseQuantity { get; set; }
         [JsonPropertyName("unit_order_quantity")]
@@ -36,7 +38,27 @@ namespace CargoHub.Models
         public string? SupplierCode { get; set; }
         [JsonPropertyName("supplier_part_number")]
         public string? SupplierPartNumber { get; set; }
-        // Navigation property for many-to-many relationship with Order
+
         public List<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
+    }
+
+    public class ItemDto
+    {
+        public string? Uid { get; set; }
+        public string? Code { get; set; }
+        public string? Description { get; set; }
+        public string? ShortDescription { get; set; }
+        public string? UpcCode { get; set; }
+        public string? ModelNumber { get; set; }
+        public string? CommodityCode { get; set; }
+        public int ItemLine { get; set; }
+        public int ItemGroup { get; set; }
+        public int ItemType { get; set; }
+        public int UnitPurchaseQuantity { get; set; }
+        public int UnitOrderQuantity { get; set; }
+        public int PackOrderQuantity { get; set; }
+        public int SupplierId { get; set; }
+        public string? SupplierCode { get; set; }
+        public string? SupplierPartNumber { get; set; }
     }
 }

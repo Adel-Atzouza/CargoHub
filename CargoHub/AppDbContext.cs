@@ -77,11 +77,11 @@ namespace CargoHub
                 .WithMany(o => o.OrderItems)   // Een order kan meerdere OrderItems hebben
                 .HasForeignKey(oi => oi.OrderId); // De koppeling is via OrderId
 
-            // modelBuilder.Entity<OrderItem>()
-            //     .HasOne(oi => oi.Item)         // Een OrderItem hoort bij één specifiek item
-            //     .WithMany(i => i.OrderItems)   // Een item kan in meerdere orders voorkomen
-            //     .HasForeignKey(oi => oi.ItemUid);  // De koppeling is via ItemUid
-            
+            modelBuilder.Entity<OrderItem>()
+                .HasOne(oi => oi.Item)         // Een OrderItem hoort bij één specifiek item
+                .WithMany(i => i.OrderItems)   // Een item kan in meerdere orders voorkomen
+                .HasForeignKey(oi => oi.ItemUid);  // De koppeling is via ItemUid
+
         }
 
         // Constructor accepting DbContextOptions

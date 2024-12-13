@@ -22,13 +22,13 @@ namespace CargoHub.Services
             return await appDbContext.Suppliers.ToListAsync();
         }
 
-        public async Task<int?> PostSupplier(Supplier Supplier)
-        {
-            var supplier = Supplier with { Id = appDbContext.Suppliers.Any() ? appDbContext.Suppliers.Max(w => w.Id) + 1 : 1 };
-            await appDbContext.Suppliers.AddAsync(supplier);
-            int n = await appDbContext.SaveChangesAsync();
-            return n > 0 ? supplier.Id : null;
-        }
+        // public async Task<int?> PostSupplier(Supplier Supplier)
+        // {
+        //     var supplier = Supplier with { Id = appDbContext.Suppliers.Any() ? appDbContext.Suppliers.Max(w => w.Id) + 1 : 1 };
+        //     await appDbContext.Suppliers.AddAsync(supplier);
+        //     int n = await appDbContext.SaveChangesAsync();
+        //     return n > 0 ? supplier.Id : null;
+        // }
 
         public async Task<int?> PutSupplier(int id, Supplier Supplier)
         {

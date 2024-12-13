@@ -25,13 +25,13 @@ namespace CargoHub
                 .ToListAsync();
         }
 
-        public async Task<int?> PostWarehouse(Warehouse Warehouse)
-        {
-            var warehouse = Warehouse with { Id = appDbContext.Warehouses.Any() ? appDbContext.Warehouses.Max(w => w.Id) + 1 : 1, CreatedAt = DateTime.Now };
-            await appDbContext.Warehouses.AddAsync(warehouse);
-            int n = await appDbContext.SaveChangesAsync();
-            return n > 0 ? warehouse.Id : null;
-        }
+        // public async Task<int?> PostWarehouse(Warehouse Warehouse)
+        // {
+        //     var warehouse = Warehouse with { Id = appDbContext.Warehouses.Any() ? appDbContext.Warehouses.Max(w => w.Id) + 1 : 1, CreatedAt = DateTime.Now };
+        //     await appDbContext.Warehouses.AddAsync(warehouse);
+        //     int n = await appDbContext.SaveChangesAsync();
+        //     return n > 0 ? warehouse.Id : null;
+        // }
 
         public async Task<int?> PutWarehouse(int id, Warehouse Warehouse)
         {

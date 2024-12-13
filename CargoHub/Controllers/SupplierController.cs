@@ -30,15 +30,15 @@ namespace CargoHub.Controllers
             return Ok(paginatedSuppliers);
         }
 
-        [HttpPost()]
-        public async Task<IActionResult> PostSupplier([FromBody] Supplier supplier)
-        {
-            if (supplier == null)
-                return BadRequest("Supplier cannot be null");
+        // [HttpPost()]
+        // public async Task<IActionResult> PostSupplier([FromBody] Supplier supplier)
+        // {
+        //     if (supplier == null)
+        //         return BadRequest("Supplier cannot be null");
 
-            var createdSupplierId = await storage.PostSupplier(supplier);
-            return CreatedAtAction(nameof(GetSupplier), new { id = createdSupplierId }, createdSupplierId);
-        }
+        //     var createdSupplierId = await storage.PostSupplier(supplier);
+        //     return CreatedAtAction(nameof(GetSupplier), new { id = createdSupplierId }, createdSupplierId);
+        // }
 
         [HttpPut("{id}")]
         public async Task<IActionResult> PutSupplier(int id, [FromBody] Supplier supplier)

@@ -1,7 +1,6 @@
 using CargoHub.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using System.Diagnostics;
 using System.Text.Json;
 
 namespace CargoHub.Services
@@ -16,11 +15,11 @@ namespace CargoHub.Services
 
         public List<string> ReadDataFolder(string Folder)
         {
-            var stopwatch = Stopwatch.StartNew(); // Start the stopwatch
 
             string Path = $"../{Folder}";
             var files = Directory.GetFiles(Path);
             List<string> FilesNames = new();
+            bool WarehouseInserted = false;
 
             foreach (var file in files)
             {
@@ -48,22 +47,49 @@ namespace CargoHub.Services
                 {
                     TransferData<Item>(file);
                 }
+                if (file.Contains("warehouses"))
+                {
+                    TransferData<Warehouse>(file);
+                    WarehouseInserted = true;
+                }
+
+                else if (file.Contains("locations"))
+                {
+                    if (WarehouseInserted)
+                    {
+                        TransferData<Location>(file);
+
+                    }
+                    continue;
+                }
+                else if (file.Contains("suppliers"))
+                {
+                    TransferData<Supplier>(file);
+                }
+                else if (file.Contains("transfers"))
+                {
+                    TransferData<Transfer>(file);
+
+                }
+                else if (file.Contains("shipments"))
+                {
+                    TransferData<Shipment>(file);
+
+                }
+
+
                 else
                 {
                     Console.WriteLine("This file is not included in the transfer files");
                 }
             }
-            
 
-            stopwatch.Stop(); // Stop the stopwatch
-            Console.WriteLine($"Data transfer took: {stopwatch.ElapsedMilliseconds} ms");
 
             return FilesNames;
         }
 
         private void TransferData<T>(string DataFile) where T : BaseModel
         {
-            var stopwatch = Stopwatch.StartNew(); // Start the stopwatch for this method
 
             var options = new JsonSerializerOptions();
             options.Converters.Add(new CustomDateTimeConverter());
@@ -94,9 +120,6 @@ namespace CargoHub.Services
                     Console.WriteLine($"Inner Exception: {ex.InnerException.Message}");
                 }
             }
-
-            stopwatch.Stop(); // Stop the stopwatch for this method
-            Console.WriteLine($"Data transfer for file {DataFile} took: {stopwatch.ElapsedMilliseconds} ms");
         }
 
         private void LogTransfer(bool Success, string File, int RowsChanged = 0)

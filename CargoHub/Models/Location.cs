@@ -11,7 +11,7 @@ namespace CargoHub.Models
 
         public Warehouse? Warehouse { get; set; } // Navigation property with correct capitalization
 
-        [JsonPropertyName("cide")]
+        [JsonPropertyName("code")]
 
 
         public string? Code { get; set; } // Nullable based on provided JSON

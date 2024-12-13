@@ -12,12 +12,12 @@ namespace CargoHub.Controllers
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetTransfer(int id)
-        {               
+        {
             var transfer = await storage.GetTransfer((int)id);
-            
+
             if (transfer == null)
                 return NotFound("Transfer doesn't exist with id: " + id);
-            
+
             return Ok(transfer);
         }
 
@@ -29,15 +29,15 @@ namespace CargoHub.Controllers
             return Ok(paginatedTransfers);
         }
 
-        [HttpPost()]
-        public async Task<IActionResult> PostTransfer([FromBody] Transfer transfer)
-        {
-            if (transfer == null)
-            return BadRequest("Transfer cannot be null");
+        // [HttpPost()]
+        // public async Task<IActionResult> PostTransfer([FromBody] Transfer transfer)
+        // {
+        //     if (transfer == null)
+        //     return BadRequest("Transfer cannot be null");
 
-            var createdTransferId = await storage.PostTransfer(transfer);
-            return CreatedAtAction(nameof(GetTransfer), new { id = createdTransferId }, createdTransferId);
-        }
+        //     var createdTransferId = await storage.PostTransfer(transfer);
+        //     return CreatedAtAction(nameof(GetTransfer), new { id = createdTransferId }, createdTransferId);
+        // }
 
         [HttpPut("{id}")]
         public async Task<IActionResult> PutTransfer(int id, [FromBody] Transfer transfer)

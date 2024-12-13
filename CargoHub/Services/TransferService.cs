@@ -22,13 +22,13 @@ namespace CargoHub
             return await appDbContext.Transfers.ToListAsync();
         }
 
-        public async Task<int?> PostTransfer(Transfer Transfer)
-        {
-            var transfer = Transfer with { Id = appDbContext.Transfers.Any() ? appDbContext.Transfers.Max(w => w.Id) + 1 : 1 };
-            await appDbContext.Transfers.AddAsync(transfer);
-            int n = await appDbContext.SaveChangesAsync();
-            return n > 0 ? transfer.Id : null;
-        }
+        // public async Task<int?> PostTransfer(Transfer Transfer)
+        // {
+        //     var transfer = Transfer with { Id = appDbContext.Transfers.Any() ? appDbContext.Transfers.Max(w => w.Id) + 1 : 1 };
+        //     await appDbContext.Transfers.AddAsync(transfer);
+        //     int n = await appDbContext.SaveChangesAsync();
+        //     return n > 0 ? transfer.Id : null;
+        // }
 
         public async Task<int?> PutTransfer(int id, Transfer Transfer)
         {

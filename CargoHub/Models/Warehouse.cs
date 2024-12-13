@@ -3,16 +3,31 @@ using System.Text.Json.Serialization;
 
 namespace CargoHub.Models
 {
-    public record Warehouse
+    public class Warehouse : BaseModel
     {
-        // Properties
-        public int Id { get; set; }
+        // // Properties
+        // [JsonPropertyName("id")]
+        // public int Id { get; set; }
+        [JsonPropertyName("code")]
+
         public string? Code { get; set; }
+        [JsonPropertyName("name")]
+
         public string? Name { get; set; }
+        [JsonPropertyName("address")]
+
         public string? Address { get; set; }
+        [JsonPropertyName("zip")]
+
         public string? Zip { get; set; }
+        [JsonPropertyName("city")]
+
         public string? City { get; set; }
+        [JsonPropertyName("province")]
+
         public string? Province { get; set; }
+        [JsonPropertyName("country")]
+
         public string? Country { get; set; }
 
         // Contact fields (ignored in JSON)
@@ -48,11 +63,11 @@ namespace CargoHub.Models
             }
         }
 
-                // Metadata
-        [JsonPropertyName("created_at")]
-        public DateTime CreatedAt { get; set; }
+        // Metadata
+        // [JsonPropertyName("created_at")]
+        // public DateTime CreatedAt { get; set; }
 
-        [JsonPropertyName("updated_at")]
-        public DateTime UpdatedAt { get; set; }
+        // [JsonPropertyName("updated_at")]
+        // public DateTime UpdatedAt { get; set; }
     }
 }

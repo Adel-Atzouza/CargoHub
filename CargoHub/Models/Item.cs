@@ -5,6 +5,12 @@ namespace CargoHub.Models
 {
     public class Item : BaseModel
     {
+        [JsonIgnore]
+        public new int Id
+        {
+            get => base.Id; // Keep it functional for EF
+            set => base.Id = value;
+        }
         [Key]
         public string? Uid { get; set; }
         public string? Code { get; set; }

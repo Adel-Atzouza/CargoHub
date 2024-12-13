@@ -13,16 +13,9 @@ namespace CargoHub.Services
             return $"P{id.ToString().PadLeft(6, '0')}";
         }
 
-        private static int? UidToId(string uid)
+        public int? UidToId(string uid)
         {
             return int.Parse(uid[1..]);
-        }
-
-        public async Task<T?> GetRow<T>(string uid) where T : Item
-        {
-            int? id = UidToId(uid);
-            if (id is null) return null;
-            return await base.GetRow<T>((int)id);
         }
 
         public async Task<string?> AddRowUid<T>(T row) where T : Item
@@ -34,20 +27,6 @@ namespace CargoHub.Services
                 return null;
             
             return row.Uid;
-        }
-
-        public async Task<bool?> UpdateRow<T>(string uid, T row) where T : Item
-        {
-            int? id = UidToId(uid);
-            if (id is null) return null;
-            return await base.UpdateRow<T>((int)id, row, ["Uid"]);
-        }
-
-        public async Task<bool> DeleteRow<T>(string uid) where T : Item
-        {
-            int? id = UidToId(uid);
-            if (id is null) return false;
-            return await base.DeleteRow<T>((int)id);
         }
     }
 }

@@ -20,9 +20,12 @@ namespace CargoHub.Services
         }
 
         public virtual async Task<int?> AddRow<T>(T row) where T : BaseModel
-        {
-            bool alreadyExists = await appDbContext.Set<T>().ContainsAsync(row);
-            if (row == null || alreadyExists) return null;
+        {            
+            // bool alreadyExists = await appDbContext.Set<T>().ContainsAsync(row);
+            // if (row == null || alreadyExists) return null;
+            if (row == null) return null;
+
+            row.Id = appDbContext.Set<T>().Any() ? appDbContext.Set<T>().Max(_ => _.Id) + 1 : 1;
 
             await appDbContext.Set<T>().AddAsync(row);
             await appDbContext.SaveChangesAsync();
@@ -34,7 +37,7 @@ namespace CargoHub.Services
         public virtual async Task<bool> UpdateRow<T>(int id, T row, string[]? excludedProperties = null) where T : BaseModel
         {
             excludedProperties ??= [];
-            excludedProperties = [.. excludedProperties, "Id", "CreatedAt"];
+            excludedProperties = [.. excludedProperties, "Id", "Uid", "CreatedAt", "UpdatedAt"];
             
             var found = await appDbContext.Set<T>().FirstOrDefaultAsync(_ => _.Id == id);
             if (row == null || found == null) return false;

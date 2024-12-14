@@ -9,7 +9,7 @@ namespace CargoHub.Models
         public int? SourceId { get; set; }
         public DateTime? Orderdate { get; set; }
         public DateTime? RequestDate { get; set; }
-        public DateTime? ShipmentDate { get; set; }
+        public DateTime ShipmentDate { get; set; }
         public string? ShipmentType { get; set; }
         public string? ShipmentStatus { get; set; }
         public string? Notes { get; set; }
@@ -63,10 +63,10 @@ namespace CargoHub.Models
         public DateTime? OrderDate { get; set; }
 
         [JsonPropertyName("request_date")]
-        public DateTime? RequestDate { get; set; }
+        public DateTime RequestDate { get; set; }
 
         [JsonPropertyName("shipment_date")]
-        public DateTime? ShipmentDate { get; set; }
+        public DateTime ShipmentDate { get; set; }
 
         [JsonPropertyName("shipment_type")]
         public string? ShipmentType { get; set; }
@@ -93,10 +93,10 @@ namespace CargoHub.Models
         public string? TransferMode { get; set; }
 
         [JsonPropertyName("total_package_count")]
-        public int? TotalPackageCount { get; set; }
+        public int TotalPackageCount { get; set; }
 
         [JsonPropertyName("total_package_weight")]
-        public double? TotalPackageWeight { get; set; }
+        public double TotalPackageWeight { get; set; }
 
         [JsonPropertyName("items")]
         public List<ItemDTO>? Items { get; set; }

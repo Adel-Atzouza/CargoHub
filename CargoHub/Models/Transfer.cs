@@ -8,6 +8,7 @@ namespace CargoHub.Models
 {
     public class Transfer : BaseModel
     {
+        [JsonPropertyName("reference")]
         public string? Reference { get; set; }
         [JsonPropertyName("transfer_from")]
         public int? TransferFrom { get; set; }

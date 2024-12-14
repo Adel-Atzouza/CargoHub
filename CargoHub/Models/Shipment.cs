@@ -6,10 +6,10 @@ namespace CargoHub.Models
 
     public class Shipment : BaseModel
     {
-        public int SourceId { get; set; }
+        public int? SourceId { get; set; }
         public DateTime? Orderdate { get; set; }
-        public DateTime RequestDate { get; set; }
-        public DateTime ShipmentDate { get; set; }
+        public DateTime? RequestDate { get; set; }
+        public DateTime? ShipmentDate { get; set; }
         public string? ShipmentType { get; set; }
         public string? ShipmentStatus { get; set; }
         public string? Notes { get; set; }
@@ -99,6 +99,46 @@ namespace CargoHub.Models
         public double? TotalPackageWeight { get; set; }
 
         [JsonPropertyName("items")]
-        public List<Item>? Items { get; set; }
+        public List<ItemDTO>? Items { get; set; }
+
+        public Shipment ConvertToShipment()
+        {
+            return new Shipment
+            {
+                Id = this.Id,
+                SourceId = this.SourceId,
+                Orderdate = this.OrderDate,
+                RequestDate = this.RequestDate,
+                ShipmentDate = this.ShipmentDate,
+                ShipmentType = this.ShipmentType,
+                ShipmentStatus = this.ShipmentStatus,
+                Notes = this.Notes,
+                CarrierCode = this.CarrierCode,
+                ServiceCode = this.ServiceCode,
+                PaymentType = this.PaymentType,
+                TransferMode = this.TransferMode,
+                TotalPackageCount = this.TotalPackageCount,
+                TotalPackageWeight = this.TotalPackageWeight,
+                orders = new List<Order>
+        {
+            new Order
+            {
+                Id = 0, // Assign an appropriate ID if necessary
+                OrderDate = this.OrderDate,
+                RequestDate = this.RequestDate,
+                Notes = this.Notes,
+                OrderItems = this.Items.Select(item => new OrderItem
+                {
+                    OrderId = 0,
+                    ItemUid = item.ItemId,
+                    Amount = item.Amount
+                }).ToList()
+            }
+
+
+
+        }
+            };
+        }
     }
 }

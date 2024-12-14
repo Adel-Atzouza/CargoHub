@@ -57,4 +57,5 @@ namespace CargoHub.Models
         // Navigation property for many-to-many relationship with Order
         public List<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
     }
+
 }

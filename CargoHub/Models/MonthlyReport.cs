@@ -8,9 +8,9 @@ namespace CargoHub.Models
         public int Year { get; set; }
         public int Month { get; set; }
         public int TotalOrders { get; set; }
-        public decimal TotalOrderAmount { get; set; }
+        public double TotalOrderAmount { get; set; }
         public double AverageOrderProcessingTime { get; set; }
-        public double AverageShipmentTransitProcessingTime {get; set;}
+        public double AverageShipmentTransitProcessingTime { get; set; }
         public int TotalShipments { get; set; }
         public List<ShipmentSummaryDTO> ShipmentDetails { get; set; }
     }
@@ -21,6 +21,6 @@ namespace CargoHub.Models
         public DateTime ShipmentDate { get; set; }
         public string ShipmentStatus { get; set; }
         public int TotalOrders { get; set; }
-        public decimal TotalWeight { get; set; }
+        public double TotalWeight { get; set; }
     }
 }

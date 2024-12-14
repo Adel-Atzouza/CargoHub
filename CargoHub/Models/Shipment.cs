@@ -19,7 +19,7 @@ namespace CargoHub.Models
         public string? PaymentType { get; set; }
         public string? TransferMode { get; set; }
         public int TotalPackageCount { get; set; }
-        public decimal TotalPackageWeight { get; set; }
+        public double TotalPackageWeight { get; set; }
         public List<Order>? orders { get; set; }
 
     }
@@ -36,7 +36,7 @@ namespace CargoHub.Models
         public string PaymentType { get; set; }
         public string TransferMode { get; set; }
         public int TotalPackageCount { get; set; }
-        public decimal TotalPackageWeight { get; set; }
+        public double TotalPackageWeight { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
         public List<OrderDTO> Orders { get; set; }

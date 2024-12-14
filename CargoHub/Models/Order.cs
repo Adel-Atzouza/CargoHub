@@ -27,10 +27,10 @@ public class Order : BaseModel
     public int? ShipmentId { get; set; }
     [JsonIgnore]
     public Shipment? Shipment { get; set; }  // Navigation property to Shipment
-    public decimal TotalAmount { get; set; }
-    public decimal TotalDiscount { get; set; }
-    public decimal TotalTax { get; set; }
-    public decimal TotalSurcharge { get; set; }
+    public double TotalAmount { get; set; }
+    public double TotalDiscount { get; set; }
+    public double TotalTax { get; set; }
+    public double TotalSurcharge { get; set; }
 
     // Avoid serializing the OrderItems navigation property
     [JsonIgnore]
@@ -54,10 +54,10 @@ public class OrderWithItemsDTO
     public int? ShipTo { get; set; } // Nullable
     public int? BillTo { get; set; } // Nullable
     public int? ShipmentId { get; set; } // Nullable
-    public decimal TotalAmount { get; set; }
-    public decimal TotalDiscount { get; set; }
-    public decimal TotalTax { get; set; }
-    public decimal TotalSurcharge { get; set; }
+    public double TotalAmount { get; set; }
+    public double TotalDiscount { get; set; }
+    public double TotalTax { get; set; }
+    public double TotalSurcharge { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
     public List<ItemDTO> Items { get; set; }

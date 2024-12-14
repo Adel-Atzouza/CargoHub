@@ -47,7 +47,7 @@ namespace CargoHub.Services
                 {
                     TransferData<Item>(file);
                 }
-                if (file.Contains("warehouses"))
+                else if (file.Contains("warehouses"))
                 {
                     TransferData<Warehouse>(file);
                     WarehouseInserted = true;
@@ -80,7 +80,7 @@ namespace CargoHub.Services
 
                 else
                 {
-                    Console.WriteLine("This file is not included in the transfer files");
+                    Console.WriteLine($"The file {file} is not included in the transfer files");
                 }
             }
 

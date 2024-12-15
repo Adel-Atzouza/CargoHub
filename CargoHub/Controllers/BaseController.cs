@@ -1,10 +1,13 @@
+using System.Globalization;
 using CargoHub.Services;
+using CargoHub.Utilities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CargoHub.Controllers
 {
-    public abstract class BaseController<T>(BaseStorageService storage) : Controller where T : BaseModel
+    public abstract class BaseController<T>(BaseStorageService storage, ErrorHandler error) : ControllerBase where T : BaseModel
     {
+        protected readonly string Name = typeof(T).Name;
         private static int? TryConvertToInt(string id)
         {
             if (int.TryParse(id, out int result))
@@ -22,12 +25,12 @@ namespace CargoHub.Controllers
         public virtual async Task<IActionResult> GetRow(string id)
         {
             var _id = TryConvertToInt(id);
-            if (_id is null) return BadRequest("Id is not valid: " + id);
+            if (_id is null) return error.IdInvalid(Name, id);
             
             var row = await storage.GetRow<T>((int)_id);
             
             if (row == null)
-                return NotFound("Warehouse doesn't exist with id: " + id);
+                return error.IdNotFound(Name, id);
             
             return Ok(row);
         }
@@ -43,7 +46,7 @@ namespace CargoHub.Controllers
         public virtual async Task<IActionResult> PostRow([FromBody] T row)
         {
             if (row == null)
-                return BadRequest("Warehouse cannot be null");
+                return error.CantBeNull(Name);
 
             var rowId = await storage.AddRow(row);
             return CreatedAtAction(nameof(GetRow), new { id = rowId }, rowId);
@@ -53,14 +56,14 @@ namespace CargoHub.Controllers
         public virtual async Task<IActionResult> PutRow(string id, [FromBody] T row)
         {
             var _id = TryConvertToInt(id);
-            if (_id is null) return BadRequest("Id is not valid: " + id);
+            if (_id is null) return error.IdInvalid(Name, id);
             
             if (row == null)
-                return BadRequest("Warehouse cannot be null");
+                return error.CantBeNull(Name);
 
             var updatedRow = await storage.UpdateRow((int)_id, row);
             if (!updatedRow)
-                return NotFound("Warehouse doesn't exist with id: " + id);
+                return error.IdNotFound(Name, id);
 
             return Ok(updatedRow);
         }
@@ -70,13 +73,13 @@ namespace CargoHub.Controllers
         public virtual async Task<IActionResult> DeleteRow(string id)
         {
             var _id = TryConvertToInt(id);
-            if (_id is null) return BadRequest("Id is not valid: " + id);
+            if (_id is null) return error.IdInvalid(Name, id);
 
             var row = await storage.DeleteRow<T>((int)_id);
             if (!row)
-                return NotFound("Warehouse doesn't exist with id: " + id);
+                return error.IdNotFound(Name, id);
 
-            return Ok("Row deleted");
+            return Ok($"{Name} deleted");
         }
     }
 }

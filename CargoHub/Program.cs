@@ -1,10 +1,13 @@
 using CargoHub;
 using CargoHub.Services;
+using CargoHub.Utilities;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlite("Datasource=CargoHub.db"));
+
+builder.Services.AddScoped<ErrorHandler>();
 
 builder.Services.AddScoped<BaseStorageService>();
 builder.Services.AddScoped<LocationStorageService>();

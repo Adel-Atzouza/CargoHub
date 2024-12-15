@@ -801,7 +801,7 @@ class ApiRequestHandler(http.server.BaseHTTPRequestHandler):
 
 
 if __name__ == "__main__":
-    PORT = 3000
+    PORT = 3001
     with socketserver.TCPServer(("", PORT), ApiRequestHandler) as httpd:
         auth_provider.init()
         data_provider.init()

@@ -1,7 +1,7 @@
 @baseUrl = http://localhost:3000/api/v2/warehouses
 
 ###
-GET {{baseUrl}}/1
+GET {{baseUrl}}/100
 ApiKey: Admin
 
 ###

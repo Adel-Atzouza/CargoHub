@@ -1,4 +1,5 @@
 using CargoHub.Models;
+using CargoHub.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,12 +13,12 @@ namespace CargoHub.Controllers
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetSupplier(int id)
-        {               
+        {
             var supplier = await storage.GetSupplier((int)id);
-            
+
             if (supplier == null)
                 return NotFound("Supplier doesn't exist with id: " + id);
-            
+
             return Ok(supplier);
         }
 
@@ -33,7 +34,7 @@ namespace CargoHub.Controllers
         public async Task<IActionResult> PostSupplier([FromBody] Supplier supplier)
         {
             if (supplier == null)
-            return BadRequest("Supplier cannot be null");
+                return BadRequest("Supplier cannot be null");
 
             var createdSupplierId = await storage.PostSupplier(supplier);
             return CreatedAtAction(nameof(GetSupplier), new { id = createdSupplierId }, createdSupplierId);

@@ -1,15 +1,15 @@
-namespace CargoHub
+using System.Text.Json.Serialization;
+
+namespace CargoHub.Models
 {
-    public class ItemLine: BaseModel
+    public class ItemLine : BaseModel
     {
-        public int Id { get; set; }
+
+        [JsonPropertyName("name")]
         public string? Name { get; set; }
+
+        [JsonPropertyName("description")]
+
         public string? Description { get; set; }
-
-        public int ItemGroupId { get; set; }
-        public ItemGroup ItemGroup { get; set; }
-
-        // Navigation property
-        public ICollection<ItemType> ItemTypes { get; set; } = new List<ItemType>();
     }
 }

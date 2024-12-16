@@ -52,7 +52,10 @@ namespace CargoHub.Services
 
             foreach (var property in excludedProperties)
             {
-                entry.Property(property).IsModified = false;
+                if (entry.OriginalValues.Properties.Any(p => p.Name == property))
+                {
+                    entry.Property(property).IsModified = false;
+                }
             }
 
             entry.Property("UpdatedAt").CurrentValue = DateTime.Now;

@@ -23,7 +23,6 @@ namespace CargoHub
         public DbSet<OrderItem> OrderItems { get; set; }
         public DbSet<Inventory> Inventory { get; set; }
         public DbSet<Client> Clients { get; set; }
-        public DbSet<APIKey> APIKeys { get; set; }
 
         // Override SaveChangesAsync to handle timestamps
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)

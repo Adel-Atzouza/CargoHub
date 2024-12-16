@@ -49,8 +49,9 @@ namespace CargoHub.Services
         {
             try
             {
-                // Voeg de nieuwe order toe aan de context maar sla deze nog niet op
+                // Voeg de nieuwe order toe en sla op om het ID te genereren
                 _context.Orders.Add(order);
+                await _context.SaveChangesAsync();
 
                 // Controleer of alle items geldig zijn en voldoende voorraad hebben
                 foreach (var itemDto in itemDTOs)
@@ -87,7 +88,7 @@ namespace CargoHub.Services
                     // Maak een nieuw OrderItem aan
                     var orderItem = new OrderItem
                     {
-                        OrderId = order.Id, // Order-ID wordt gegenereerd na SaveChanges
+                        OrderId = order.Id, // Order-ID is nu beschikbaar
                         ItemUid = itemDto.ItemId,
                         Amount = itemDto.Amount
                     };
@@ -96,7 +97,7 @@ namespace CargoHub.Services
                     _context.OrderItems.Add(orderItem);
                 }
 
-                // Sla nu zowel de order als de items op in de database
+                // Sla de order-items en voorraadwijzigingen op in de database
                 await _context.SaveChangesAsync();
 
                 return order;
@@ -107,6 +108,7 @@ namespace CargoHub.Services
                 throw;
             }
         }
+
 
 
         // Update een bestaande order en de gekoppelde items

@@ -26,11 +26,11 @@ ApiKey: Admin
   "items": [
     {
       "itemId": "ITEM001",
-      "amount": 6
+      "amount": 3
     },
     {
       "itemId": "ITEM002",
-      "amount": 5
+      "amount": 3
     }
   ]
 }

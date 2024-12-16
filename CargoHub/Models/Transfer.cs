@@ -16,7 +16,7 @@ namespace CargoHub.Models
         public int? TransferTo { get; set; }
         [JsonPropertyName("transfer_status")]
         public string? TransferStatus { get; set; }
-        
+
         // Metadata
         [JsonPropertyName("created_at")]
         public DateTime CreatedAt { get; set; }

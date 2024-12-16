@@ -26,11 +26,11 @@ ApiKey : Admin
   "updatedAt": "2024-11-18T13:39:16.5035533Z",
   "items": [
     {
-      "itemId": "P000001",
+      "itemId": "ITEM001",
       "amount": 3
     },
     {
-      "itemId": "P000002",
+      "itemId": "ITEM002",
       "amount": 1
     }
   ]

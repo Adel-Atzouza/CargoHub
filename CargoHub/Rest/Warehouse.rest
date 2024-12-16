@@ -1,7 +1,7 @@
 @baseUrl = http://localhost:3000/api/v2/warehouses
 
 ###
-GET {{baseUrl}}/100
+GET {{baseUrl}}/1
 ApiKey: Admin
 
 ###
@@ -14,7 +14,7 @@ ApiKey: Admin
 Content-Type: application/json
 
 {
-    "id": 4,
+    "id": 0,
     "code": "GIOMNL90",
     "name": "Petten longterm hub",
     "address": "Owenweg 731",

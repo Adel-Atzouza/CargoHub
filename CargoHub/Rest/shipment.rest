@@ -1,5 +1,5 @@
 ### Get a shipment by ID with order details
-GET http://localhost:3000/api/v2/Shipment/Orderdetails/1
+GET http://localhost:3000/api/v2/shipment/Orderdetails/2
 Content-Type: application/json
 ApiKey: Admin
 
@@ -48,7 +48,7 @@ Content-Type: application/json
 ApiKey: Admin
 
 ### Get a shipment by ID with only items
-GET http://localhost:3000/api/v2/Shipments/5
+GET http://localhost:3000/api/v2/shipment/2
 Content-Type: application/json
 ApiKey: Admin
 
@@ -80,7 +80,7 @@ ApiKey: Admin
 }
 
 ### Get all shipments
-GET http://localhost:3000/api/v2/Shipments
+GET http://localhost:3000/api/v2/shipment
 Content-Type: application/json
 ApiKey: Admin
 
@@ -119,7 +119,7 @@ ApiKey: Admin
 ]
 
 ### Create a new shipment
-POST http://localhost:3000/api/v2/Shipment
+POST http://localhost:3000/api/v2/shipment
 Content-Type: application/json
 ApiKey: Admin
 
@@ -141,7 +141,7 @@ ApiKey: Admin
 }
 
 ###
-PUT http://localhost:3000/api/v2/shipment/1/assign-orders
+PUT http://localhost:3000/api/v2/shipment/2/assign-orders
 Content-Type: application/json
 ApiKey: Admin
 

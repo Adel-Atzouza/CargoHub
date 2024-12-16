@@ -1,7 +1,7 @@
-using Microsoft.EntityFrameworkCore;
 using CargoHub.Models;
+using Microsoft.EntityFrameworkCore;
 
-namespace CargoHub.Services
+namespace CargoHub
 {
     public class SupplierService
     {

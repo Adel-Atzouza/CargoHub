@@ -5,19 +5,14 @@ namespace CargoHub.Models
 {
     public class Location : BaseModel
     {
-        [JsonPropertyName("warehouse_id")]
+        public int Id { get; set; }
+
+        // Foreign Key for Warehouse (nullable)
         public int? WarehouseId { get; set; }
         [JsonIgnore]
+        public Warehouse? Warehouse { get; set; } // Use correct capitalization for the navigation property
 
-        public Warehouse? Warehouse { get; set; } // Navigation property with correct capitalization
-
-        [JsonPropertyName("cide")]
-
-
-        public string? Code { get; set; } // Nullable based on provided JSON
-
-        [JsonPropertyName("name")]
-
-        public string? Name { get; set; } // Nullable based on provided JSON
+        public string Code { get; set; }
+        public string Name { get; set; }
     }
 }

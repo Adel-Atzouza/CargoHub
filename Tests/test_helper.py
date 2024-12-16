@@ -3,7 +3,6 @@ def have_same_structure(dict1, dict2):
     if set(dict1.keys()) != set(dict2.keys()):
         return False
 
-    
     # Iterate through the keys and check structure recursively for nested dictionaries
     for key in dict1:
         if isinstance(dict1[key], dict) and isinstance(dict2[key], dict):
@@ -235,18 +234,18 @@ supplier_1_updated = {
 
 
 template_client = {
-  "id": 0,
-  "name": "",
-  "address": "",
-  "city": "",
-  "zip_code": "",
-  "province": "",
-  "country": "",
-  "contact_name": "",
-  "contact_phone": "",
-  "contact_email": "",
-  "created_at": "",
-  "updated_at": ""
+    "id": 0,
+    "name": "",
+    "address": "",
+    "city": "",
+    "zip_code": "",
+    "province": "",
+    "country": "",
+    "contact_name": "",
+    "contact_phone": "",
+    "contact_email": "",
+    "created_at": "",
+    "updated_at": ""
 }
 
 client_1 = {
@@ -334,4 +333,3 @@ inventory_1_updated = {
     "total_allocated": 41,
     "total_available": 141
 }
-

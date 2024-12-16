@@ -23,11 +23,22 @@ namespace CargoHub.Controllers
             return Response is null ? NotFound($"The ItemLine with Id {id} cannot be found") : Ok(Response);
         }
         [HttpPost()]
-        public async Task<IActionResult> PostItemLine([FromBody] ItemLine itemLine)
+        public async Task<IActionResult> PostItemLine([FromBody] ItemLine Item_Line)
         {
-            bool response = await Service.AddItemLine(itemLine);
-            return response ? Ok($"The item Lines with id {itemLine.Id} has been added")
-                            : BadRequest();
+            bool response = await Service.AddItemLine(Item_Line);
+            if (response)
+            {
+                string locationUri = $"/api/ItemLine/{Item_Line.Id}";
+                var createdResponse = new
+                {
+                    Message = $"The item group with id {Item_Line.Id} has been added",
+                    ItemLine = Item_Line
+                };
+
+                return Created(locationUri, createdResponse);
+            }
+
+            return BadRequest("The item group that you're trying to add already exists");
         }
         [HttpPut]
         public async Task<IActionResult> PutItemLine([FromQuery] int id, [FromBody] ItemLine Line)

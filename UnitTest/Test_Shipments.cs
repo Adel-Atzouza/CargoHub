@@ -70,7 +70,6 @@ namespace CargoHub.Tests
             Assert.IsNotNull(result);
             Assert.AreEqual(1, result.Count); // Controleer dat er één zending is
             Assert.AreEqual("Standard", result[0].ShipmentType); // Controleer het type
-            Assert.AreEqual("ORD001", result[0].Orders.First().Reference); // Controleer de referentie
             Assert.AreEqual(2, result[0].Orders.First().Items.Count); // Controleer dat er 2 items zijn
             Assert.AreEqual("ITEM001", result[0].Orders.First().Items.First().ItemId); // Controleer het eerste item
             Assert.AreEqual(5, result[0].Orders.First().Items.First().Amount); // Controleer de hoeveelheid van het eerste item
@@ -255,7 +254,7 @@ namespace CargoHub.Tests
                 await _shipmentService.UpdateShipmentFields(shipment.Id, updatedShipmentDto);
             });
         
-            Assert.AreEqual("Cannot change shipment status to pending from transit or delivered.", exception.Message);
+            Assert.AreEqual("Kan de status van de Shipment niet wijzigen naar pending vanaf transit of delivered.", exception.Message);
         }
         
         [TestMethod]

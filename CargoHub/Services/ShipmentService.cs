@@ -215,7 +215,7 @@ namespace CargoHub.Services
 
             if (existingShipment == null)
             {
-                return $"Zending met ID {shipmentId} is niet gevonden.";
+                return $"Shipment met ID {shipmentId} is niet gevonden.";
             }
 
             if (!string.IsNullOrEmpty(updatedShipmentDto.ShipmentStatus) &&
@@ -242,7 +242,7 @@ namespace CargoHub.Services
                 (existingShipment.ShipmentStatus.Equals("transit", StringComparison.OrdinalIgnoreCase) ||
                 existingShipment.ShipmentStatus.Equals("delivered", StringComparison.OrdinalIgnoreCase)))
             {
-                throw new InvalidOperationException("Kan de status van de zending niet wijzigen naar pending vanaf transit of delivered.");
+                throw new InvalidOperationException("Kan de status van de Shipment niet wijzigen naar pending vanaf transit of delivered.");
             }
 
             existingShipment.ShipmentType = updatedShipmentDto.ShipmentType;
@@ -259,7 +259,7 @@ namespace CargoHub.Services
 
             _context.Shipments.Update(existingShipment);
             await _context.SaveChangesAsync();
-            return $"Zending met ID {shipmentId} is succesvol bijgewerkt.";
+            return $"Shipment met ID {shipmentId} is succesvol bijgewerkt.";
         }
 
         // Koppel orders aan een zending

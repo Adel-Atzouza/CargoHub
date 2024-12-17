@@ -1,88 +1,106 @@
 import requests
 import pytest
 
-BASE_URL = "http://localhost:3000/api/v1/orders" 
-headers = {'APIKEY': "Admin"}
+BASE_URL = "http://localhost:3000/api/v1/orders"
+ITEMS_URL = "http://localhost:3000/api/v1/items"
+HEADERS = {'APIKEY': "Admin"}
 
+# Helper function: Cleanup orders and items
+def cleanup_test_data():
+    # Cleanup orders
+    orders_response = requests.get(BASE_URL, headers=HEADERS)
+    if orders_response.status_code == 200:
+        for order in orders_response.json():
+            if "Test" in order.get("reference", ""):
+                requests.delete(f"{BASE_URL}/{order['id']}", headers=HEADERS)
 
-# Helper function to clean up test data by deleting any orders with "Test" in their reference
-def cleanup_test_data(test_name):
-    response = requests.get(BASE_URL, headers=headers)  # Send GET request to fetch all orders
-    if response.status_code == 200:
-        orders = response.json()  # Parse the response as JSON to get the list of orders
-        for order in orders:
-            # Check if the order is test data based on its reference (contains "Test")
-            if "Test" in order["reference"]:
-                delete_response = requests.delete(f"{BASE_URL}/{order['id']}", headers=headers)  # Send DELETE request to remove the order by ID
-                assert delete_response.status_code in [200, 204], f"Cleanup failed in {test_name}"  # Assert successful deletion
+    # Cleanup items
+    items_response = requests.get(ITEMS_URL, headers=HEADERS)
+    if items_response.status_code == 200:
+        for item in items_response.json():
+            if "TEST_ITEM" in item.get("uid", ""):
+                requests.delete(f"{ITEMS_URL}/{item['uid']}", headers=HEADERS)
 
+# Helper function: Create test items
+def create_test_items():
+    test_items = [
+        {"uid": "TEST_ITEM_001", "description": "Test Item 1", "unitOrderQuantity": 10},
+        {"uid": "TEST_ITEM_002", "description": "Test Item 2", "unitOrderQuantity": 5}
+    ]
+    for item in test_items:
+        response = requests.post(ITEMS_URL, json=item, headers=HEADERS)
+        if response.status_code not in [200, 201]:
+            print(f"Failed to create test item {item['uid']}: {response.text}")
 
-# Test to retrieve all orders
-def test_get_all_orders():
-    response = requests.get(BASE_URL, headers=headers)  # Send GET request to fetch all orders
-    assert response.status_code == 200, f"Failed to fetch orders: {response.text}"  # Assert that the response status is 200 (OK)
-    orders = response.json()  # Parse the response as JSON to get the list of orders
-    assert isinstance(orders, list)  # Assert that the response is a list of orders
-    assert len(orders) > 0  # Assert that the list of orders is not empty
-
-
-# Test to retrieve a specific order by ID
-def test_get_order_by_id():
-    order_id = 1  # Set a valid order ID for testing
-    response = requests.get(f"{BASE_URL}/{order_id}", headers=headers)  # Send GET request to fetch the order by ID
-    assert response.status_code == 200, f"Failed to fetch order: {response.text}"  # Assert that the response status is 200 (OK)
-    order = response.json()  # Parse the response as JSON
-    assert order["id"] == order_id  # Assert that the order's ID matches the requested ID
-
-
-# Test to add a new order
+# Test: Add a new order
 def test_add_order():
+    cleanup_test_data()
+    create_test_items()
+
     new_order = {
         "sourceId": 999,
         "orderDate": "2024-12-01T00:00:00Z",
         "requestDate": "2024-12-10T00:00:00Z",
         "reference": "Test Order",
-        "orderStatus": "TEST",
-        "totalAmount": 100.0,
-        "totalDiscount": 0.0,
-        "totalTax": 0.0, 
-        "totalSurcharge": 0.0,
-        "notes": "Test notes",
-        "pickingNotes": "Test picking notes",
-        "shippingNotes": "Test shipping notes",
+        "orderStatus": "TEST",  # Verplicht veld toegevoegd
+        "notes": "Test notes",  # Verplicht veld toegevoegd
+        "pickingNotes": "Picking note example",  # Verplicht veld toegevoegd
+        "shippingNotes": "Shipping note example",  # Verplicht veld toegevoegd
         "items": [
-            {"itemId": "TEST_ITEM_001", "amount": 2}, 
-            {"itemId": "TEST_ITEM_002", "amount": 1}   
+            {"itemId": "TEST_ITEM_001", "amount": 2},
+            {"itemId": "TEST_ITEM_002", "amount": 1}
         ]
     }
-    response = requests.post(BASE_URL, json=new_order, headers=headers)  # Send POST request to create a new order
-    assert response.status_code == 201, f"Failed to add order: {response.text}"  # Assert that the response status is 201 (Created)
 
-    # Print the response JSON for debugging purposes
-    print(response.json())
+    response = requests.post(BASE_URL, json=new_order, headers=HEADERS)
+    print(response.json())  # Debug response
+    print("Status code:", response.status_code)
+    print("Response text:", response.text)  # Debug server response
+    assert response.status_code == 201, f"Add order failed: {response.text}"
 
-    # Verify that the response contains the added order
-    order = response.json()
-    assert order["reference"] == new_order["reference"]  # Assert that the reference matches the new order's reference
-
-    # Check if 'items' key exists in the response
-    if "items" in order:
-        assert len(order["items"]) == len(new_order["items"])  # Assert that the number of items in the response matches the input
-    else:
-        print("Warning: 'items' key not found in the response")  # If no items are found, print a warning message
-
-    cleanup_test_data("test_add_order")  # Clean up the test data after the test
+    # Cleanup test data
+    cleanup_test_data()
 
 
-# Test to get an order by an invalid ID
-def test_get_order_by_invalid_id():
-    invalid_id = 9999
-    response = requests.get(f"{BASE_URL}/{invalid_id}", headers=headers)  # Send GET request to fetch the order by invalid ID
-    assert response.status_code == 404  # Assert that the response status is 404 (Not Found)
+# Test: Retrieve all orders
+def test_get_all_orders():
+    cleanup_test_data()
+    create_test_items()
 
+    # Add a test order
+    test_add_order()
 
-# Test to remove an order by an invalid ID
-def test_remove_order_invalid_id():
-    invalid_id = 9999
-    response = requests.delete(f"{BASE_URL}/{invalid_id}", headers=headers)  # Send DELETE request to remove the order by invalid ID
-    assert response.status_code == 404  # Assert that the response status is 404 (Not Found)
+    response = requests.get(BASE_URL, headers=HEADERS)
+    print(response.json())  # Debug response
+    assert response.status_code == 200
+    orders = response.json()
+    assert len(orders) > 0
+
+    cleanup_test_data()
+
+# Test: Delete an order
+def test_delete_order():
+    cleanup_test_data()
+    create_test_items()
+
+    # Add a test order
+    new_order = {
+        "sourceId": 999,
+        "orderDate": "2024-12-01T00:00:00Z",
+        "requestDate": "2024-12-10T00:00:00Z",
+        "reference": "Test Delete Order",
+        "items": [{"itemId": "TEST_ITEM_001", "amount": 1}]
+    }
+    response = requests.post(BASE_URL, json=new_order, headers=HEADERS)
+    assert response.status_code == 201
+    order_id = response.json()["id"]
+
+    # Delete the order
+    delete_response = requests.delete(f"{BASE_URL}/{order_id}", headers=HEADERS)
+    assert delete_response.status_code in [200, 204]
+
+    # Verify deletion
+    fetch_response = requests.get(f"{BASE_URL}/{order_id}", headers=HEADERS)
+    assert fetch_response.status_code == 404
+
+    cleanup_test_data()

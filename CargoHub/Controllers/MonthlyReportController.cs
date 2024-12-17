@@ -18,23 +18,30 @@ namespace CargoHub.Controllers
             _reportService = reportService;
         }
 
-        [HttpGet("monthly")]
-        public async Task<IActionResult> GetMonthlyReport([FromQuery] int year, [FromQuery] int month)
+        [HttpGet("monthly-report")]
+        public async Task<IActionResult> GenerateMonthlyReport(int year, int month)
         {
-            if (year <= 0 || month <= 0 || month > 12)
-            {
-                return BadRequest("Invalid year or month.");
-            }
+                try
+                {
+                    var report = await _reportService.GenerateMonthlyReport(year, month);
 
-            try
-            {
-                var report = await _reportService.GenerateMonthlyReport(year, month);
-                return Ok(report);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
-            }
+                    string filePath = "MonthlyReport.pdf";
+                    if (System.IO.File.Exists(filePath))
+                    {
+                        byte[] fileBytes = System.IO.File.ReadAllBytes(filePath);
+                        return File(fileBytes, "application/pdf", filePath);
+                    }
+                    else
+                    {
+                        return NotFound("Report not found.");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    // Log de fout (bijvoorbeeld met een logging framework zoals Serilog)
+                    Console.WriteLine($"Error generating report: {ex.Message}");
+                    return StatusCode(500, "Internal server error");
+                }
         }
     }
 }

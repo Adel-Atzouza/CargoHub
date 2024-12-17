@@ -17,6 +17,7 @@ builder.Services.AddTransient<OrderService>();
 builder.Services.AddTransient<LocationService>();
 builder.Services.AddTransient<ShipmentService>();
 builder.Services.AddTransient<ReportService>();
+builder.Services.AddTransient<PdfReportService>();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

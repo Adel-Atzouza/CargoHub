@@ -10,10 +10,13 @@ namespace CargoHub.Services
     public class ReportService
     {
         private readonly AppDbContext _context;
+        private readonly PdfReportService _pdfReportService;
 
-        public ReportService(AppDbContext context)
+        public ReportService(AppDbContext context, PdfReportService pdfReportService)
         {
             _context = context;
+            _pdfReportService = pdfReportService;
+
         }
 
         public async Task<MonthlyReportDTO> GenerateMonthlyReport(int year, int month)
@@ -51,7 +54,7 @@ namespace CargoHub.Services
                 .DefaultIfEmpty(0)
                 .Average();
 
-            return new MonthlyReportDTO
+            var report = new MonthlyReportDTO
             {
                 Year = year,
                 Month = month,
@@ -59,16 +62,12 @@ namespace CargoHub.Services
                 TotalOrderAmount = totalOrderAmount,
                 AverageOrderProcessingTime = averageOrderDeliveryTime,
                 TotalShipments = totalShipments,
-                AverageShipmentTransitProcessingTime = averageShipmentTransitTime,
-                ShipmentDetails = shipments.Select(s => new ShipmentSummaryDTO
-                {
-                    ShipmentId = s.Id,
-                    ShipmentDate = s.ShipmentDate,
-                    ShipmentStatus = s.ShipmentStatus,
-                    TotalOrders = s.orders?.Count ?? 0,
-                    TotalWeight = s.TotalPackageWeight
-                }).ToList()
+                AverageShipmentTransitProcessingTime = averageShipmentTransitTime
             };
-        }
+
+            _pdfReportService.GenerateMonthlyReport(report);
+
+            return report;
+            }
     }
 }

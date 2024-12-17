@@ -1,12 +1,15 @@
+using CargoHub;
+using CargoHub.Models;
 namespace CargoHubTest
 {
 
     [TestClass]
-    public class UnitTest1
+    public class ItemGroupTest
     {
         [TestMethod]
-        public void TestMethod1()
+        public void TestAddIG()
         {
+              base  
         }
     }
 }

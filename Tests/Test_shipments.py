@@ -4,7 +4,7 @@ import pytest
 BASE_URL = "http://localhost:3000/api/v1/Shipments"
 headers = {'APIKEY': "Admin"}
 
-# Helper function to clean up test data by deleting shipments with "Test" in their shipmentType
+
 def cleanup_test_data(test_name):
     response = requests.get(BASE_URL, headers=headers)  # Send GET request to fetch all shipments
     if response.status_code == 200:
@@ -55,10 +55,10 @@ def test_add_shipment():
     response = requests.post(BASE_URL, json=new_shipment, headers=headers)  # Send POST request to create a new shipment
     assert response.status_code == 201, f"Failed to add shipment: {response.text}"  # Assert that the response status is 201 (Created)
 
-    # Print the response JSON for debugging purposes
+    
     print(response.json())
 
-    # Verify that the response contains the added shipment
+    
     shipment = response.json()
     assert shipment["shipmentType"] == new_shipment["shipmentType"]  # Assert that the shipment type matches the new shipment's shipmentType
 

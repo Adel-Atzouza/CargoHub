@@ -64,7 +64,6 @@ namespace CargoHub.Tests
             });
             await _dbContext.SaveChangesAsync();
 
-            // Add a new order with items to the database
             var newOrder = new Order
             {
                 Reference = "Test Order",
@@ -78,15 +77,15 @@ namespace CargoHub.Tests
             _dbContext.Orders.Add(newOrder);
             await _dbContext.SaveChangesAsync();
 
-            var orderId = newOrder.Id; // Get the ID of the newly created order
+            var orderId = newOrder.Id;
 
             // Act
             var result = await _orderService.GetOrderWithItems(orderId);
 
             // Assert
-            Assert.IsNotNull(result); // Ensure the result is not null
-            Assert.AreEqual("Test Order", result.Reference); // Verify the reference matches
-            Assert.AreEqual(2, result.Items.Count); // Verify that the order contains 2 items
+            Assert.IsNotNull(result);
+            Assert.AreEqual("Test Order", result.Reference);
+            Assert.AreEqual(2, result.Items.Count);
         }
 
         [TestMethod]
@@ -219,10 +218,10 @@ namespace CargoHub.Tests
             var result = await _orderService.DeleteOrder(orderId);
 
             // Assert
-            Assert.IsTrue(result); // The deletion should be successful
+            Assert.IsTrue(result);
 
             var orderInDb = await _dbContext.Orders.FindAsync(orderId);
-            Assert.IsNull(orderInDb); // The order should no longer be in the database
+            Assert.IsNull(orderInDb);
         }
 
         [TestMethod]

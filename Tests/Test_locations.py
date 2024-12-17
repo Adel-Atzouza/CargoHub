@@ -98,9 +98,11 @@ def test_update_location():
 
 # Test to get a location by an invalid ID
 def test_get_location_by_invalid_id():
-    invalid_id = 9999  
-    response = requests.get(f"{BASE_URL}/{invalid_id}")  # Send GET request to fetch location by invalid ID
-    assert response.status_code == 404  # Assert that the response status is 404 (Not Found)
+    invalid_id = 9999
+    response = requests.get(f"{BASE_URL}/{invalid_id}")
+    print(response.text)
+    assert response.status_code == 404
+
 
 
 # Test to remove a location by an invalid ID

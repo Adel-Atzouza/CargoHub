@@ -8,8 +8,7 @@ using System.Threading.Tasks;
 namespace CargoHub.Controllers
 {
     [Route("api/v1/Locations")]
-    [ApiController]
-    public class LocationController : ControllerBase
+    public class LocationController : Controller
     {
         private readonly LocationService _locationService;
 

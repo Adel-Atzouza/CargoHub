@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.IO;
 using System.Threading.Tasks;
 using CargoHub.Services;
 
@@ -23,13 +22,18 @@ namespace CargoHub.Controllers
         {
             try
             {
+                // Genereer het rapport
                 var report = await _reportService.GenerateMonthlyReport(year, month);
 
-                string filePath = "MonthlyReport.pdf";
+                // Stel het pad in naar de Reports-folder
+                string reportsFolder = Path.Combine(Directory.GetCurrentDirectory(), "Reports");
+                string filePath = Path.Combine(reportsFolder, "MonthlyReport.pdf");
+
+                // Controleer of het bestand bestaat
                 if (System.IO.File.Exists(filePath))
                 {
                     byte[] fileBytes = System.IO.File.ReadAllBytes(filePath);
-                    return File(fileBytes, "application/pdf", $"MonthlyReport_{year}_{month}.pdf");
+                    return File(fileBytes, "application/pdf", $"MonthlyReport.pdf");
                 }
                 else
                 {
@@ -46,6 +50,5 @@ namespace CargoHub.Controllers
                 return StatusCode(500, "Internal server error");
             }
         }
-
     }
 }

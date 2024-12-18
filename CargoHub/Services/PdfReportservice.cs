@@ -14,43 +14,57 @@ using CargoHub.Models;
 namespace CargoHub.Services{
 public class PdfReportService
 {
-    public void GenerateMonthlyReport(MonthlyReportDTO report)
+public void GenerateMonthlyReport(MonthlyReportDTO report)
+{
+    // Stel het pad in voor de Reports-map
+    string projectRoot = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..", "..", "..", ".."));
+    string reportsFolder = Path.Combine(projectRoot, "Reports");
+
+    // Zorg dat de Reports-map bestaat
+    if (!Directory.Exists(reportsFolder))
     {
+        Directory.CreateDirectory(reportsFolder);
+    }
 
-        string reportsFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Reports");
+    // Stel het volledige pad in voor het PDF-bestand
+    string dest = Path.Combine(reportsFolder, "MonthlyReport.pdf");
 
-        // Ensure the directory exists
-        if (!Directory.Exists(reportsFolder))
+    try
+    {
+        Console.WriteLine($"Saving PDF to: {dest}");
+
+        using (FileStream fs = new FileStream(dest, FileMode.Create, FileAccess.Write, FileShare.None))
         {
-            Directory.CreateDirectory(reportsFolder);
-        }
+            PdfWriter writer = new PdfWriter(fs);
+            PdfDocument pdf = new PdfDocument(writer);
+            Document document = new Document(pdf);
 
-        string dest = Path.Combine("MonthlyReport.pdf"); // De naam en locatie van het PDF-bestand
-        try
-        {
-            Console.WriteLine($"Saving PDF to: {dest}");
-            using (FileStream fs = new FileStream(dest, FileMode.Create, FileAccess.Write, FileShare.None))
+            if (report.TotalOrders == 0 && report.TotalShipments == 0)
             {
-                PdfWriter writer = new PdfWriter(fs);
-                PdfDocument pdf = new PdfDocument(writer);
-                Document document = new Document(pdf);
-
+                document.Add(new Paragraph($"Monthly Report for {report.Month}/{report.Year}"));
+                document.Add(new Paragraph("No data available for this period."));
+            }
+            else
+            {
                 document.Add(new Paragraph($"Monthly Report for {report.Month}/{report.Year}"));
                 document.Add(new Paragraph($"Total Orders: {report.TotalOrders}"));
                 document.Add(new Paragraph($"Total Order Amount: {report.TotalOrderAmount:C}"));
                 document.Add(new Paragraph($"Average Order Processing Time: {report.AverageOrderProcessingTime} days"));
                 document.Add(new Paragraph($"Total Shipments: {report.TotalShipments}"));
                 document.Add(new Paragraph($"Average Shipment Transit Time: {report.AverageShipmentTransitProcessingTime} days"));
-
-                document.Close();
             }
-            Console.WriteLine("PDF generated successfully.");
+
+            document.Close();
         }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Error generating PDF: {ex.Message}");
-            throw;
-        }
+
+        Console.WriteLine("PDF generated successfully.");
     }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"Error generating PDF: {ex.Message}");
+        throw;
+    }
+}
+
 }
 }

@@ -21,27 +21,31 @@ namespace CargoHub.Controllers
         [HttpGet("monthly-report")]
         public async Task<IActionResult> GenerateMonthlyReport(int year, int month)
         {
-                try
-                {
-                    var report = await _reportService.GenerateMonthlyReport(year, month);
+            try
+            {
+                var report = await _reportService.GenerateMonthlyReport(year, month);
 
-                    string filePath = "MonthlyReport.pdf";
-                    if (System.IO.File.Exists(filePath))
-                    {
-                        byte[] fileBytes = System.IO.File.ReadAllBytes(filePath);
-                        return File(fileBytes, "application/pdf", filePath);
-                    }
-                    else
-                    {
-                        return NotFound("Report not found.");
-                    }
-                }
-                catch (Exception ex)
+                string filePath = "MonthlyReport.pdf";
+                if (System.IO.File.Exists(filePath))
                 {
-                    // Log de fout (bijvoorbeeld met een logging framework zoals Serilog)
-                    Console.WriteLine($"Error generating report: {ex.Message}");
-                    return StatusCode(500, "Internal server error");
+                    byte[] fileBytes = System.IO.File.ReadAllBytes(filePath);
+                    return File(fileBytes, "application/pdf", $"MonthlyReport_{year}_{month}.pdf");
                 }
+                else
+                {
+                    return NotFound("Report not found.");
+                }
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(ex.Message); // Handle no data case
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error generating report: {ex.Message}");
+                return StatusCode(500, "Internal server error");
+            }
         }
+
     }
 }

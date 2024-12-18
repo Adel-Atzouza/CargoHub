@@ -16,9 +16,19 @@ public class PdfReportService
 {
     public void GenerateMonthlyReport(MonthlyReportDTO report)
     {
-        string dest = "MonthlyReport.pdf"; // De naam en locatie van het PDF-bestand
+
+        string reportsFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Reports");
+
+        // Ensure the directory exists
+        if (!Directory.Exists(reportsFolder))
+        {
+            Directory.CreateDirectory(reportsFolder);
+        }
+
+        string dest = Path.Combine("MonthlyReport.pdf"); // De naam en locatie van het PDF-bestand
         try
         {
+            Console.WriteLine($"Saving PDF to: {dest}");
             using (FileStream fs = new FileStream(dest, FileMode.Create, FileAccess.Write, FileShare.None))
             {
                 PdfWriter writer = new PdfWriter(fs);

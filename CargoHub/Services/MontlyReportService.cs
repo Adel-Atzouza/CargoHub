@@ -35,6 +35,11 @@ namespace CargoHub.Services
 
             Console.WriteLine($"Filtered Shipments: {shipments.Count}");
 
+            if (!orders.Any() && !shipments.Any())
+            {
+                throw new InvalidOperationException("No data available for the specified month and year.");
+            }
+
             // Analyseer orderverwerking
             var totalOrders = orders.Count;
             var totalShipments = shipments.Count;

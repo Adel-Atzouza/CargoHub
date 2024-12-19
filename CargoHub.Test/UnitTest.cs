@@ -38,13 +38,21 @@ public class TestItemGroupsService
         Assert.IsNotNull(FoundIg.UpdatedAt);
         Assert.AreEqual(ig.Name, FoundIg.Name);
     }
-    /*
-        [TestMethod]
-        public async Task TestInvalidInput()
+    [TestMethod]
+    public async Task TestInvalidInput()
+    {
+        ItemGroup InvalidItemGroup = new ItemGroup
         {
+            Name = null,
+            Description = null
+        };
+        bool result = await _IgService.AddItemGroup(InvalidItemGroup);
+        Assert.IsFalse(result);
+        Assert.IsTrue(_context.ItemGroups.ToList().Count == 0);
+        
 
-        }
-    */
+
+    }
     [TestCleanup]
     public void TestCleanup()
     {

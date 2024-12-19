@@ -25,6 +25,10 @@ namespace CargoHub.Controllers
         [HttpPost()]
         public async Task<IActionResult> PostItemLine([FromBody] ItemLine Item_Line)
         {
+            if (Item_Line == null || !ModelState.IsValid)
+            {
+                return BadRequest("Your input is invalid");
+            }
             bool response = await Service.AddItemLine(Item_Line);
             if (response)
             {
@@ -43,6 +47,10 @@ namespace CargoHub.Controllers
         [HttpPut]
         public async Task<IActionResult> PutItemLine([FromQuery] int id, [FromBody] ItemLine Line)
         {
+            if (Line == null || !ModelState.IsValid)
+            {
+                return BadRequest("Your input is invalid");
+            }
             bool response = await Service.UpdateItemLine(id, Line);
             return response ? Ok("ItemLine Updated") : BadRequest();
         }

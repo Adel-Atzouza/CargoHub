@@ -35,7 +35,7 @@ namespace CargoHub.Services
         public async Task<bool> AddItemLine(ItemLine itemLine)
         {
             bool AlreadyExists = await _context.ItemLines.ContainsAsync(itemLine);
-            if (itemLine == null || AlreadyExists)
+            if (AlreadyExists)
             {
                 return false;
             }
@@ -48,7 +48,7 @@ namespace CargoHub.Services
         public async Task<bool> UpdateItemLine(int id, ItemLine itemLine)
         {
             ItemLine? Found = await _context.ItemLines.FindAsync(id);
-            if (itemLine == null || Found == null) return false;
+            if (Found == null) return false;
             Found.Name = itemLine.Name;
             Found.Description = itemLine.Description;
             _context.ItemLines.Update(Found);

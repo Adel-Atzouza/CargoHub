@@ -40,7 +40,7 @@ namespace CargoHub.Services
         public async Task<bool> AddItemGroup(ItemGroup itemGroup)
         {
             bool AlreadyExists = await _context.ItemGroups.ContainsAsync(itemGroup);
-            if (itemGroup == null || AlreadyExists)
+            if (AlreadyExists)
             {
                 return false;
             }

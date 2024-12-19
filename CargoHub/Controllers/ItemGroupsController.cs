@@ -30,6 +30,10 @@ namespace CargoHub.Controllers
         [HttpPost()]
         public async Task<IActionResult> PostItemGroup([FromBody] ItemGroup itemGroup)
         {
+            if (itemGroup == null || !ModelState.IsValid)
+            {
+                return BadRequest("Your input is invalid");
+            }
             bool response = await Service.AddItemGroup(itemGroup);
             if (response)
             {

@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.IO;
 using System.Threading.Tasks;
 using CargoHub.Services;
@@ -20,34 +19,25 @@ namespace CargoHub.Controllers
         [HttpGet("monthly-report")]
         public async Task<IActionResult> GenerateMonthlyReport(int year, int month)
         {
-            try
+            if (year <= 0 || month <= 0 || month > 12)
             {
-                // Genereer het rapport
-                var report = await _reportService.GenerateMonthlyReport(year, month);
-
-                // Stel het pad in naar de Reports-folder
-                string reportsFolder = Path.Combine(Directory.GetCurrentDirectory(), "Reports");
-                string filePath = Path.Combine(reportsFolder, "MonthlyReport.pdf");
-
-                // Controleer of het bestand bestaat
-                if (System.IO.File.Exists(filePath))
-                {
-                    byte[] fileBytes = System.IO.File.ReadAllBytes(filePath);
-                    return File(fileBytes, "application/pdf", $"MonthlyReport.pdf");
-                }
-                else
-                {
-                    return NotFound("Report not found.");
-                }
+                return BadRequest(new { message = "Invalid year or month. Please provide valid values." });
             }
-            catch (InvalidOperationException ex)
+
+            // Generate the report and get the file path
+            string filePath = await _reportService.GenerateMonthlyReport(year, month);
+
+            // Serve the file if it exists
+            if (System.IO.File.Exists(filePath))
             {
-                return BadRequest(ex.Message); // Handle no data case
+                byte[] fileBytes = await System.IO.File.ReadAllBytesAsync(filePath);
+                string fileName = Path.GetFileName(filePath);
+
+                return Ok();
             }
-            catch (Exception ex)
+            else
             {
-                Console.WriteLine($"Error generating report: {ex.Message}");
-                return StatusCode(500, "Internal server error");
+                return NotFound(new { message = "Report not found." });
             }
         }
     }

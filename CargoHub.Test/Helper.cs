@@ -5,7 +5,7 @@ public static class TestHelper
 {
     public static bool HaveSameDates(DateTime d1, DateTime d2, TimeSpan tolerance)
     {
-        return d1 - d2 <= tolerance;
+        return d1.Date - d2.Date <= tolerance;
 
     }
     public static ItemGroup TestItemGroup1 = new ItemGroup

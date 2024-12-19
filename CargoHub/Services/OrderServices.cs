@@ -19,21 +19,26 @@ namespace CargoHub.Services
         // Haal een specifieke order op inclusief de items
         public async Task<OrderWithItemsDTO> GetOrderWithItems(int orderId)
         {
-            // Gebruik LINQ om de order op te halen en deze direct te mappen naar een DTO
-            return await _context.Orders
-                .Where(o => o.Id == orderId)
-                .Select(o => MapOrderToDTO(o)) // Map de database-entiteit naar een DTO
-                .FirstOrDefaultAsync();
+            var order = await _context.Orders
+                .Include(o => o.OrderItems)
+                .ThenInclude(oi => oi.Item)
+                .FirstOrDefaultAsync(o => o.Id == orderId);
+            return MapOrderToDTO(order);
         }
 
         // Haal alle orders op inclusief hun items
         public async Task<List<OrderWithItemsDTO>> GetAllOrdersWithItems()
         {
-            // Map alle orders in de database naar DTO's
-            return await _context.Orders
-                .Select(o => MapOrderToDTO(o)) // Gebruik de MapOrderToDTO-methode
+            var orders = await _context.Orders
+                .Include(o => o.OrderItems)
+                .ThenInclude(oi => oi.Item)
                 .ToListAsync();
+
+            // Map de opgehaalde data naar DTO's
+            return orders.Select(order => MapOrderToDTO(order)).ToList();
         }
+
+
 
         // Haal alle orders op voor een specifieke klant
         public async Task<List<Order>> GetOrdersForClient(int clientId)
@@ -43,6 +48,29 @@ namespace CargoHub.Services
                 .Where(o => o.BillTo == clientId || o.ShipTo == clientId)
                 .ToListAsync();
         }
+
+        public async Task<List<Order>> GetOrdersLinkedWithWarehouseId(int Warehouseid)
+        {
+            return await _context.Orders
+                .Where(o=> o.WarehouseId == Warehouseid)
+                .ToListAsync();
+        }
+
+        public async Task<List<Order>> GetOrdersLinkedWithSourceId(int sourceid)
+        {
+            return await _context.Orders
+                .Where(o => o.SourceId == sourceid)
+                .ToListAsync();
+        }
+
+        public async Task<List<Order>> GetOrdersStatus(string status)
+        {
+            return await _context.Orders
+                .Where(o => o.OrderStatus == status)
+                .ToListAsync();
+        }
+
+
 
         // Maak een nieuwe order aan en voeg items toe
         public async Task<Order> CreateOrder(Order order, List<ItemDTO> itemDTOs)

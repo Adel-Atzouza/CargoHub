@@ -1,10 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using CargoHub.Models;
 using CargoHub.Services;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace CargoHub.Controllers
 {
@@ -14,39 +14,30 @@ namespace CargoHub.Controllers
     {
         private readonly OrderService _orderService;
 
-        // Constructor: Inject hier gewoon de service die alle orderlogica regelt
         public OrdersController(OrderService orderService)
         {
             _orderService = orderService;
         }
 
-        // GET: api/v1/orders
-        // Haal alle orders op, inclusief hun items
         [HttpGet]
         public async Task<ActionResult<List<OrderWithItemsDTO>>> GetAllOrders([FromQuery] int page = 0)
         {
             var orderwithitems = await _orderService.GetAllOrdersWithItems();
             var paginatedorders = orderwithitems.Skip(page * 100).Take(100).ToList();
             return Ok(paginatedorders);
-            // var orders = await _orderService.GetAllOrdersWithItems();
-            // return Ok(orders); //lijst met orders
         }
 
-        // GET: api/v1/orders/{id}
-        // Haal een specifieke order op (inclusief items) via het ID
         [HttpGet("{id}")]
         public async Task<ActionResult<OrderWithItemsDTO>> GetOrder(int id)
         {
             var order = await _orderService.GetOrderWithItems(id);
             if (order == null)
             {
-                return NotFound($"Order met ID {id} niet gevonden."); // 404 als we niets vinden
+                return NotFound($"Order met ID {id} niet gevonden.");
             }
-            return Ok(order); // Alles goed
+            return Ok(order);
         }
 
-        // GET: api/v1/orders/client/{clientId}
-        // Haal alle orders van een specifieke klant op via hun ID
         [HttpGet("client/{clientId}")]
         public async Task<ActionResult<List<Order>>> GetOrdersForClient(int clientId)
         {
@@ -54,25 +45,58 @@ namespace CargoHub.Controllers
 
             if (orders == null || orders.Count == 0)
             {
-                return NotFound(); // Geen orders
+                return NotFound();
             }
 
-            return Ok(orders); // Alles gevonden
+            return Ok(orders);
         }
 
-        // POST: api/v1/orders
-        // Maak een nieuwe order aan met items
+        [HttpGet("warehouse/{warehouseId}")]
+        public async Task<ActionResult<List<Order>>> GetOrderForWarehouse(int warehouseId)
+        {
+            var orders = await _orderService.GetOrdersLinkedWithWarehouseId(warehouseId);
+
+            if (orders == null || orders.Count == 0)
+            {
+                return NotFound();
+            }
+            return Ok(orders);
+        }
+
+        [HttpGet("source/{sourceId}")]
+        public async Task<ActionResult<List<Order>>> GetOrderForSource(int sourceId)
+        {
+            var orders = await _orderService.GetOrdersLinkedWithSourceId(sourceId);
+
+            if (orders == null || orders.Count == 0)
+            {
+                return NotFound();
+            }
+            return Ok(orders);
+        }
+
+        [HttpGet("status/{status}")]
+        public async Task<ActionResult<List<Order>>> GetOrderForStatus(string status)
+        {
+            var orders = await _orderService.GetOrdersStatus(status);
+
+            if (orders == null || orders.Count == 0)
+            {
+                return NotFound();
+            }
+            return Ok(orders);
+        }
+
         [HttpPost]
         public async Task<ActionResult<Order>> CreateOrder([FromBody] OrderWithItemsDTO orderDto)
         {
             if (orderDto == null)
             {
-                return BadRequest("Ordergegevens zijn verplicht."); // Geen gegevens
+                return BadRequest("Ordergegevens zijn verplicht.");
             }
 
             try
             {
-                //alles netjes mappen naar een Order-object
                 var order = new Order
                 {
                     SourceId = orderDto.SourceId,
@@ -84,10 +108,10 @@ namespace CargoHub.Controllers
                     Notes = orderDto.Notes,
                     ShippingNotes = orderDto.ShippingNotes,
                     PickingNotes = orderDto.PickingNotes,
-                    WarehouseId = orderDto.WarehouseId,
-                    ShipTo = orderDto.ShipTo ?? null, // Nullable veld
-                    BillTo = orderDto.BillTo ?? null, // Idem voor BillTo
-                    ShipmentId = orderDto.ShipmentId ?? null, // En ShipmentId ook
+                    WarehouseId = orderDto.WarehouseId ?? null,
+                    ShipTo = orderDto.ShipTo ?? null,
+                    BillTo = orderDto.BillTo ?? null,
+                    ShipmentId = orderDto.ShipmentId ?? null,
                     TotalAmount = orderDto.TotalAmount,
                     TotalDiscount = orderDto.TotalDiscount,
                     TotalTax = orderDto.TotalTax,
@@ -96,21 +120,15 @@ namespace CargoHub.Controllers
                     UpdatedAt = DateTime.UtcNow
                 };
 
-                // Laat de service de order aanmaken
                 var createdOrder = await _orderService.CreateOrder(order, orderDto.Items);
-
-                // Klaar, retourneet de order
                 return CreatedAtAction(nameof(GetOrder), new { id = createdOrder.Id }, createdOrder);
             }
             catch (Exception ex)
             {
-                //iets is er verkeerd gegaan. dit is voor debuggen
                 return StatusCode(500, $"Interne serverfout: {ex.Message}");
             }
         }
 
-        // PUT: api/v1/orders/{id}/items
-        // Werk de items in een bestaande order bij
         [HttpPut("{id}/items")]
         public async Task<IActionResult> UpdateItemsInOrder(int id, [FromBody] List<ItemDTO> orderItems)
         {
@@ -121,19 +139,17 @@ namespace CargoHub.Controllers
 
             try
             {
-                // Laat de service de items in de order bijwerken
                 var result = await _orderService.UpdateItemsInOrder(id, orderItems);
 
                 if (result.StartsWith("Item met ID") || result.StartsWith("Order met ID") || result.StartsWith("Niet genoeg voorraad"))
                 {
-                    return BadRequest(result); // Fouten zoals ontbrekende items, orders of voorraadtekort
+                    return BadRequest(result);
                 }
 
                 return Ok($"Order met ID {id} is succesvol bijgewerkt.");
             }
             catch (Exception ex)
             {
-                // Als er een onverwachte fout optreedt
                 return StatusCode(500, $"Interne serverfout: {ex.Message}");
             }
         }
@@ -156,27 +172,21 @@ namespace CargoHub.Controllers
             return BadRequest(result);
         }
 
-
-
-        // DELETE: api/v1/orders/{id}
-        // Verwijder een order via het ID
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteOrder(int id)
         {
             try
             {
-                // Laat de service de order verwijderen
                 var result = await _orderService.DeleteOrder(id);
                 if (!result)
                 {
-                    return NotFound($"Order met ID {id} niet gevonden."); // 404 als er niets is
+                    return NotFound($"Order met ID {id} niet gevonden.");
                 }
 
-                return Ok($"Order met ID {id} succesvol verwijderd."); // Alles goed
+                return Ok($"Order met ID {id} succesvol verwijderd.");
             }
             catch (Exception ex)
             {
-                //iets is er verkeerd gegaan. dit is voor debuggen
                 return StatusCode(500, $"Interne serverfout: {ex.Message}");
             }
         }

@@ -45,8 +45,23 @@ GET http://localhost:3000/api/v1/orders/client/1
 Content-Type: application/json
 ApiKey: Admin
 
+### Get all orders for a specific warehouse
+GET http://localhost:3000/api/v1/orders/warehouse/1
+Content-Type: application/json
+ApiKey: Admin
+
+### Get all orders for a specific source
+GET http://localhost:3000/api/v1/orders/source/1
+Content-Type: application/json
+ApiKey: Admin
+
+### Get all orders for a specific status
+GET http://localhost:3000/api/v1/orders/status/Pending
+Content-Type: application/json
+ApiKey: Admin
+
 ### Get a specific order by ID
-GET http://localhost:3000/api/v1/orders/3
+GET http://localhost:3000/api/v1/orders/2
 Content-Type: application/json
 ApiKey: Admin
 
@@ -65,6 +80,39 @@ ApiKey: Admin
     "amount": 4
   }
 ]
+
+### Update an existing order
+PUT http://localhost:3000/api/v1/orders/14
+Content-Type: application/json
+ApiKey: Admin
+
+{
+  "sourceId": 1,
+  "orderDate": "2024-11-19T13:39:16.5035533Z",
+  "requestDate": "2024-11-19T13:39:16.5035533Z",
+  "reference": "ORD124",
+  "referenceExtra": "Standard Delivery",
+  "orderStatus": "Processing",
+  "notes": "Updated notes",
+  "shippingNotes": "Regular handling",
+  "pickingNotes": "Non-fragile items",
+  "warehouseId": 2,
+  "shipTo": "Address A",
+  "billTo": "Address B",
+  "shipmentId": 3,
+  "totalAmount": 220.00,
+  "totalDiscount": 15.00,
+  "totalTax": 8.00,
+  "totalSurcharge": 3.00,
+  "createdAt": "2024-11-18T13:39:16.5035533Z",
+  "updatedAt": "2024-11-19T13:39:16.5035533Z",
+  "items": [
+    {
+      "itemId": "ITEM002",
+      "amount": 5
+    }
+  ]
+}
 
 ### Delete an order by ID
 DELETE http://localhost:3000/api/v1/orders/18

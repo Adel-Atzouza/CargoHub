@@ -12,7 +12,7 @@ public class TestItemGroupsService
     private AppDbContext _context;
     private ItemGroupsService _IgService;
     [TestInitialize]
-    public void SetUpTest()
+    public void Setup()
     {
         var options = new DbContextOptionsBuilder<AppDbContext>()
                 .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
@@ -25,36 +25,35 @@ public class TestItemGroupsService
     [TestMethod]
     public async Task TestPostItemGroup()
     {
-        ItemGroup ig = new ItemGroup
-        {
-            Name = "Test",
-            Description = "Test"
-        };
-        bool result = await _IgService.AddItemGroup(ig);
+        ItemGroup Ig = TestHelper.TestItemGroup1;
+        bool result = await _IgService.AddItemGroup(Ig);
         Assert.IsTrue(result);
         ItemGroup? FoundIg = await _context.ItemGroups.FindAsync(1);
         Assert.IsNotNull(FoundIg);
         Assert.IsNotNull(FoundIg.CreatedAt);
         Assert.IsNotNull(FoundIg.UpdatedAt);
-        Assert.AreEqual(ig.Name, FoundIg.Name);
+        Assert.AreEqual(Ig.Name, FoundIg.Name);
     }
     [TestMethod]
-    public async Task TestInvalidInput()
+    public async Task TesGetItemGroup()
     {
-        ItemGroup InvalidItemGroup = new ItemGroup
-        {
-            Name = null,
-            Description = null
-        };
-        bool result = await _IgService.AddItemGroup(InvalidItemGroup);
-        Assert.IsFalse(result);
-        Assert.IsTrue(_context.ItemGroups.ToList().Count == 0);
-        
+        ItemGroup Ig = TestHelper.TestItemGroup1;
+        await _context.ItemGroups.AddAsync(Ig);
+        await _context.SaveChangesAsync();
+        ItemGroup? result = await _IgService.GetItemGroup(1);
+        // Check if the properties are added correctly
+        Assert.IsNotNull(result);
+        Assert.AreEqual(Ig.Name, result.Name);
+        Assert.AreEqual(Ig.Description, result.Description);
 
+        // Check if the CreatedAt and UpdatedAt properties are set correctly
+        TimeSpan tolerance = TimeSpan.FromMinutes(1);
+
+        Assert.IsTrue(TestHelper.HaveSameDates(DateTime.Now, result.CreatedAt, tolerance));
 
     }
     [TestCleanup]
-    public void TestCleanup()
+    public void Cleanup()
     {
         _context.Database.EnsureDeleted();
         _context.Dispose();

@@ -1,9 +1,9 @@
-﻿﻿
+﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.002.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CargoHub", "CargoHub.csproj", "{BC511D8B-43E1-4685-912C-C512CFDD0E4B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CargoHub.Test", "CargoHub.Test.csproj", "{1412B354-6467-4196-9B33-342195F231BD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,15 +11,15 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{BC511D8B-43E1-4685-912C-C512CFDD0E4B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BC511D8B-43E1-4685-912C-C512CFDD0E4B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BC511D8B-43E1-4685-912C-C512CFDD0E4B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BC511D8B-43E1-4685-912C-C512CFDD0E4B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1412B354-6467-4196-9B33-342195F231BD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1412B354-6467-4196-9B33-342195F231BD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1412B354-6467-4196-9B33-342195F231BD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1412B354-6467-4196-9B33-342195F231BD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {AE082D46-817F-4B1B-B012-98B655761520}
+		SolutionGuid = {7862123F-02F0-476D-9765-3339EDC876A6}
 	EndGlobalSection
 EndGlobal

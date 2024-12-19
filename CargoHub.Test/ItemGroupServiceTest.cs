@@ -46,10 +46,24 @@ public class TestItemGroupsService
         Assert.AreEqual(Ig.Name, result.Name);
         Assert.AreEqual(Ig.Description, result.Description);
 
+
         // Check if the CreatedAt and UpdatedAt properties are set correctly
         TimeSpan tolerance = TimeSpan.FromMinutes(1);
 
         Assert.IsTrue(TestHelper.HaveSameDates(DateTime.Now, result.CreatedAt, tolerance));
+
+    }
+
+    [TestMethod]
+    public async Task TestUpdateItemGroup()
+    {
+        ItemGroup Ig = TestHelper.TestItemGroup1;
+        await _context.ItemGroups.AddAsync(Ig);
+        await _context.SaveChangesAsync();
+        ItemGroup UpdatedIg = TestHelper.TestItemGroup2;
+        bool result = await _IgService.UpdateItemGroup(Ig.Id, UpdatedIg);
+        Assert.IsTrue(result);
+        Assert.IsTrue(Ig.UpdatedAt > Ig.CreatedAt);
 
     }
     [TestCleanup]

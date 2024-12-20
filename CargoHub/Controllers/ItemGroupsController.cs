@@ -11,13 +11,8 @@ namespace CargoHub.Controllers
         {
             Service = service;
         }
-        // [HttpGet("GetAll")]
-        // public IActionResult GetAll([FromQuery] int part)
-        // {
-        //     return Ok(Service.GetAllItemGroups(part));
-        // }
         [HttpGet()]
-        public async Task<IActionResult> GetMultipleItemGroups([FromQuery] int id = 1, [FromQuery] int PageSize = 100)
+        public async Task<IActionResult> GetAll([FromQuery] int id = 1, [FromQuery] int PageSize = 100)
         {
             return Ok(await Service.GetAllItemGroups(id, PageSize));
         }

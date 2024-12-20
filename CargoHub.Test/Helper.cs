@@ -8,6 +8,14 @@ public static class TestHelper
         return d1.Date - d2.Date <= tolerance;
 
     }
+
+    public static ItemGroup CreateRandomItemGroup()
+    {
+        return new ItemGroup{
+            Name = Guid.NewGuid().ToString(),
+            Description = Guid.NewGuid().ToString()
+        };
+    }
     public static ItemGroup TestItemGroup1 = new ItemGroup
     {
         Name = "Test Name",
@@ -31,7 +39,7 @@ public static class TestHelper
     };
 
 
-    public static ItemLine TestITemLine1 = new ItemLine
+    public static ItemLine TestItemLine1 = new ItemLine
     {
         Name = "Test Name",
         Description = "Test Description"

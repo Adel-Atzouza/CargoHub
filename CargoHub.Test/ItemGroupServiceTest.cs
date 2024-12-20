@@ -64,7 +64,19 @@ public class TestItemGroupsService
         bool result = await _IgService.UpdateItemGroup(Ig.Id, UpdatedIg);
         Assert.IsTrue(result);
         Assert.IsTrue(Ig.UpdatedAt > Ig.CreatedAt);
+    }
 
+    [TestMethod]
+    public async Task TestDeleteItemGroup()
+    {
+        // try deleting an entity that doesn't exist
+        bool Result1 = await _IgService.DeleteItemGroup(1);
+        Assert.IsFalse(Result1);
+        ItemGroup Ig = TestHelper.TestItemGroup1;
+        await _context.ItemGroups.AddAsync(Ig);
+        await _context.SaveChangesAsync();
+        bool Result2 = await _IgService.DeleteItemGroup(1);
+        Assert.IsTrue(Result2);
     }
     [TestCleanup]
     public void Cleanup()

@@ -16,10 +16,10 @@ namespace CargoHub.Controllers
         // {
         //     return Ok(Service.GetAllItemGroups(part));
         // }
-        [HttpGet("GetMultiple")]
-        public async Task<IActionResult> GetMultipleItemGroups([FromQuery] int[] Ids)
+        [HttpGet()]
+        public async Task<IActionResult> GetMultipleItemGroups([FromQuery] int id = 1, [FromQuery] int PageSize = 100)
         {
-            return Ok(await Service.GetMultipleItemGroups(Ids));
+            return Ok(await Service.GetAllItemGroups(id, PageSize));
         }
         [HttpGet()]
         public async Task<IActionResult> GetItemGroup([FromQuery] int id)

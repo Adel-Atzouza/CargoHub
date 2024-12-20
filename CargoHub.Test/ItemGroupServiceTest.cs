@@ -67,6 +67,25 @@ public class TestItemGroupsService
     }
 
     [TestMethod]
+    public async Task TestUpdateInvalidItemGroup()
+    {
+        // try to update an ItemGroup that doesn't exist
+        ItemGroup UpdatedIg = TestHelper.TestItemGroup2;
+        bool Result1 = await _IgService.UpdateItemGroup(999, UpdatedIg);
+        Assert.IsFalse(Result1);
+
+        // Add an ItemGroup to the DB
+        ItemGroup Ig = TestHelper.TestItemGroup1;
+        await _context.ItemGroups.AddAsync(Ig);
+        await _context.SaveChangesAsync();
+
+        // Test Updating the item group
+        bool result = await _IgService.UpdateItemGroup(Ig.Id, UpdatedIg);
+        Assert.IsTrue(result);
+
+    }
+
+    [TestMethod]
     public async Task TestDeleteItemGroup()
     {
         // try deleting an entity that doesn't exist
